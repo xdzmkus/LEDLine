@@ -13,7 +13,7 @@
 class BugsLedEffect : public ILedEffect
 {
 private:
-	const uint8_t BUGS_MAX_SPEED = 40;
+	const uint8_t BUGS_MAX_SPEED = 20;
 
 	CRGB*		bugColors;
 	int8_t*		bugSpeed;

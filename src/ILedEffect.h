@@ -17,7 +17,7 @@ protected:
 
 public:
 
-	virtual ILedEffect(CRGB leds[], uint16_t count);
+	ILedEffect(CRGB leds[], uint16_t count);
 	virtual ~ILedEffect();
 	virtual void refresh() = 0;
 	
