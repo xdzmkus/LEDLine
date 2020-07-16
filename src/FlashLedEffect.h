@@ -18,7 +18,6 @@ private:
 	uint32_t	flashTime = 0;
 	bool		flashState = false;
 	
-//functions
 public:
 	FlashLedEffect(CRGB leds[], uint16_t count, CRGB color, uint16_t delay, uint16_t times = -1);
 	~FlashLedEffect();

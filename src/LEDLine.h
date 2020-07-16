@@ -1,7 +1,7 @@
-// LEDStrip.h
+// LEDLine.h
 
-#ifndef _LEDSTRIP_h
-#define _LEDSTRIP_h
+#ifndef _LEDLINE_h
+#define _LEDLINE_h
 
 #if defined(ARDUINO) && ARDUINO >= 100
 #include "arduino.h"
@@ -13,7 +13,7 @@
 #include <FastLED.h>
 #include "ILedEffect.h"
 
-class LEDStrip
+class LEDLine
 {
 protected:
 
@@ -34,20 +34,20 @@ protected:
 		RAINBOW,
 		SPARKLES,
 		FLAME,
-		FLASHES
-	} stripState = OFF;
+		FLASHES,
+		FLAG
+	} lineState = OFF;
 
 public:
 
-	LEDStrip(CRGB leds[], uint16_t numLeds);
-	~LEDStrip();
+	LEDLine(CRGB leds[], uint16_t numLeds, uint16_t refreshInterval = 80);
+	~LEDLine();
 
-	virtual void save(int memIdx);
-	virtual void load(int memIdx);
+	virtual void saveState(int memIdx);
+	virtual void loadState(int memIdx);
+	virtual void nextState();
 
-	virtual void nextMode();
-
-	virtual bool isUpdated();
+	virtual bool refresh();
 
 	virtual void turnON();
 	virtual void turnOFF();
@@ -58,6 +58,8 @@ public:
 	virtual void turnSparkles();
 	virtual void turnFlame();
 	virtual void turnFlashes();
+	virtual void turnFlag();
+	
 };
 
 #endif

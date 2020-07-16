@@ -1,21 +1,21 @@
 #######################################
-# Syntax Coloring Map For LEDStrip
+# Syntax Coloring Map For LEDLine
 #######################################
 
 #######################################
 # Datatypes (KEYWORD1)
 #######################################
 
-LEDStrip    KEYWORD1
+LEDLine    KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
 
-save            KEYWORD2
-load            KEYWORD2
-nextMode        KEYWORD2
-isUpdated       KEYWORD2
+saveState       KEYWORD2
+loadState       KEYWORD2
+nextState       KEYWORD2
+refresh         KEYWORD2
 turnON          KEYWORD2
 turnOFF         KEYWORD2
 turnBugs        KEYWORD2
@@ -25,6 +25,7 @@ turnRainbow     KEYWORD2
 turnSparkles    KEYWORD2
 turnFlame       KEYWORD2
 turnFlashes     KEYWORD2
+turnFlag        KEYWORD2
 
 #######################################
 # Constants (LITERAL1)

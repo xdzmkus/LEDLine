@@ -7,7 +7,8 @@
 #include "GlowwormLedEffect.h"
 
 
-GlowwormLedEffect::GlowwormLedEffect(CRGB leds[], uint16_t count, CRGB color) : ILedEffect(leds, count), rgb(color)
+GlowwormLedEffect::GlowwormLedEffect(CRGB leds[], uint16_t count, CRGB color)
+	: ILedEffect(leds, count), rgb(color)
 {
 }
 
@@ -18,7 +19,7 @@ GlowwormLedEffect::~GlowwormLedEffect()
 
 void GlowwormLedEffect::refresh()
 {
-	ledStrip[position] = CRGB::Black;
+	ledLine[position] = CRGB::Black;
 
 	if (direction)
 	{
@@ -37,5 +38,5 @@ void GlowwormLedEffect::refresh()
 		}
 	}
 
-	ledStrip[position] = rgb;
+	ledLine[position] = rgb;
 }

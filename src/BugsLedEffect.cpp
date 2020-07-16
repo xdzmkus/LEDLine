@@ -6,7 +6,8 @@
 
 #include "BugsLedEffect.h"
 
-BugsLedEffect::BugsLedEffect(CRGB leds[], uint16_t count, uint8_t bugs) : ILedEffect(leds, count)
+BugsLedEffect::BugsLedEffect(CRGB leds[], uint16_t count, uint8_t bugs)
+	: ILedEffect(leds, count)
 {
 	numBugs = (bugs == 0 || bugs >= count) ? random(0, count/8) : bugs;
 	if (numBugs == 0) numBugs = 1;
@@ -34,7 +35,7 @@ void BugsLedEffect::refresh()
 {
 	for (uint8_t i = 0; i < numBugs; i++)
 	{
-		ledStrip[bugPosition[i]] = CRGB::Black;
+		ledLine[bugPosition[i]] = CRGB::Black;
 
 		bugSpeed[i] += random(-5, 6);
 		if (bugSpeed[i] == 0)
@@ -58,6 +59,6 @@ void BugsLedEffect::refresh()
 		}
     bugPosition[i] = newPosition;
     
-		ledStrip[bugPosition[i]] = bugColors[i];
+		ledLine[bugPosition[i]] = bugColors[i];
 	}
 }

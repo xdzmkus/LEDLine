@@ -12,7 +12,7 @@ class ILedEffect
 {
 protected:
 
-	CRGB*		ledStrip;
+	CRGB*		ledLine;
 	uint16_t	numLeds;
 
 public:

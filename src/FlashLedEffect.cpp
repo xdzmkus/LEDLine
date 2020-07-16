@@ -7,7 +7,7 @@
 #include "FlashLedEffect.h"
 
 FlashLedEffect::FlashLedEffect(CRGB leds[], uint16_t count, CRGB color, uint16_t delay, uint16_t times)
-: ILedEffect(leds, count), flashColor(color), flashDelay(delay), flashCount(times)
+	: ILedEffect(leds, count), flashColor(color), flashDelay(delay), flashCount(times)
 {
 	flashTime = millis();
 }

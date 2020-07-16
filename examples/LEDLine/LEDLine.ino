@@ -2,7 +2,7 @@
 #define BTN_PIN 10  // button pin
 
 #define NUM_LEDS 256
-#define CURRENT_LIMIT 8000
+#define CURRENT_LIMIT 9000
 #define MAX_BRIGHTNESS 300
 #define MIN_BRIGHTNESS 50
 
@@ -12,15 +12,14 @@
 #define EEPROM_ADDRESS_BRIGHTNESS 1
 
 #include <FastLED.h>
-#include <LEDStrip.h>
+#include <LEDLine.h>
 
 #include <GyverButton.h>
 GButton touch(BTN_PIN, LOW_PULL, NORM_OPEN);
 
-
 CRGB leds[NUM_LEDS];
 
-LEDStrip ledStrip(leds, NUM_LEDS);
+LEDLine ledLine(leds, NUM_LEDS);
 
 uint16_t brightness = MIN_BRIGHTNESS;
 
@@ -31,7 +30,7 @@ void setup()
 #if defined(ESP32) || defined(ESP8266)
 	EEPROM.begin(2);
 #endif
-	ledStrip.load(EEPROM_ADDRESS_EFFECT);
+	ledLine.loadState(EEPROM_ADDRESS_EFFECT);
 	brightness = EEPROM.read(EEPROM_ADDRESS_BRIGHTNESS);
 
 	FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
@@ -43,7 +42,7 @@ void setup()
 	touch.setStepTimeout(50);
 
 	Serial.begin(115200);
-	Serial.println(F("LEDStrip"));
+	Serial.println(F("LEDLine"));
 }
 
 void loop()
@@ -55,26 +54,26 @@ void loop()
 		switch (touch.getClicks())
 		{
 		case 1:
-			ledStrip.nextMode();
+			ledLine.nextState();
 			FastLED.show();
 			break;
 		case 2:
-			ledStrip.turnOFF();
+			ledLine.turnOFF();
 			FastLED.show();
 			break;
 		case 3:
-			ledStrip.turnON();
+			ledLine.turnON();
 			FastLED.show();
 			break;
 		case 4:
-			ledStrip.save(EEPROM_ADDRESS_EFFECT);
+			ledLine.saveState(EEPROM_ADDRESS_EFFECT);
 #if defined(ESP32) || defined(ESP8266)
 			EEPROM.write(EEPROM_ADDRESS_BRIGHTNESS, constrain(brightness, MIN_BRIGHTNESS, 255));
 			EEPROM.commit();
 #else
 			EEPROM.update(EEPROM_ADDRESS_BRIGHTNESS, constrain(brightness, MIN_BRIGHTNESS, 255));
 #endif
-			ledStrip.turnFlashes();
+			ledLine.turnFlashes();
 			FastLED.show();
 			break;
 		default:
@@ -92,7 +91,7 @@ void loop()
 		FastLED.show();
 	}
 	
-	if (ledStrip.isUpdated())
+	if (ledLine.refresh())
 	{
 		FastLED.show();
 	}

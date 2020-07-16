@@ -6,7 +6,8 @@
 
 #include "SparklesLedEffect.h"
 
-SparklesLedEffect::SparklesLedEffect(CRGB leds[], uint16_t count) : ILedEffect(leds, count)
+SparklesLedEffect::SparklesLedEffect(CRGB leds[], uint16_t count)
+	: ILedEffect(leds, count)
 {
 }
 
@@ -20,7 +21,7 @@ void SparklesLedEffect::refresh()
 
 	if (getPixelColor(thisNum) == 0)
 	{
-		ledStrip[thisNum] = CHSV(random(0, 255), 255, 255);
+		ledLine[thisNum] = CHSV(random(0, 255), 255, 255);
 	}
 
 	for (uint16_t i = 0; i < numLeds; i++)
@@ -43,6 +44,6 @@ void SparklesLedEffect::refresh()
 			k = (float)(maximum - SPARKLES_TRACK_STEP) / maximum;
 		}
 
-		ledStrip[i] = CRGB(rgb[0] * k, rgb[1] * k, rgb[2] * k);
+		ledLine[i] = CRGB(rgb[0] * k, rgb[1] * k, rgb[2] * k);
 	}
 }

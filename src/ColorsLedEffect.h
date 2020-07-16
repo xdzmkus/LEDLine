@@ -23,6 +23,6 @@ private:
 	ColorsLedEffect( const ColorsLedEffect &c );
 	ColorsLedEffect& operator=( const ColorsLedEffect &c );
 
-}; //ColorsLedEffect
+};
 
 #endif //__COLORSLEDEFFECT_H__

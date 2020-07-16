@@ -1,4 +1,4 @@
-#include "LEDStrip.h"
+#include "LEDLine.h"
 
 #include "ConstLedEffect.h"
 #include "FlashLedEffect.h"
@@ -8,18 +8,19 @@
 #include "SparklesLedEffect.h"
 #include "BugsLedEffect.h"
 #include "FlameLedEffect.h"
+#include "FlagLedEffect.h"
 
 #include <EEPROM.h>
 
 
-LEDStrip::LEDStrip(CRGB leds[], uint16_t numLeds)
+LEDLine::LEDLine(CRGB leds[], uint16_t numLeds, uint16_t refreshInterval)
 	: leds(leds), numLeds(numLeds)
 {
-	effectTimer.setInterval(80);
+	effectTimer.setInterval(refreshInterval);
 	effectTimer.start();
 }
 
-LEDStrip::~LEDStrip()
+LEDLine::~LEDLine()
 {
 	if (effect != NULL)
 	{
@@ -27,17 +28,17 @@ LEDStrip::~LEDStrip()
 	}
 }
 
-void LEDStrip::save(int memIdx)
+void LEDLine::saveState(int memIdx)
 {
 #if defined(ESP32) || defined(ESP8266)
-	EEPROM.write(memIdx, static_cast<uint8_t>(stripState));
+	EEPROM.write(memIdx, static_cast<uint8_t>(lineState));
 	EEPROM.commit();
 #else
-	EEPROM.update(memIdx, static_cast<uint8_t>(stripState));
+	EEPROM.update(memIdx, static_cast<uint8_t>(lineState));
 #endif
 }
 
-void LEDStrip::load(int memIdx)
+void LEDLine::loadState(int memIdx)
 {
 	switch (static_cast<LED_STATE>(EEPROM.read(memIdx)))
 	{
@@ -62,6 +63,9 @@ void LEDStrip::load(int memIdx)
 	case FLASHES:
 		turnFlashes();
 		break;
+	case FLAG:
+		turnFlag();
+		break;
 	case ON:
 		turnON();
 		break;
@@ -73,9 +77,9 @@ void LEDStrip::load(int memIdx)
 	effectTimer.reset();
 }
 
-void LEDStrip::nextMode()
+void LEDLine::nextState()
 {
-	switch (stripState)
+	switch (lineState)
 	{
 	case BUGS:
 		turnGlowworm();
@@ -95,6 +99,10 @@ void LEDStrip::nextMode()
 	case FLAME:
 		turnFlashes();
 		break;
+	case FLASHES:
+		turnFlag();
+		break;
+	case FLAG:
 	default:
 		turnBugs();
 		break;
@@ -103,7 +111,7 @@ void LEDStrip::nextMode()
 	effectTimer.reset();
 }
 
-bool LEDStrip::isUpdated()
+bool LEDLine::refresh()
 {
 	if (effect == NULL)
 		return false;
@@ -117,65 +125,72 @@ bool LEDStrip::isUpdated()
 	return false;
 }
 
-void LEDStrip::turnON()
+void LEDLine::turnON()
 {
-	stripState = ON;
+	lineState = ON;
 	if (effect != NULL) delete effect;
 	effect = new ConstLedEffect(leds, numLeds, CRGB::White);
 }
 
-void LEDStrip::turnOFF()
+void LEDLine::turnOFF()
 {
-	stripState = OFF;
+	lineState = OFF;
 	if (effect != NULL) delete effect;
 	effect = new ConstLedEffect(leds, numLeds, CRGB::Black);
 }
 
-void LEDStrip::turnBugs()
+void LEDLine::turnBugs()
 {
-	stripState = BUGS;
+	lineState = BUGS;
 	if (effect != NULL) delete effect;
 	effect = new BugsLedEffect(leds, numLeds);
 }
 
-void LEDStrip::turnGlowworm()
+void LEDLine::turnGlowworm()
 {
-	stripState = GLOWWORM;
+	lineState = GLOWWORM;
 	if (effect != NULL) delete effect;
 	effect = new GlowwormLedEffect(leds, numLeds);
 }
 
-void LEDStrip::turnColors()
+void LEDLine::turnColors()
 {
-	stripState = COLORS;
+	lineState = COLORS;
 	if (effect != NULL) delete effect;
 	effect = new ColorsLedEffect(leds, numLeds);
 }
 
-void LEDStrip::turnRainbow()
+void LEDLine::turnRainbow()
 {
-	stripState = RAINBOW;
+	lineState = RAINBOW;
 	if (effect != NULL) delete effect;
 	effect = new RainbowLedEffect(leds, numLeds);
 }
 
-void LEDStrip::turnSparkles()
+void LEDLine::turnSparkles()
 {
-	stripState = SPARKLES;
+	lineState = SPARKLES;
 	if (effect != NULL) delete effect;
 	effect = new SparklesLedEffect(leds, numLeds);
 }
 
-void LEDStrip::turnFlame()
+void LEDLine::turnFlame()
 {
-	stripState = FLAME;
+	lineState = FLAME;
 	if (effect != NULL) delete effect;
 	effect = new FlameLedEffect(leds, numLeds);
 }
 
-void LEDStrip::turnFlashes()
+void LEDLine::turnFlashes()
 {
-	stripState = FLASHES;
+	lineState = FLASHES;
 	if (effect != NULL) delete effect;
 	effect = new FlashLedEffect(leds, numLeds, CRGB::Red, 700);
+}
+
+void LEDLine::turnFlag()
+{
+	lineState = FLAG;
+	if (effect != NULL) delete effect;
+	effect = new FlagLedEffect(leds, numLeds);
 }

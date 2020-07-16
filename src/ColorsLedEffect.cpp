@@ -7,7 +7,8 @@
 #include "ColorsLedEffect.h"
 
 
-ColorsLedEffect::ColorsLedEffect(CRGB leds[], uint16_t count) : ILedEffect(leds, count)
+ColorsLedEffect::ColorsLedEffect(CRGB leds[], uint16_t count)
+	: ILedEffect(leds, count)
 {
 }
 
@@ -21,6 +22,6 @@ void ColorsLedEffect::refresh()
 
 	for (uint16_t i = 0; i < numLeds; i++)
 	{
-		ledStrip[i] = CHSV(hue, 255, 255);
+		ledLine[i] = CHSV(hue, 255, 255);
 	}
 }

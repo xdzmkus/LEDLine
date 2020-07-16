@@ -54,7 +54,7 @@ void FlameLedEffect::refresh()
 		uint8_t colorindex = scale8(heatMap[j], 240);
 		CRGB color = ColorFromPalette(gPal, colorindex);
 		uint16_t pixelnumber = fireReversed ? (numLeds - 1) - j : j;
-		ledStrip[pixelnumber] = color;
+		ledLine[pixelnumber] = color;
 	}
 
 }
