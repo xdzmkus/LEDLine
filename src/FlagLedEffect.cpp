@@ -8,9 +8,9 @@
 
 
 FlagLedEffect::FlagLedEffect(CRGB leds[], uint16_t count,
-							 CRGB firstColor = CRGB::White, uint16_t firstColorCount, 
-							 CRGB secondColor = CRGB::Red, uint16_t secondColorCount, 
-							 CRGB thirdColor = CRGB::White, uint16_t thirdColorCount)
+							 CRGB firstColor, uint16_t firstColorCount, 
+							 CRGB secondColor, uint16_t secondColorCount, 
+							 CRGB thirdColor, uint16_t thirdColorCount)
 	: ILedEffect(leds, count), rgb1(firstColor), count1(firstColorCount), rgb2(secondColor), count2(secondColorCount), rgb3(thirdColor), count3(thirdColorCount)
 {
 }
