@@ -3,11 +3,10 @@
 *
 */
 
-
 #include "SparklesLedEffect.h"
 
-SparklesLedEffect::SparklesLedEffect(CRGB leds[], uint16_t count)
-	: ILedEffect(leds, count)
+SparklesLedEffect::SparklesLedEffect(CRGB leds[], uint16_t count, uint16_t Hz)
+	: ILedEffect(leds, count, Hz)
 {
 }
 
@@ -15,8 +14,11 @@ SparklesLedEffect::~SparklesLedEffect()
 {
 }
 
-void SparklesLedEffect::refresh()
+bool SparklesLedEffect::paint()
 {
+	if (!ILedEffect::paint())
+		return false;
+
 	uint16_t thisNum = random(0, numLeds);
 
 	if (getPixelColor(thisNum) == 0)
@@ -46,4 +48,6 @@ void SparklesLedEffect::refresh()
 
 		ledLine[i] = CRGB(rgb[0] * k, rgb[1] * k, rgb[2] * k);
 	}
+
+	return true;
 }

@@ -9,7 +9,6 @@
 #include "WProgram.h"
 #endif
 
-#include <GyverTimer.h>
 #include <FastLED.h>
 #include "ILedEffect.h"
 
@@ -17,49 +16,25 @@ class LEDLine
 {
 protected:
 
-	CRGB*		leds;
-	uint16_t	numLeds;
+	ILedEffect** effects;
+	const uint8_t numEffects;
 
-	ILedEffect* effect = NULL;
-
-	GTimer_ms effectTimer;
-
-	enum LED_STATE
-	{
-		OFF,
-		ON,
-		BUGS,
-		GLOWWORM,
-		COLORS,
-		RAINBOW,
-		SPARKLES,
-		FLAME,
-		FLASHES,
-		FLAG
-	} lineState = OFF;
+	uint8_t currentEffect = 0;
+	bool isOn = false;
 
 public:
 
-	LEDLine(CRGB leds[], uint16_t numLeds, uint16_t refreshInterval = 80);
-	~LEDLine();
+	LEDLine(ILedEffect* effects[], uint8_t numEffects);
+	virtual ~LEDLine();
 
 	virtual void saveState(int memIdx);
 	virtual void loadState(int memIdx);
 	virtual void nextState();
 
-	virtual bool refresh();
+	virtual void pause();
+	virtual void resume();
 
-	virtual void turnON();
-	virtual void turnOFF();
-	virtual void turnBugs();
-	virtual void turnGlowworm();
-	virtual void turnColors();
-	virtual void turnRainbow();
-	virtual void turnSparkles();
-	virtual void turnFlame();
-	virtual void turnFlashes();
-	virtual void turnFlag();
-	
+	virtual bool isChanged();
 };
 
 #endif

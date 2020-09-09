@@ -3,34 +3,38 @@
 *
 */
 
-
 #include "FlashLedEffect.h"
 
-FlashLedEffect::FlashLedEffect(CRGB leds[], uint16_t count, CRGB color, uint16_t delay, uint16_t times)
-	: ILedEffect(leds, count), flashColor(color), flashDelay(delay), flashCount(times)
+FlashLedEffect::FlashLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, CRGB color)
+	: ILedEffect(leds, count, Hz), flashColor(color)
 {
-	flashTime = millis();
 }
-
 
 FlashLedEffect::~FlashLedEffect()
 {
 }
 
-void FlashLedEffect::refresh()
+void FlashLedEffect::reset()
 {
-	if (flashCount != 0 && flashTime + flashDelay < millis())
+	ILedEffect::reset();
+	flashState = false;
+}
+
+bool FlashLedEffect::paint()
+{
+	if (!ILedEffect::paint())
+		return false;
+
+	if (flashState)
 	{
-		if (flashState)
-		{
-			fillAllLeds(CRGB::Black);
-		}
-		else
-		{
-			if (flashCount > 0) flashCount--;
-			fillAllLeds(flashColor);
-		}
-		flashState = !flashState;
-		flashTime = millis();
+		fillAllLeds(CRGB::Black);
 	}
+	else
+	{
+		fillAllLeds(flashColor);
+	}
+
+	flashState = !flashState;
+
+	return true;
 }

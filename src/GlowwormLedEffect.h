@@ -3,7 +3,6 @@
 *
 */
 
-
 #ifndef __GLOWWORMLEDEFFECT_H__
 #define __GLOWWORMLEDEFFECT_H__
 
@@ -14,17 +13,18 @@ class GlowwormLedEffect : public ILedEffect
 private:
 	CRGB rgb;
 	uint16_t position = 0;
-	boolean direction = true;
+	bool direction = true;
 	
 public:
-	GlowwormLedEffect(CRGB leds[], uint16_t count, CRGB color = CRGB::White);
+	GlowwormLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, CRGB color = CRGB::White);
 	~GlowwormLedEffect();
 
-	virtual void refresh() override;
+	void reset() override;
+	bool paint() override;
 
 private:
-	GlowwormLedEffect( const GlowwormLedEffect &c );
-	GlowwormLedEffect& operator=( const GlowwormLedEffect &c );
+	GlowwormLedEffect(const GlowwormLedEffect&);
+	GlowwormLedEffect& operator=(const GlowwormLedEffect&);
 
 };
 

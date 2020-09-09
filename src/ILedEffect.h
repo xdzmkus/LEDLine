@@ -7,19 +7,24 @@
 #define _LEDEFFECT_h
 
 #include <FastLED.h>
+#include <GyverTimer.h>
 
 class ILedEffect
 {
 protected:
 
-	CRGB*		ledLine;
-	uint16_t	numLeds;
+	CRGB* const ledLine;
+	const uint16_t numLeds;
+
+	GTimer_ms effectTimer;
 
 public:
 
-	ILedEffect(CRGB leds[], uint16_t count);
+	ILedEffect(CRGB leds[], uint16_t count, uint16_t Hz = 10);
 	virtual ~ILedEffect();
-	virtual void refresh() = 0;
+
+	virtual void reset();
+	virtual bool paint() = 0;
 	
 protected:
 

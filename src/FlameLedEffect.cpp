@@ -3,14 +3,12 @@
 *
 */
 
-
 #include "FlameLedEffect.h"
 
-FlameLedEffect::FlameLedEffect(CRGB leds[], uint16_t count, bool reversed)
-	: ILedEffect(leds, count), fireReversed(reversed)
+FlameLedEffect::FlameLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, bool reversed)
+	: ILedEffect(leds, count, Hz), fireReversed(reversed), gPal(HeatColors_p)
 {
 	heatMap = new uint8_t[count];
-	gPal = HeatColors_p;
 }
 
 FlameLedEffect::~FlameLedEffect()
@@ -18,8 +16,11 @@ FlameLedEffect::~FlameLedEffect()
 	delete[] heatMap;
 }
 
-void FlameLedEffect::refresh()
+bool FlameLedEffect::paint()
 {
+	if (!ILedEffect::paint())
+		return false;
+
 	// SPARKING: What chance (out of 255) is there that a new spark will be lit?
 	// Higher chance = more roaring fire.  Lower chance = more flickery fire.
 	// Default 120, suggested range 50-200.
@@ -57,4 +58,5 @@ void FlameLedEffect::refresh()
 		ledLine[pixelnumber] = color;
 	}
 
+	return true;
 }

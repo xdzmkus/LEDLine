@@ -3,11 +3,10 @@
 *
 */
 
-
 #include "BugsLedEffect.h"
 
-BugsLedEffect::BugsLedEffect(CRGB leds[], uint16_t count, uint8_t bugs)
-	: ILedEffect(leds, count)
+BugsLedEffect::BugsLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, uint8_t bugs)
+	: ILedEffect(leds, count, Hz)
 {
 	numBugs = (bugs == 0 || bugs >= count) ? random(0, count/8) : bugs;
 	if (numBugs == 0) numBugs = 1;
@@ -31,8 +30,23 @@ BugsLedEffect::~BugsLedEffect()
 	delete[] bugSpeed;
 }
 
-void BugsLedEffect::refresh()
+void BugsLedEffect::reset()
 {
+	ILedEffect::reset();
+
+	for (uint8_t i = 0; i < numBugs; i++)
+	{
+		bugColors[i] = CHSV(random(0, 9) * 28, 255, 255);
+		bugPosition[i] = random(0, numLeds);
+		bugSpeed[i] += random(-5, 6);
+	}
+}
+
+bool BugsLedEffect::paint()
+{
+	if (!ILedEffect::paint())
+		return false;
+		
 	for (uint8_t i = 0; i < numBugs; i++)
 	{
 		ledLine[bugPosition[i]] = CRGB::Black;
@@ -47,7 +61,7 @@ void BugsLedEffect::refresh()
 			bugSpeed[i] = 0;
 		}
 
-    int16_t newPosition = bugPosition[i] + bugSpeed[i] / 10;
+		int16_t newPosition = bugPosition[i] + bugSpeed[i] / 10;
 		
 		if (newPosition < 0)
 		{
@@ -57,8 +71,11 @@ void BugsLedEffect::refresh()
 		{
 			newPosition = 0;
 		}
-    bugPosition[i] = newPosition;
+
+		bugPosition[i] = newPosition;
     
 		ledLine[bugPosition[i]] = bugColors[i];
 	}
+
+	return true;
 }

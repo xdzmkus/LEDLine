@@ -3,12 +3,10 @@
 *
 */
 
-
 #include "GlowwormLedEffect.h"
 
-
-GlowwormLedEffect::GlowwormLedEffect(CRGB leds[], uint16_t count, CRGB color)
-	: ILedEffect(leds, count), rgb(color)
+GlowwormLedEffect::GlowwormLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, CRGB color)
+	: ILedEffect(leds, count, Hz), rgb(color)
 {
 }
 
@@ -17,8 +15,18 @@ GlowwormLedEffect::~GlowwormLedEffect()
 {
 }
 
-void GlowwormLedEffect::refresh()
+void GlowwormLedEffect::reset()
 {
+	ILedEffect::reset();
+	position = 0;
+	direction = true;
+}
+
+bool GlowwormLedEffect::paint()
+{
+	if (!ILedEffect::paint())
+		return false;
+
 	ledLine[position] = CRGB::Black;
 
 	if (direction)
@@ -39,4 +47,6 @@ void GlowwormLedEffect::refresh()
 	}
 
 	ledLine[position] = rgb;
+
+	return true;
 }

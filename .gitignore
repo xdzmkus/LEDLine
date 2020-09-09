@@ -3,3 +3,10 @@
 ################################################################################
 
 /.vs
+/LEDLine.vcxitems.filters
+/LEDLine.vcxitems
+/LEDLine.sln
+/examples/Girland/__vm
+/examples/Girland/Girland.vcxproj.user
+/examples/Girland/Girland.vcxproj.filters
+/examples/Girland/Girland.vcxproj

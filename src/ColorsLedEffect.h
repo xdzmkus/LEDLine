@@ -3,7 +3,6 @@
 *
 */
 
-
 #ifndef __COLORSLEDEFFECT_H__
 #define __COLORSLEDEFFECT_H__
 
@@ -12,16 +11,18 @@
 class ColorsLedEffect : public ILedEffect
 {
 private:
-	uint8_t hue = 0;
+	uint8_t hue;
 	
 public:
-	ColorsLedEffect(CRGB leds[], uint16_t count);
+	ColorsLedEffect(CRGB leds[], uint16_t count, uint16_t Hz);
 	~ColorsLedEffect();
-	virtual void refresh() override;
+
+	void reset() override;
+	bool paint() override;
 
 private:
-	ColorsLedEffect( const ColorsLedEffect &c );
-	ColorsLedEffect& operator=( const ColorsLedEffect &c );
+	ColorsLedEffect(const ColorsLedEffect&);
+	ColorsLedEffect& operator=(const ColorsLedEffect&);
 
 };
 

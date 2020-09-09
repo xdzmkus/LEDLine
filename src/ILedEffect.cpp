@@ -5,18 +5,31 @@
 
 #include "ILedEffect.h"
 
-ILedEffect::ILedEffect(CRGB leds[], uint16_t count)
+ILedEffect::ILedEffect(CRGB leds[], uint16_t count, uint16_t Hz)
 	: ledLine(leds), numLeds(count)
 {
-	if(ledLine)
-	{
-		// zero out the led data managed by this effect
-		memset8((void*)ledLine, 0, sizeof(struct CRGB) * numLeds);
-	}
+	// zero out the led data managed by this effect
+	memset8((void*)ledLine, 0, sizeof(struct CRGB) * numLeds);
+
+	effectTimer.setInterval(1000 / (Hz == 0 ? 1000 : Hz));
+	effectTimer.start();
 }
 
- ILedEffect::~ILedEffect()
+ILedEffect::~ILedEffect()
 {
+}
+
+void ILedEffect::reset()
+{
+	// zero out the led data managed by this effect
+	memset8((void*)ledLine, 0, sizeof(struct CRGB) * numLeds);
+
+	effectTimer.reset();
+}
+
+bool ILedEffect::paint()
+{
+	return effectTimer.isReady();
 }
 
 uint32_t ILedEffect::getPixelColor(uint16_t pixel) const

@@ -15,17 +15,9 @@ LEDLine    KEYWORD1
 saveState       KEYWORD2
 loadState       KEYWORD2
 nextState       KEYWORD2
-refresh         KEYWORD2
-turnON          KEYWORD2
-turnOFF         KEYWORD2
-turnBugs        KEYWORD2
-turnGlowworm    KEYWORD2
-turnColors      KEYWORD2
-turnRainbow     KEYWORD2
-turnSparkles    KEYWORD2
-turnFlame       KEYWORD2
-turnFlashes     KEYWORD2
-turnFlag        KEYWORD2
+pause           KEYWORD2
+resume          KEYWORD2
+isChanged       KEYWORD2
 
 #######################################
 # Constants (LITERAL1)

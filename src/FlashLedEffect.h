@@ -3,7 +3,6 @@
 *
 */
 
-
 #ifndef __FLASHLEDEFFECT_H__
 #define __FLASHLEDEFFECT_H__
 
@@ -13,20 +12,18 @@ class FlashLedEffect : public ILedEffect
 {
 private:
 	CRGB		flashColor;
-	uint16_t	flashDelay;
-	uint16_t	flashCount = -1;
-	uint32_t	flashTime = 0;
 	bool		flashState = false;
 	
 public:
-	FlashLedEffect(CRGB leds[], uint16_t count, CRGB color, uint16_t delay, uint16_t times = -1);
+	FlashLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, CRGB color);
 	~FlashLedEffect();
-	virtual void refresh() override;
+	
+	void reset() override;
+	bool paint() override;
 
 private:
-	FlashLedEffect( const FlashLedEffect &c );
-	FlashLedEffect& operator=( const FlashLedEffect &c );
-
+	FlashLedEffect(const FlashLedEffect&);
+	FlashLedEffect& operator=(const FlashLedEffect&);
 };
 
 #endif //__FLASHLEDEFFECT_H__

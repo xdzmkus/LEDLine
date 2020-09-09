@@ -3,7 +3,6 @@
 *
 */
 
-
 #ifndef __RAINBOWLEDEFFECT_H__
 #define __RAINBOWLEDEFFECT_H__
 
@@ -16,14 +15,15 @@ private:
 	uint8_t hue = 0;
 
 public:
-	RainbowLedEffect(CRGB leds[], uint16_t count);
+	RainbowLedEffect(CRGB leds[], uint16_t count, uint16_t Hz);
 	~RainbowLedEffect();
-	virtual void refresh() override;
+	
+	void reset() override;
+	bool paint() override;
 
 private:
-	RainbowLedEffect( const RainbowLedEffect &c );
-	RainbowLedEffect& operator=( const RainbowLedEffect &c );
-
+	RainbowLedEffect(const RainbowLedEffect&);
+	RainbowLedEffect& operator=(const RainbowLedEffect&);
 };
 
 #endif //__RAINBOWLEDEFFECT_H__

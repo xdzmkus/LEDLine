@@ -3,12 +3,10 @@
 *
 */
 
-
 #ifndef __BUGSLEDEFFECT_H__
 #define __BUGSLEDEFFECT_H__
 
 #include "ILedEffect.h"
-
 
 class BugsLedEffect : public ILedEffect
 {
@@ -20,15 +18,16 @@ private:
 	uint16_t*	bugPosition;
 	uint8_t		numBugs;
 
-
 public:
-	BugsLedEffect(CRGB leds[], uint16_t count, uint8_t bugs = 0);
+	BugsLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, uint8_t bugs = 0);
 	~BugsLedEffect();
-	virtual void refresh() override;
+	
+	void reset() override;
+	bool paint() override;
 
 private:
-	BugsLedEffect( const BugsLedEffect &c );
-	BugsLedEffect& operator=( const BugsLedEffect &c );
+	BugsLedEffect(const BugsLedEffect&);
+	BugsLedEffect& operator=(const BugsLedEffect&);
 
 };
 

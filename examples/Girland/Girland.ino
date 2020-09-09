@@ -2,24 +2,45 @@
 #define BTN_PIN 10  // button pin
 
 #define NUM_LEDS 256
-#define CURRENT_LIMIT 9000
+#define CURRENT_LIMIT 8000
 #define MAX_BRIGHTNESS 300
-#define MIN_BRIGHTNESS 50
-
-#include <EEPROM.h>
+#define MIN_BRIGHTNESS 30
 
 #define EEPROM_ADDRESS_EFFECT 0
-#define EEPROM_ADDRESS_BRIGHTNESS 1
+
 
 #include <FastLED.h>
-#include <LEDLine.h>
+#include "LEDLine.h"
+#include "FlashLedEffect.h"
+#include "GlowwormLedEffect.h"
+#include "ColorsLedEffect.h"
+#include "RainbowLedEffect.h"
+#include "SparklesLedEffect.h"
+#include "BugsLedEffect.h"
+#include "FlameLedEffect.h"
+#include "FlagLedEffect.h"
+
 
 #include <GyverButton.h>
 GButton touch(BTN_PIN, LOW_PULL, NORM_OPEN);
 
 CRGB leds[NUM_LEDS];
 
-LEDLine ledLine(leds, NUM_LEDS);
+#define NUM_EFFECTS 9
+ILedEffect* effects[NUM_EFFECTS] =
+{
+	new BugsLedEffect(leds, NUM_LEDS, 20),
+	new GlowwormLedEffect(leds, NUM_LEDS, 30),
+	new ColorsLedEffect(leds, NUM_LEDS, 10),
+	new RainbowLedEffect(leds, NUM_LEDS, 10),
+	new SparklesLedEffect(leds, NUM_LEDS, 10),
+	new FlameLedEffect(leds, NUM_LEDS, 10),
+	new FlashLedEffect(leds, NUM_LEDS, 1, CRGB::Orange),
+	new FlagLedEffect(leds, NUM_LEDS, 15, { CRGB::White, 80, CRGB::Red, 96, CRGB::White, 80 }, 8), 
+	new FlagLedEffect(leds, NUM_LEDS, 4, { CRGB::White, 2, CRGB::Red, 4, CRGB::White, 2 })
+};
+
+LEDLine ledLine(effects, NUM_EFFECTS);
 
 uint16_t brightness = MIN_BRIGHTNESS;
 
@@ -27,16 +48,13 @@ void setup()
 {
 	randomSeed(analogRead(0));
 
-#if defined(ESP32) || defined(ESP8266)
-	EEPROM.begin(2);
-#endif
-	ledLine.loadState(EEPROM_ADDRESS_EFFECT);
-	brightness = EEPROM.read(EEPROM_ADDRESS_BRIGHTNESS);
-
 	FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
 	FastLED.setMaxPowerInVoltsAndMilliamps(5, CURRENT_LIMIT);
 	FastLED.setBrightness(brightness);
 	FastLED.clear(true);
+
+	ledLine.loadState(EEPROM_ADDRESS_EFFECT);
+	ledLine.resume();
 
 	touch.setTimeout(300);
 	touch.setStepTimeout(50);
@@ -54,27 +72,16 @@ void loop()
 		switch (touch.getClicks())
 		{
 		case 1:
+			ledLine.resume();
 			ledLine.nextState();
-			FastLED.show();
 			break;
 		case 2:
-			ledLine.turnOFF();
-			FastLED.show();
+			ledLine.pause();
+			FastLED.clear(true);
 			break;
 		case 3:
-			ledLine.turnON();
-			FastLED.show();
-			break;
-		case 4:
+			ledLine.pause();
 			ledLine.saveState(EEPROM_ADDRESS_EFFECT);
-#if defined(ESP32) || defined(ESP8266)
-			EEPROM.write(EEPROM_ADDRESS_BRIGHTNESS, constrain(brightness, MIN_BRIGHTNESS, 255));
-			EEPROM.commit();
-#else
-			EEPROM.update(EEPROM_ADDRESS_BRIGHTNESS, constrain(brightness, MIN_BRIGHTNESS, 255));
-#endif
-			ledLine.turnFlashes();
-			FastLED.show();
 			break;
 		default:
 			break;
@@ -90,8 +97,8 @@ void loop()
 		FastLED.setBrightness(constrain(brightness, MIN_BRIGHTNESS, 255));
 		FastLED.show();
 	}
-	
-	if (ledLine.refresh())
+
+	if (ledLine.isChanged())
 	{
 		FastLED.show();
 	}
