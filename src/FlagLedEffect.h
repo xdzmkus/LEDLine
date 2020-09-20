@@ -23,15 +23,17 @@ private:
 		uint16_t count3;
 	} flag;
 
-	const uint8_t timesToFade;
+	const uint16_t timesToFade;
+	const uint8_t pulseCount;
 
-	uint8_t restOfFade;
 	uint8_t fadeForRGB1;
 	uint8_t fadeForRGB2;
 	uint8_t fadeForRGB3;
+	uint8_t pulses;
+	uint16_t restOfFade;
 
 public:
-	FlagLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, FLAG flag, uint8_t fadeInSec = 1);
+	FlagLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, FLAG flag, uint8_t pulseTime = 1, uint8_t pulseCount = 2);
 	~FlagLedEffect();
 
 	void reset() override;

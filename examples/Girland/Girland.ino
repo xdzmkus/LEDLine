@@ -46,7 +46,7 @@ ILedEffect* effects[NUM_EFFECTS] =
 	new SparklesLedEffect(leds, NUM_LEDS, 10),
 	new FlameLedEffect(leds, NUM_LEDS, 10),
 	new FlashLedEffect(leds, NUM_LEDS, 1, CRGB::Yellow),
-	new FlagLedEffect(leds, NUM_LEDS, 30, { CRGB::White, 80, CRGB::Red, 96, CRGB::White, 80 }, 3)
+	new FlagLedEffect(leds, NUM_LEDS, 30, { CRGB::White, 80, CRGB::Red, 96, CRGB::White, 80 }, 1, 2)
 };
 
 LEDLine ledLine(effects, NUM_EFFECTS);

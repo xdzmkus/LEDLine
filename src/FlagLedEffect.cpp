@@ -1,7 +1,7 @@
 #include "FlagLedEffect.h"
 
-FlagLedEffect::FlagLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, FLAG flag, uint8_t fadeInSec)
-	: ILedEffect(leds, count, Hz), flag(flag), timesToFade(Hz*fadeInSec)
+FlagLedEffect::FlagLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, FLAG flag, uint8_t pulseTime, uint8_t pulseCount)
+	: ILedEffect(leds, count, Hz), flag(flag), timesToFade(Hz* pulseTime), pulseCount(pulseCount)
 {
 	if (timesToFade != 0)
 	{
@@ -11,6 +11,7 @@ FlagLedEffect::FlagLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, FLAG flag
 	}
 
 	restOfFade = timesToFade;
+	pulses = pulseCount;
 }
 
 FlagLedEffect::~FlagLedEffect()
@@ -31,6 +32,7 @@ void FlagLedEffect::reset()
 		ledLine[position++] = flag.rgb3;
 
 	restOfFade = timesToFade;
+	pulses = pulseCount;
 }
 
 bool FlagLedEffect::paint()
@@ -38,15 +40,26 @@ bool FlagLedEffect::paint()
 	if (!ILedEffect::paint() || timesToFade == 0)
 		return false;
 
-	if (restOfFade > timesToFade)
+	// black(skipped) pulse?
+	if (pulses == 0)
 	{
-		restOfFade--;
+		if (restOfFade == 0)
+		{
+			pulses = pulseCount;
+			restOfFade = timesToFade;
+		}
+		else
+		{
+			restOfFade--;
+		}
 		return false;
 	}
 
+	// almost black (pulse done)?
 	if (restOfFade == 0)
 	{
-		restOfFade = timesToFade<<1;
+		restOfFade = timesToFade;
+		pulses--;
 		fillAllLeds(CRGB::Black);
 		return true;
 	}
@@ -55,6 +68,7 @@ bool FlagLedEffect::paint()
 
 	if (restOfFade == timesToFade)
 	{
+		// show original flag
 		for (uint16_t firstColorCount = 0; firstColorCount < flag.count1 && position < numLeds; firstColorCount++)
 			ledLine[position++] = flag.rgb1;
 		for (uint16_t secondColorCount = 0; secondColorCount < flag.count2 && position < numLeds; secondColorCount++)
@@ -64,6 +78,7 @@ bool FlagLedEffect::paint()
 	}
 	else
 	{
+		// fade a bit
 		for (uint16_t firstColorCount = 0; firstColorCount < flag.count1 && position < numLeds; firstColorCount++)
 			ledLine[position++].subtractFromRGB(fadeForRGB1);
 		for (uint16_t secondColorCount = 0; secondColorCount < flag.count2 && position < numLeds; secondColorCount++)
