@@ -11,8 +11,11 @@ ILedEffect::ILedEffect(CRGB leds[], uint16_t count, uint16_t Hz)
 	// zero out the led data managed by this effect
 	memset8((void*)ledLine, 0, sizeof(struct CRGB) * numLeds);
 
-	effectTimer.setInterval(1000 / (Hz == 0 ? 1000 : Hz));
-	effectTimer.start();
+	if (Hz != 0)
+	{
+		interval = 1000 / Hz;
+		state = true;
+	}
 }
 
 ILedEffect::~ILedEffect()
@@ -24,12 +27,16 @@ void ILedEffect::reset()
 	// zero out the led data managed by this effect
 	memset8((void*)ledLine, 0, sizeof(struct CRGB) * numLeds);
 
-	effectTimer.reset();
+	timer = millis();
 }
 
 bool ILedEffect::paint()
 {
-	return effectTimer.isReady();
+	if (!state || (millis() - timer < interval))
+		return false;
+
+	timer = millis();
+	return true;
 }
 
 uint32_t ILedEffect::getPixelColor(uint16_t pixel) const

@@ -23,15 +23,15 @@ private:
 		uint16_t count3;
 	} flag;
 
-	static const uint8_t STEP_WIDE = 20;
-	const int8_t step_line[STEP_WIDE] = { 0,0,0,0, -1,1,-1,1,-1,1, 0,0,0,0, 1,-1,1,-1,1,-1 };
-	const uint8_t step_count;
+	const uint8_t timesToFade;
 
-	uint16_t step_position = 0;
-	bool step_direction = true;
+	uint8_t restOfFade;
+	uint8_t fadeForRGB1;
+	uint8_t fadeForRGB2;
+	uint8_t fadeForRGB3;
 
 public:
-	FlagLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, FLAG flag, uint8_t step = 0);
+	FlagLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, FLAG flag, uint8_t fadeInSec = 1);
 	~FlagLedEffect();
 
 	void reset() override;

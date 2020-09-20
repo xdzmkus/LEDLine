@@ -1,13 +1,27 @@
-#define LED_PIN 9   // led pin
+
+#if defined(ESP32) || defined(ESP8266)
+#define LED_PIN 13  // leds pin
+#define BTN_PIN 0   // button pin
+#else
+#define LED_PIN 9   // leds pin
 #define BTN_PIN 10  // button pin
+#endif
+
+//#define TOUCH_BUTTON
+#include <GyverButton.h>
+#if defined(TOUCH_BUTTON)
+GButton touch(BTN_PIN, LOW_PULL, NORM_OPEN);
+#else
+GButton touch(BTN_PIN, HIGH_PULL, NORM_OPEN);
+#endif
 
 #define NUM_LEDS 256
 #define CURRENT_LIMIT 8000
+
 #define MAX_BRIGHTNESS 300
 #define MIN_BRIGHTNESS 30
 
 #define EEPROM_ADDRESS_EFFECT 0
-
 
 #include <FastLED.h>
 #include "LEDLine.h"
@@ -20,13 +34,9 @@
 #include "FlameLedEffect.h"
 #include "FlagLedEffect.h"
 
-
-#include <GyverButton.h>
-GButton touch(BTN_PIN, LOW_PULL, NORM_OPEN);
-
 CRGB leds[NUM_LEDS];
 
-#define NUM_EFFECTS 9
+#define NUM_EFFECTS 8
 ILedEffect* effects[NUM_EFFECTS] =
 {
 	new BugsLedEffect(leds, NUM_LEDS, 20),
@@ -35,9 +45,8 @@ ILedEffect* effects[NUM_EFFECTS] =
 	new RainbowLedEffect(leds, NUM_LEDS, 10),
 	new SparklesLedEffect(leds, NUM_LEDS, 10),
 	new FlameLedEffect(leds, NUM_LEDS, 10),
-	new FlashLedEffect(leds, NUM_LEDS, 1, CRGB::Orange),
-	new FlagLedEffect(leds, NUM_LEDS, 15, { CRGB::White, 80, CRGB::Red, 96, CRGB::White, 80 }, 8), 
-	new FlagLedEffect(leds, NUM_LEDS, 4, { CRGB::White, 2, CRGB::Red, 4, CRGB::White, 2 })
+	new FlashLedEffect(leds, NUM_LEDS, 1, CRGB::Yellow),
+	new FlagLedEffect(leds, NUM_LEDS, 30, { CRGB::White, 80, CRGB::Red, 96, CRGB::White, 80 }, 3)
 };
 
 LEDLine ledLine(effects, NUM_EFFECTS);
@@ -74,6 +83,7 @@ void loop()
 		case 1:
 			ledLine.resume();
 			ledLine.nextState();
+			FastLED.show();
 			break;
 		case 2:
 			ledLine.pause();

@@ -7,7 +7,6 @@
 #define _LEDEFFECT_h
 
 #include <FastLED.h>
-#include <GyverTimer.h>
 
 class ILedEffect
 {
@@ -16,7 +15,9 @@ protected:
 	CRGB* const ledLine;
 	const uint16_t numLeds;
 
-	GTimer_ms effectTimer;
+	unsigned long interval = 0;
+	unsigned long timer = 0;
+	bool state = false;
 
 public:
 
