@@ -6,9 +6,10 @@
 
 #include "RainbowLedEffect.h"
 
+const char* const RainbowLedEffect::name = "RAINBOW";
 
 RainbowLedEffect::RainbowLedEffect(CRGB leds[], uint16_t count, uint16_t Hz)
-	: ILedEffect(leds, count, Hz), k(count != 0 ? 255/count : 1)
+	: LedEffect(leds, count, Hz), k(count != 0 ? 255/count : 1)
 {
 }
 
@@ -18,13 +19,13 @@ RainbowLedEffect::~RainbowLedEffect()
 
 void RainbowLedEffect::reset()
 {
-	ILedEffect::reset();
+	LedEffect::reset();
 	hue = 0;
 }
 
 bool RainbowLedEffect::paint()
 {
-	if (!ILedEffect::paint())
+	if (!LedEffect::paint())
 		return false;
 
 	hue += 5;

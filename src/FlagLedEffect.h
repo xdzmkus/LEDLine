@@ -6,12 +6,16 @@
 #ifndef __FLAGLEDEFFECT_H__
 #define __FLAGLEDEFFECT_H__
 
-#include "ILedEffect.h"
+#include "LedEffect.h"
 
 
-class FlagLedEffect : public ILedEffect
+class FlagLedEffect : public LedEffect
 {
-private:
+public:
+
+	static const char* const name;
+
+protected:
 
 	const struct FLAG
 	{
@@ -39,9 +43,11 @@ public:
 	void reset() override;
 	bool paint() override;
 
+	operator const char* () const { return name; }
+
 private:
 	FlagLedEffect(const FlagLedEffect&);
-	FlagLedEffect& operator=(const FlagLedEffect&) {};
+	FlagLedEffect& operator=(const FlagLedEffect&);
 
 };
 

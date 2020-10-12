@@ -5,8 +5,10 @@
 
 #include "FlashLedEffect.h"
 
+const char* const FlashLedEffect::name = "FLASH";
+
 FlashLedEffect::FlashLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, CRGB color)
-	: ILedEffect(leds, count, Hz), flashColor(color)
+	: LedEffect(leds, count, Hz), flashColor(color)
 {
 }
 
@@ -16,13 +18,13 @@ FlashLedEffect::~FlashLedEffect()
 
 void FlashLedEffect::reset()
 {
-	ILedEffect::reset();
+	LedEffect::reset();
 	flashState = false;
 }
 
 bool FlashLedEffect::paint()
 {
-	if (!ILedEffect::paint())
+	if (!LedEffect::paint())
 		return false;
 
 	if (flashState)

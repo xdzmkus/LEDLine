@@ -5,10 +5,12 @@
 
 #include "BugsLedEffect.h"
 
+const char* const BugsLedEffect::name = "BUGS";
+
 BugsLedEffect::BugsLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, uint8_t bugs)
-	: ILedEffect(leds, count, Hz)
+	: LedEffect(leds, count, Hz)
 {
-	numBugs = (bugs == 0 || bugs >= count) ? random(0, count/8) : bugs;
+	numBugs = (bugs == 0 || bugs >= count) ? random(count/10, count/5) : bugs;
 	if (numBugs == 0) numBugs = 1;
 
 	bugColors = new CRGB[numBugs];
@@ -32,7 +34,7 @@ BugsLedEffect::~BugsLedEffect()
 
 void BugsLedEffect::reset()
 {
-	ILedEffect::reset();
+	LedEffect::reset();
 
 	for (uint8_t i = 0; i < numBugs; i++)
 	{
@@ -44,7 +46,7 @@ void BugsLedEffect::reset()
 
 bool BugsLedEffect::paint()
 {
-	if (!ILedEffect::paint())
+	if (!LedEffect::paint())
 		return false;
 		
 	for (uint8_t i = 0; i < numBugs; i++)

@@ -5,8 +5,10 @@
 
 #include "SparklesLedEffect.h"
 
+const char* const SparklesLedEffect::name = "SPARKLES";
+
 SparklesLedEffect::SparklesLedEffect(CRGB leds[], uint16_t count, uint16_t Hz)
-	: ILedEffect(leds, count, Hz)
+	: LedEffect(leds, count, Hz)
 {
 }
 
@@ -16,7 +18,7 @@ SparklesLedEffect::~SparklesLedEffect()
 
 bool SparklesLedEffect::paint()
 {
-	if (!ILedEffect::paint())
+	if (!LedEffect::paint())
 		return false;
 
 	uint16_t thisNum = random(0, numLeds);

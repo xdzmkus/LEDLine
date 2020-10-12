@@ -6,11 +6,16 @@
 #ifndef __RAINBOWLEDEFFECT_H__
 #define __RAINBOWLEDEFFECT_H__
 
-#include "ILedEffect.h"
+#include "LedEffect.h"
 
-class RainbowLedEffect : public ILedEffect
+class RainbowLedEffect : public LedEffect
 {
-private:
+public:
+
+	static const char* const name;
+
+protected:
+
 	const float k;
 	uint8_t hue = 0;
 
@@ -20,6 +25,8 @@ public:
 	
 	void reset() override;
 	bool paint() override;
+
+	operator const char* () const { return name; }
 
 private:
 	RainbowLedEffect(const RainbowLedEffect&);

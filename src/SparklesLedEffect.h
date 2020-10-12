@@ -6,11 +6,16 @@
 #ifndef __SPARKLESLEDEFFECT_H__
 #define __SPARKLESLEDEFFECT_H__
 
-#include "ILedEffect.h"
+#include "LedEffect.h"
 
-class SparklesLedEffect : public ILedEffect
+class SparklesLedEffect : public LedEffect
 {
-private:
+public:
+
+	static const char* const name;
+
+protected:
+
 	const uint8_t SPARKLES_TRACK_STEP = 40;
 
 public:
@@ -18,6 +23,8 @@ public:
 	~SparklesLedEffect();
 
 	bool paint() override;
+
+	operator const char* () const { return name; }
 
 private:
 	SparklesLedEffect(const SparklesLedEffect&);

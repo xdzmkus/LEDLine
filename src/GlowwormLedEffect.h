@@ -6,11 +6,16 @@
 #ifndef __GLOWWORMLEDEFFECT_H__
 #define __GLOWWORMLEDEFFECT_H__
 
-#include "ILedEffect.h"
+#include "LedEffect.h"
 
-class GlowwormLedEffect : public ILedEffect
+class GlowwormLedEffect : public LedEffect
 {
-private:
+public:
+
+	static const char* const name;
+
+protected:
+
 	CRGB rgb;
 	uint16_t position = 0;
 	bool direction = true;
@@ -21,6 +26,8 @@ public:
 
 	void reset() override;
 	bool paint() override;
+
+	operator const char* () const { return name; }
 
 private:
 	GlowwormLedEffect(const GlowwormLedEffect&);

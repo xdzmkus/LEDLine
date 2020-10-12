@@ -6,20 +6,25 @@
 # Datatypes (KEYWORD1)
 #######################################
 
-LEDLine    KEYWORD1
+LEDEffect			KEYWORD1
+BugsLedEffect		KEYWORD1
+ColorsLedEffect		KEYWORD1
+FlagLedEffect		KEYWORD1
+FlameLedEffect		KEYWORD1
+FlashLedEffect		KEYWORD1
+GlowwormLedEffect   KEYWORD1
+RainbowLedEffect    KEYWORD1
+SparklesLedEffect   KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
 
-saveState       KEYWORD2
-loadState       KEYWORD2
-nextState       KEYWORD2
-pause           KEYWORD2
-resume          KEYWORD2
-isChanged       KEYWORD2
+reset				KEYWORD2
+paint				KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
 #######################################
 
+name				LITERAL1

@@ -1,7 +1,14 @@
+/*
+* FlagLedEffect.cpp
+*
+*/
+
 #include "FlagLedEffect.h"
 
+const char* const FlagLedEffect::name = "FLAG";
+
 FlagLedEffect::FlagLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, FLAG flag, uint8_t pulseTime, uint8_t pulseCount)
-	: ILedEffect(leds, count, Hz), flag(flag), timesToFade(Hz* pulseTime), pulseCount(pulseCount)
+	: LedEffect(leds, count, Hz), flag(flag), timesToFade(Hz* pulseTime), pulseCount(pulseCount)
 {
 	if (timesToFade != 0)
 	{
@@ -20,7 +27,7 @@ FlagLedEffect::~FlagLedEffect()
 
 void FlagLedEffect::reset()
 {
-	ILedEffect::reset();
+	LedEffect::reset();
 
 	uint16_t position = 0;
 
@@ -37,7 +44,7 @@ void FlagLedEffect::reset()
 
 bool FlagLedEffect::paint()
 {
-	if (!ILedEffect::paint() || timesToFade == 0)
+	if (!LedEffect::paint() || timesToFade == 0)
 		return false;
 
 	// black(skipped) pulse?

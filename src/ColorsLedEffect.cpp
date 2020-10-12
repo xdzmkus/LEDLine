@@ -5,8 +5,10 @@
 
 #include "ColorsLedEffect.h"
 
+const char* const ColorsLedEffect::name = "COLORS";
+
 ColorsLedEffect::ColorsLedEffect(CRGB leds[], uint16_t count, uint16_t Hz)
-	: ILedEffect(leds, count, Hz), hue(0)
+	: LedEffect(leds, count, Hz), hue(0)
 {
 }
 
@@ -16,13 +18,13 @@ ColorsLedEffect::~ColorsLedEffect()
 
 void ColorsLedEffect::reset()
 {
-	ILedEffect::reset();
+	LedEffect::reset();
 	hue = 0;
 }
 
 bool ColorsLedEffect::paint()
 {
-	if (!ILedEffect::paint())
+	if (!LedEffect::paint())
 		return false;
 
 	hue += 2;

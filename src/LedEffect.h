@@ -8,24 +8,28 @@
 
 #include <FastLED.h>
 
-class ILedEffect
+class LedEffect
 {
+private:
+
+	bool state = false;
+	unsigned long interval = 0;
+	unsigned long timer = 0;
+
 protected:
 
 	CRGB* const ledLine;
 	const uint16_t numLeds;
 
-	unsigned long interval = 0;
-	unsigned long timer = 0;
-	bool state = false;
-
 public:
 
-	ILedEffect(CRGB leds[], uint16_t count, uint16_t Hz = 10);
-	virtual ~ILedEffect();
+	LedEffect(CRGB leds[], uint16_t count, uint16_t Hz = 10);
+	virtual ~LedEffect();
 
 	virtual void reset();
-	virtual bool paint() = 0;
+	virtual bool paint();
+
+	virtual operator const char* () const = 0;
 	
 protected:
 

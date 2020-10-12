@@ -5,8 +5,10 @@
 
 #include "FlameLedEffect.h"
 
+const char* const FlameLedEffect::name = "FLAME";
+
 FlameLedEffect::FlameLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, bool reversed)
-	: ILedEffect(leds, count, Hz), fireReversed(reversed), gPal(HeatColors_p)
+	: LedEffect(leds, count, Hz), fireReversed(reversed), gPal(HeatColors_p)
 {
 	heatMap = new uint8_t[count];
 }
@@ -18,7 +20,7 @@ FlameLedEffect::~FlameLedEffect()
 
 bool FlameLedEffect::paint()
 {
-	if (!ILedEffect::paint())
+	if (!LedEffect::paint())
 		return false;
 
 	// SPARKING: What chance (out of 255) is there that a new spark will be lit?

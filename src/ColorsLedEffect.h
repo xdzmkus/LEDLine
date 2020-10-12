@@ -6,11 +6,16 @@
 #ifndef __COLORSLEDEFFECT_H__
 #define __COLORSLEDEFFECT_H__
 
-#include "ILedEffect.h"
+#include "LedEffect.h"
 
-class ColorsLedEffect : public ILedEffect
+class ColorsLedEffect : public LedEffect
 {
-private:
+public:
+
+	static const char* const name;
+
+protected:
+
 	uint8_t hue;
 	
 public:
@@ -19,6 +24,8 @@ public:
 
 	void reset() override;
 	bool paint() override;
+
+	operator const char* () const { return name; }
 
 private:
 	ColorsLedEffect(const ColorsLedEffect&);

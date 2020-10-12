@@ -6,11 +6,16 @@
 #ifndef __FLASHLEDEFFECT_H__
 #define __FLASHLEDEFFECT_H__
 
-#include "ILedEffect.h"
+#include "LedEffect.h"
 
-class FlashLedEffect : public ILedEffect
+class FlashLedEffect : public LedEffect
 {
-private:
+public:
+
+	static const char* const name;
+
+protected:
+
 	CRGB		flashColor;
 	bool		flashState = false;
 	
@@ -20,6 +25,8 @@ public:
 	
 	void reset() override;
 	bool paint() override;
+
+	operator const char* () const { return name; }
 
 private:
 	FlashLedEffect(const FlashLedEffect&);

@@ -6,11 +6,16 @@
 #ifndef __FLAMELEDEFFECT_H__
 #define __FLAMELEDEFFECT_H__
 
-#include "ILedEffect.h"
+#include "LedEffect.h"
 
-class FlameLedEffect : public ILedEffect
+class FlameLedEffect : public LedEffect
 {
-private:
+public:
+
+	static const char* const name;
+
+protected:
+
 	uint8_t* heatMap;
 	bool fireReversed;
 	CRGBPalette16 gPal;
@@ -20,6 +25,8 @@ public:
 	~FlameLedEffect();
 	
 	bool paint() override;
+
+	operator const char* () const { return name; }
 
 private:
 	FlameLedEffect(const FlameLedEffect&);

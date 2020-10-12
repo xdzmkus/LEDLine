@@ -6,11 +6,16 @@
 #ifndef __BUGSLEDEFFECT_H__
 #define __BUGSLEDEFFECT_H__
 
-#include "ILedEffect.h"
+#include "LedEffect.h"
 
-class BugsLedEffect : public ILedEffect
+class BugsLedEffect : public LedEffect
 {
-private:
+public:
+
+	static const char* const name;
+
+protected:
+
 	const uint8_t BUGS_MAX_SPEED = 20;
 
 	CRGB*		bugColors;
@@ -24,6 +29,8 @@ public:
 	
 	void reset() override;
 	bool paint() override;
+
+	operator const char* () const {	return name; }
 
 private:
 	BugsLedEffect(const BugsLedEffect&);
