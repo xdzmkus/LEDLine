@@ -12,3 +12,8 @@
 /examples/Girland/Girland.vcxproj
 /examples/Girland/Debug
 /examples/Girland/Release
+/examples/MQTTGirland/Release
+/examples/MQTTGirland/__vm
+/examples/MQTTGirland/MQTTGirland.vcxproj.user
+/examples/MQTTGirland/MQTTGirland.vcxproj.filters
+/examples/MQTTGirland/MQTTGirland.vcxproj
