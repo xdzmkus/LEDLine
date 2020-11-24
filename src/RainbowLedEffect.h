@@ -23,14 +23,14 @@ public:
 	RainbowLedEffect(CRGB leds[], uint16_t count, uint16_t Hz);
 	~RainbowLedEffect();
 	
-	void reset() override;
+	void init() override;
 	bool paint() override;
 
 	operator const char* () const { return name; }
 
 private:
-	RainbowLedEffect(const RainbowLedEffect&);
-	RainbowLedEffect& operator=(const RainbowLedEffect&);
+	RainbowLedEffect(const RainbowLedEffect&) = delete;
+	RainbowLedEffect& operator=(const RainbowLedEffect&) = delete;
 };
 
 #endif //__RAINBOWLEDEFFECT_H__

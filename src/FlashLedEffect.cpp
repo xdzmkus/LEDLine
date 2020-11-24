@@ -16,15 +16,15 @@ FlashLedEffect::~FlashLedEffect()
 {
 }
 
-void FlashLedEffect::reset()
+void FlashLedEffect::init()
 {
-	LedEffect::reset();
+	LedEffect::init();
 	flashState = false;
 }
 
 bool FlashLedEffect::paint()
 {
-	if (!LedEffect::paint())
+	if (!LedEffect::isReady())
 		return false;
 
 	if (flashState)

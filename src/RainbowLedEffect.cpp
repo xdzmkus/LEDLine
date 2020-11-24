@@ -17,15 +17,15 @@ RainbowLedEffect::~RainbowLedEffect()
 {
 }
 
-void RainbowLedEffect::reset()
+void RainbowLedEffect::init()
 {
-	LedEffect::reset();
+	LedEffect::init();
 	hue = 0;
 }
 
 bool RainbowLedEffect::paint()
 {
-	if (!LedEffect::paint())
+	if (!LedEffect::isReady())
 		return false;
 
 	hue += 5;

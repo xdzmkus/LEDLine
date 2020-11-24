@@ -27,8 +27,8 @@ public:
 	operator const char* () const { return name; }
 
 private:
-	SparklesLedEffect(const SparklesLedEffect&);
-	SparklesLedEffect& operator=(const SparklesLedEffect&);
+	SparklesLedEffect(const SparklesLedEffect&) = delete;
+	SparklesLedEffect& operator=(const SparklesLedEffect&) = delete;
 };
 
 #endif //__SPARKLESLEDEFFECT_H__

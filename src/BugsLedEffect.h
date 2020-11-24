@@ -27,14 +27,14 @@ public:
 	BugsLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, uint8_t bugs = 0);
 	~BugsLedEffect();
 	
-	void reset() override;
+	void init() override;
 	bool paint() override;
 
 	operator const char* () const {	return name; }
 
 private:
-	BugsLedEffect(const BugsLedEffect&);
-	BugsLedEffect& operator=(const BugsLedEffect&);
+	BugsLedEffect(const BugsLedEffect&) = delete;
+	BugsLedEffect& operator=(const BugsLedEffect&) = delete;
 
 };
 

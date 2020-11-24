@@ -17,16 +17,16 @@ GlowwormLedEffect::~GlowwormLedEffect()
 {
 }
 
-void GlowwormLedEffect::reset()
+void GlowwormLedEffect::init()
 {
-	LedEffect::reset();
+	LedEffect::init();
 	position = 0;
 	direction = true;
 }
 
 bool GlowwormLedEffect::paint()
 {
-	if (!LedEffect::paint())
+	if (!LedEffect::isReady())
 		return false;
 
 	ledLine[position] = CRGB::Black;

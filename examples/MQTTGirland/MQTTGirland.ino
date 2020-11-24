@@ -1,6 +1,10 @@
 #include "data_sensitive.h"
 #include "LEDLine.h"
 
+#define ANALOG_PIN A0 // RTC battery voltage input
+#define LED_PIN D1    // D1 leds pin (mapped to D5 on NodeMCU !!!)
+#define BTN_PIN D0    // D0 button pin
+
 /*********** WiFi Access Point **************/
 #include <ESP8266WiFi.h>
 
@@ -33,27 +37,18 @@ Adafruit_MQTT_Publish girlandState = Adafruit_MQTT_Publish(&mqtt, MQTT_TOPIC_PUB
 Adafruit_MQTT_Subscribe girlandEffect = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPIC_SUB1, MQTT_QOS_1);
 Adafruit_MQTT_Subscribe girlandOnOff = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPIC_SUB2, MQTT_QOS_1);
 
-
-/*********** Touch Button or physical *******/
-#define TOUCH_BUTTON_PIN D0
-#define BTN_PIN D0          // D0 button pin
-#include <GyverButton.h>
-#if defined(TOUCH_BUTTON_PIN)
-GButton touch(TOUCH_BUTTON_PIN, LOW_PULL, NORM_OPEN);
-#else
-GButton touch(BTN_PIN, HIGH_PULL, NORM_OPEN);
-#endif
+#include <Denel.h>
+using namespace denel;
+Button btn(BTN_PIN, BUTTON_CONNECTED::VCC, BUTTON_NORMAL::OPEN);
 
 /*********** RTC DS1307 module **************/
 #include <RTClib.h>
-#define ANALOG_PIN A0 // RTC battery voltage input
 // D1 - SCL; 
 // D2 - SDA
 RTC_DS1307 rtc;
 
 /*********** WS2812B leds *******************/
 #include <FastLED.h>
-#define LED_PIN D1    // D1 leds pin (mapped to D5 on NodeMCU !!!)
 #define NUM_LEDS 396
 #define CURRENT_LIMIT 16000
 #define MAX_BRIGHTNESS 300
@@ -64,6 +59,35 @@ CRGB leds[NUM_LEDS];
 LEDLine ledLine(leds, NUM_LEDS);
 
 uint16_t brightness = MIN_BRIGHTNESS;
+
+void handleButtonEvent(const Button* button, BUTTON_EVENT eventType)
+{
+    switch (eventType)
+    {
+    case BUTTON_EVENT::Clicked:
+        publishState();
+        break;
+    case BUTTON_EVENT::DoubleClicked:
+        ledLine.setNextEffect();
+        ledLine.resume();
+        Serial.print(F("NEXT: ")); Serial.println(ledLine.getEffectName());
+        break;
+    case BUTTON_EVENT::RepeatClicked:
+        brightness -= 20;
+        if (brightness > MAX_BRIGHTNESS)
+            brightness = MAX_BRIGHTNESS;
+        FastLED.setBrightness(constrain(brightness, MIN_BRIGHTNESS, 255));
+        FastLED.show();
+        break;
+    case BUTTON_EVENT::LongPressed:
+        ledLine.pause();
+        FastLED.clear(true);
+        Serial.println(F("OFF"));
+        break;
+    default:
+        break;
+    }
+}
 
 void setup()
 {
@@ -78,6 +102,8 @@ void setup()
     setup_LED();
 
     setup_RTC();
+
+    btn.setEventHandler(handleButtonEvent);
 }
 
 void setup_WiFi()
@@ -165,7 +191,8 @@ void onoff_callback(uint32_t x)
     {
     case OFF_CODE:
         FastLED.clear(true);
-        // do not break;
+        ledLine.pause();
+        break;
     case PAUSE_CODE:
         ledLine.pause();
         break;
@@ -239,39 +266,7 @@ void mqtt_loop()
 
 void loop()
 {
-    touch.tick();
-     
-    if (touch.hasClicks())
-    {
-        switch (touch.getClicks())
-        {
-        case 1:
-            ledLine.setNextEffect();
-            ledLine.resume();
-            Serial.print(F("NEXT: ")); Serial.println(ledLine.getEffectName());
-            break;
-        case 2:
-            ledLine.pause();
-            FastLED.clear(true);
-            Serial.println(F("OFF"));
-            break;
-        case 3:
-            publishState();
-            break;
-        default:
-            break;
-        }
-    }
-    if (touch.isStep())
-    {
-        brightness -= 5;
-
-        if (brightness > MAX_BRIGHTNESS)
-            brightness = MAX_BRIGHTNESS;
-
-        FastLED.setBrightness(constrain(brightness, MIN_BRIGHTNESS, 255));
-        FastLED.show();
-    }
+    btn.check();
 
     if (ledLine.paint())
     {

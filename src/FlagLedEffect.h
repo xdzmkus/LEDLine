@@ -40,14 +40,14 @@ public:
 	FlagLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, FLAG flag, uint8_t pulseTime = 1, uint8_t pulseCount = 2);
 	~FlagLedEffect();
 
-	void reset() override;
+	void init() override;
 	bool paint() override;
 
 	operator const char* () const { return name; }
 
 private:
-	FlagLedEffect(const FlagLedEffect&);
-	FlagLedEffect& operator=(const FlagLedEffect&);
+	FlagLedEffect(const FlagLedEffect&) = delete;
+	FlagLedEffect& operator=(const FlagLedEffect&) = delete;
 
 };
 

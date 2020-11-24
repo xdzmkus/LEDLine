@@ -32,9 +32,9 @@ BugsLedEffect::~BugsLedEffect()
 	delete[] bugSpeed;
 }
 
-void BugsLedEffect::reset()
+void BugsLedEffect::init()
 {
-	LedEffect::reset();
+	LedEffect::init();
 
 	for (uint8_t i = 0; i < numBugs; i++)
 	{
@@ -46,7 +46,7 @@ void BugsLedEffect::reset()
 
 bool BugsLedEffect::paint()
 {
-	if (!LedEffect::paint())
+	if (!LedEffect::isReady())
 		return false;
 		
 	for (uint8_t i = 0; i < numBugs; i++)

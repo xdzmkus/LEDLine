@@ -25,9 +25,9 @@ FlagLedEffect::~FlagLedEffect()
 {
 }
 
-void FlagLedEffect::reset()
+void FlagLedEffect::init()
 {
-	LedEffect::reset();
+	LedEffect::init();
 
 	uint16_t position = 0;
 
@@ -44,7 +44,7 @@ void FlagLedEffect::reset()
 
 bool FlagLedEffect::paint()
 {
-	if (!LedEffect::paint() || timesToFade == 0)
+	if (!LedEffect::isReady() || timesToFade == 0)
 		return false;
 
 	// black(skipped) pulse?

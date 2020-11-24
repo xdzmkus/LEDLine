@@ -22,14 +22,14 @@ public:
 	ColorsLedEffect(CRGB leds[], uint16_t count, uint16_t Hz);
 	~ColorsLedEffect();
 
-	void reset() override;
+	void init() override;
 	bool paint() override;
 
 	operator const char* () const { return name; }
 
 private:
-	ColorsLedEffect(const ColorsLedEffect&);
-	ColorsLedEffect& operator=(const ColorsLedEffect&);
+	ColorsLedEffect(const ColorsLedEffect&) = delete;
+	ColorsLedEffect& operator=(const ColorsLedEffect&) = delete;
 
 };
 

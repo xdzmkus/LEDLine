@@ -24,14 +24,14 @@ public:
 	GlowwormLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, CRGB color = CRGB::White);
 	~GlowwormLedEffect();
 
-	void reset() override;
+	void init() override;
 	bool paint() override;
 
 	operator const char* () const { return name; }
 
 private:
-	GlowwormLedEffect(const GlowwormLedEffect&);
-	GlowwormLedEffect& operator=(const GlowwormLedEffect&);
+	GlowwormLedEffect(const GlowwormLedEffect&) = delete;
+	GlowwormLedEffect& operator=(const GlowwormLedEffect&) = delete;
 
 };
 

@@ -20,7 +20,7 @@ FlameLedEffect::~FlameLedEffect()
 
 bool FlameLedEffect::paint()
 {
-	if (!LedEffect::paint())
+	if (!LedEffect::isReady())
 		return false;
 
 	// SPARKING: What chance (out of 255) is there that a new spark will be lit?

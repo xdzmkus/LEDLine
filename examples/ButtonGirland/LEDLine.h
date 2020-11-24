@@ -97,9 +97,9 @@ public:
 
 	virtual const char* getEffectName() const { return (effect != nullptr) ? static_cast<const char*>(*effect) : nullptr; };
 
-	virtual void pause() { isOn = false; };
-	virtual void resume() { isOn = true; };
-	virtual bool paint() { return (!isOn || effect == nullptr) ? false : effect->paint(); };
+	virtual void pause() { if (effect != nullptr) effect->stop(); };
+	virtual void resume() { if (effect != nullptr) effect->start(); };
+	virtual bool paint() { return (effect == nullptr) ? false : effect->paint(); };
 
 protected:
 
@@ -107,8 +107,6 @@ protected:
 	const uint16_t numLeds;
 
 	LedEffect* effect = nullptr;
-
-	bool isOn = false;
 };
 
 

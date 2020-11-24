@@ -16,15 +16,15 @@ ColorsLedEffect::~ColorsLedEffect()
 {
 }
 
-void ColorsLedEffect::reset()
+void ColorsLedEffect::init()
 {
-	LedEffect::reset();
+	LedEffect::init();
 	hue = 0;
 }
 
 bool ColorsLedEffect::paint()
 {
-	if (!LedEffect::paint())
+	if (!LedEffect::isReady())
 		return false;
 
 	hue += 2;

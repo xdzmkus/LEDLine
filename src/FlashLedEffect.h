@@ -23,14 +23,14 @@ public:
 	FlashLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, CRGB color);
 	~FlashLedEffect();
 	
-	void reset() override;
+	void init() override;
 	bool paint() override;
 
 	operator const char* () const { return name; }
 
 private:
-	FlashLedEffect(const FlashLedEffect&);
-	FlashLedEffect& operator=(const FlashLedEffect&);
+	FlashLedEffect(const FlashLedEffect&) = delete;
+	FlashLedEffect& operator=(const FlashLedEffect&) = delete;
 };
 
 #endif //__FLASHLEDEFFECT_H__

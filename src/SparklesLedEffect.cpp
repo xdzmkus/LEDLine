@@ -18,7 +18,7 @@ SparklesLedEffect::~SparklesLedEffect()
 
 bool SparklesLedEffect::paint()
 {
-	if (!LedEffect::paint())
+	if (!LedEffect::isReady())
 		return false;
 
 	uint16_t thisNum = random(0, numLeds);

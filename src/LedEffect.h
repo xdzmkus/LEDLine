@@ -7,15 +7,12 @@
 #define _LEDEFFECT_h
 
 #include <FastLED.h>
+#include <Denel.h>
 
-class LedEffect
+using namespace denel;
+
+class LedEffect :  public MillisTimer
 {
-private:
-
-	bool state = false;
-	unsigned long interval = 0;
-	unsigned long timer = 0;
-
 protected:
 
 	CRGB* const ledLine;
@@ -26,8 +23,8 @@ public:
 	LedEffect(CRGB leds[], uint16_t count, uint16_t Hz = 10);
 	virtual ~LedEffect();
 
-	virtual void reset();
-	virtual bool paint();
+	virtual void init();
+	virtual bool paint() = 0;
 
 	virtual operator const char* () const = 0;
 	
