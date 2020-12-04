@@ -20,7 +20,7 @@ SparklesLedEffect   KEYWORD1
 # Methods and Functions (KEYWORD2)
 #######################################
 
-reset				KEYWORD2
+init				KEYWORD2
 paint				KEYWORD2
 
 #######################################

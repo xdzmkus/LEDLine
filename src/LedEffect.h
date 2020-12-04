@@ -6,6 +6,12 @@
 #ifndef _LEDEFFECT_h
 #define _LEDEFFECT_h
 
+#if defined(ARDUINO) && ARDUINO >= 100
+#include "Arduino.h"
+#else
+#include "WProgram.h"
+#endif
+
 #include <FastLED.h>
 #include <Denel.h>
 

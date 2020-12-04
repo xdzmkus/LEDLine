@@ -31,13 +31,15 @@ void FlagLedEffect::init()
 
 	uint16_t position = 0;
 
-	for (uint16_t firstColorCount = 0; firstColorCount < flag.count1 && position < numLeds; firstColorCount++)
-		ledLine[position++] = flag.rgb1;
-	for (uint16_t secondColorCount = 0; secondColorCount < flag.count2 && position < numLeds; secondColorCount++)
-		ledLine[position++] = flag.rgb2;
-	for (uint16_t thirdColorCount = 0; thirdColorCount < flag.count3 && position < numLeds; thirdColorCount++)
-		ledLine[position++] = flag.rgb3;
-
+	while (position < numLeds)
+	{
+		for (uint16_t firstColorCount = 0;  position < numLeds && firstColorCount  < flag.count1; firstColorCount++)
+			ledLine[position++] = flag.rgb1;
+		for (uint16_t secondColorCount = 0; position < numLeds && secondColorCount < flag.count2; secondColorCount++)
+			ledLine[position++] = flag.rgb2;
+		for (uint16_t thirdColorCount = 0;  position < numLeds && thirdColorCount  < flag.count3; thirdColorCount++)
+			ledLine[position++] = flag.rgb3;
+	}
 	restOfFade = timesToFade;
 	pulses = pulseCount;
 }
@@ -73,25 +75,28 @@ bool FlagLedEffect::paint()
 
 	uint16_t position = 0;
 
-	if (restOfFade == timesToFade)
+	while (position < numLeds)
 	{
-		// show original flag
-		for (uint16_t firstColorCount = 0; firstColorCount < flag.count1 && position < numLeds; firstColorCount++)
-			ledLine[position++] = flag.rgb1;
-		for (uint16_t secondColorCount = 0; secondColorCount < flag.count2 && position < numLeds; secondColorCount++)
-			ledLine[position++] = flag.rgb2;
-		for (uint16_t thirdColorCount = 0; thirdColorCount < flag.count3 && position < numLeds; thirdColorCount++)
-			ledLine[position++] = flag.rgb3;
-	}
-	else
-	{
-		// fade a bit
-		for (uint16_t firstColorCount = 0; firstColorCount < flag.count1 && position < numLeds; firstColorCount++)
-			ledLine[position++].subtractFromRGB(fadeForRGB1);
-		for (uint16_t secondColorCount = 0; secondColorCount < flag.count2 && position < numLeds; secondColorCount++)
-			ledLine[position++].subtractFromRGB(fadeForRGB2);
-		for (uint16_t thirdColorCount = 0; thirdColorCount < flag.count3 && position < numLeds; thirdColorCount++)
-			ledLine[position++].subtractFromRGB(fadeForRGB3);
+		if (restOfFade == timesToFade)
+		{
+			// show original flag
+			for (uint16_t firstColorCount = 0;  position < numLeds && firstColorCount  < flag.count1; firstColorCount++)
+				ledLine[position++] = flag.rgb1;
+			for (uint16_t secondColorCount = 0; position < numLeds && secondColorCount < flag.count2; secondColorCount++)
+				ledLine[position++] = flag.rgb2;
+			for (uint16_t thirdColorCount = 0;  position < numLeds && thirdColorCount  < flag.count3; thirdColorCount++)
+				ledLine[position++] = flag.rgb3;
+		}
+		else
+		{
+			// fade a bit
+			for (uint16_t firstColorCount = 0;  position < numLeds && firstColorCount  < flag.count1; firstColorCount++)
+				ledLine[position++].subtractFromRGB(fadeForRGB1);
+			for (uint16_t secondColorCount = 0; position < numLeds && secondColorCount < flag.count2; secondColorCount++)
+				ledLine[position++].subtractFromRGB(fadeForRGB2);
+			for (uint16_t thirdColorCount = 0;  position < numLeds && thirdColorCount  < flag.count3; thirdColorCount++)
+				ledLine[position++].subtractFromRGB(fadeForRGB3);
+		}
 	}
 
 	restOfFade--;

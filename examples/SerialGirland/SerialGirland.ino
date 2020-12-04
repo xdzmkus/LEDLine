@@ -7,6 +7,10 @@
 #include <FastLED.h>
 #define NUM_LEDS 256
 #define CURRENT_LIMIT 8000
+#define MAX_BRIGHTNESS 255
+#define MIN_BRIGHTNESS 20
+
+uint16_t brightness = MAX_BRIGHTNESS/2;
 
 CRGB leds[NUM_LEDS];
 
@@ -14,9 +18,9 @@ CRGB leds[NUM_LEDS];
 
 LEDLine ledLine(leds, NUM_LEDS);
 
-#define EFFECT_LENGTH 15
+#define NAME_EFFECT_LENGTH 15
 
-char EFFECT_NAME[EFFECT_LENGTH + 1];
+char EFFECT_NAME[NAME_EFFECT_LENGTH + 1];
 
 bool isNewEffect = false;
 
@@ -47,7 +51,7 @@ void serialEvent()
 		{
 			EFFECT_NAME[receivedBytes++] = recvChar;
 
-			if (receivedBytes == EFFECT_LENGTH)
+			if (receivedBytes == NAME_EFFECT_LENGTH)
 				receivedBytes = 0;
 		}
 	}
@@ -55,19 +59,17 @@ void serialEvent()
 
 void setupLED()
 {
-	FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
+	FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS);
 	FastLED.setMaxPowerInVoltsAndMilliamps(5, CURRENT_LIMIT);
-	FastLED.setBrightness(255);
+	FastLED.setBrightness(constrain(brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS));
 	FastLED.clear(true);
 }
 
 void setup()
 {
-	randomSeed(analogRead(0));
-
 	Serial.begin(115200);
-	while (!Serial); // wait for serial port to connect. Needed for native USB
-	Serial.println(F("LEDLine effects:"));
+
+	Serial.println(F("LEDLine EFFECTS:"));
 	for (auto var : ledLine.availableEffects)
 		Serial.println(var);
 
@@ -89,6 +91,7 @@ void loop()
 		{
 			Serial.println(F("BAD_EFFECT"));
 		}
+		Serial.flush();
 	}
 
 	if (ledLine.paint())

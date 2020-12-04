@@ -6,19 +6,23 @@
 #define BTN_PIN 10  // button pin
 #endif
 
-#include <EEPROM.h>
-#define EEPROM_ADDRESS_EFFECT 0
-#define EEPROM_EFFECT_LENGTH 15
-
 #include <Denel.h>
 using namespace denel;
 Button btn(BTN_PIN, BUTTON_CONNECTED::VCC, BUTTON_NORMAL::OPEN);
 
+#include <EEPROM.h>
+#define EEPROM_ADDRESS_EFFECT 0
+#define EEPROM_EFFECT_LENGTH 15
+
+char EFFECT_NAME[EEPROM_EFFECT_LENGTH + 1];
+
 #include <FastLED.h>
 #define NUM_LEDS 256
 #define CURRENT_LIMIT 8000
-#define MAX_BRIGHTNESS 300
-#define MIN_BRIGHTNESS 30
+#define MAX_BRIGHTNESS 255
+#define MIN_BRIGHTNESS 20
+
+uint16_t brightness = MAX_BRIGHTNESS/2;
 
 CRGB leds[NUM_LEDS];
 
@@ -26,30 +30,23 @@ CRGB leds[NUM_LEDS];
 
 LEDLine ledLine(leds, NUM_LEDS);
 
-uint16_t brightness = MIN_BRIGHTNESS;
-
-char EFFECT_NAME[EEPROM_EFFECT_LENGTH + 1];
-
 void handleButtonEvent(const Button* button, BUTTON_EVENT eventType)
 {
 	switch (eventType)
 	{
 	case BUTTON_EVENT::Clicked:
 		ledLine.setNextEffect();
-		ledLine.resume();
-		Serial.print(F("NEXT: ")); Serial.println(ledLine.getEffectName());
+		Serial.print(F("EFFECT: ")); Serial.println(ledLine.getEffectName());
 		break;
 	case BUTTON_EVENT::DoubleClicked:
-		ledLine.pause();
 		save();
-		Serial.println(F("SAVED"));
+		ledLine.pause();
 		break;
 	case BUTTON_EVENT::RepeatClicked:
-		brightness -= 20;
-		if (brightness > MAX_BRIGHTNESS)
-			brightness = MAX_BRIGHTNESS;
-		FastLED.setBrightness(constrain(brightness, MIN_BRIGHTNESS, 255));
-		FastLED.show();
+		brightness += MIN_BRIGHTNESS;
+		if (brightness > MAX_BRIGHTNESS + MIN_BRIGHTNESS*2) brightness = 0;
+		FastLED.setBrightness(constrain(brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS));
+		Serial.print(F("BRIGHTNESS: ")); Serial.println(brightness);
 		break;
 	case BUTTON_EVENT::LongPressed:
 		ledLine.pause();
@@ -63,25 +60,25 @@ void handleButtonEvent(const Button* button, BUTTON_EVENT eventType)
 
 void setupLED()
 {
-	FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
+	FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS);
 	FastLED.setMaxPowerInVoltsAndMilliamps(5, CURRENT_LIMIT);
-	FastLED.setBrightness(brightness);
+	FastLED.setBrightness(constrain(brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS));
 	FastLED.clear(true);
 }
 
 void setup()
 {
 	Serial.begin(115200);
-	while (!Serial); // wait for serial port to connect. Needed for native USB
-	Serial.println(F("LEDLine effects:"));
+
+	Serial.println(F("LEDLine EFFECTS:"));
 	for (auto var : ledLine.availableEffects)
 		Serial.println(var);
 
 	setupLED();
 
-	load();
-
 	btn.setEventHandler(handleButtonEvent);
+
+	load();
 }
 
 void loop()
@@ -96,44 +93,37 @@ void loop()
 
 void save()
 {
-	const char* effect = ledLine.getEffectName();
-
-	if (effect == nullptr) return;
+	strncpy(EFFECT_NAME, (ledLine.getEffectName() == nullptr || !ledLine.isRunning()) ? "OFF" : ledLine.getEffectName(), EEPROM_EFFECT_LENGTH);
 
 #if defined(ESP32) || defined(ESP8266)
-	uint8_t len = min<size_t>(strlen(effect), EEPROM_EFFECT_LENGTH);
-	EEPROM.begin(len + 1);
-#else
-	uint8_t len = min(strlen(effect), EEPROM_EFFECT_LENGTH);
+	EEPROM.begin(EEPROM_EFFECT_LENGTH + 1);
 #endif
 
-	EEPROM.write(EEPROM_ADDRESS_EFFECT, len);
-	for (uint8_t i = 0; i < len; i++)
+	for (uint8_t i = 0; i < EEPROM_EFFECT_LENGTH + 1; i++)
 	{
-		EEPROM.write(EEPROM_ADDRESS_EFFECT+1 + i, effect[i]);
+		EEPROM.write(EEPROM_ADDRESS_EFFECT + i, EFFECT_NAME[i]);
 	}
 #if defined(ESP32) || defined(ESP8266)
 	EEPROM.commit();
 #endif
-};
+
+	Serial.print(F("SAVED: ")); Serial.println(EFFECT_NAME);
+}
 
 void load()
 {
 #if defined(ESP32) || defined(ESP8266)
 	EEPROM.begin(EEPROM_EFFECT_LENGTH);
 #endif
-	uint8_t len = EEPROM.read(EEPROM_ADDRESS_EFFECT);
 
-	if (len > EEPROM_EFFECT_LENGTH) return;
-
-	for (int i = 0; i < len; i++)
+	for (int i = 0; i < EEPROM_EFFECT_LENGTH; i++)
 	{
-		EFFECT_NAME[i] = EEPROM.read(EEPROM_ADDRESS_EFFECT+1 + i);
+		EFFECT_NAME[i] = EEPROM.read(EEPROM_ADDRESS_EFFECT + i);
 	}
-	EFFECT_NAME[len] = '\0';
 
-	if (ledLine.setEffectByName(EFFECT_NAME))
-	{
-		ledLine.resume();
-	}
-};
+	EFFECT_NAME[EEPROM_EFFECT_LENGTH] = '\0';
+
+	ledLine.setEffectByName(EFFECT_NAME);
+
+	Serial.print(F("LOADED: ")); Serial.println(EFFECT_NAME);
+}

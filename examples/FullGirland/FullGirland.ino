@@ -35,10 +35,15 @@ Adafruit_MQTT_Publish girlandState = Adafruit_MQTT_Publish(&mqtt, MQTT_TOPIC_PUB
 Adafruit_MQTT_Subscribe girlandEffect = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPIC_SUB1, MQTT_QOS_1);
 Adafruit_MQTT_Subscribe girlandOnOff = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPIC_SUB2, MQTT_QOS_1);
 
+/********** Touch button module *************/
+#include <Denel.h>
+using namespace denel;
+Button btn(BTN_PIN, BUTTON_CONNECTED::VCC, BUTTON_NORMAL::OPEN);
+
 /*********** WS2812B leds *******************/
 #include <FastLED.h>
-#define NUM_LEDS 256
-#define CURRENT_LIMIT 8000
+#define NUM_LEDS 396
+#define CURRENT_LIMIT 16000
 #define MAX_BRIGHTNESS 255
 #define MIN_BRIGHTNESS 20
 
@@ -52,13 +57,39 @@ LEDLine ledLine(leds, NUM_LEDS);
 #include <Ticker.h>
 #define EFFECT_DURATION_SEC 60
 Ticker tickerEffects;
-
 volatile boolean f_publishState = false;
 
-void handleTimer(void)
+void handleTimer()
 {
     if (ledLine.isRunning()) ledLine.setNextEffect();
     f_publishState = true;
+}
+
+void handleButtonEvent(const Button* button, BUTTON_EVENT eventType)
+{
+    switch (eventType)
+    {
+    case BUTTON_EVENT::Clicked:
+        f_publishState = true;
+        break;
+    case BUTTON_EVENT::DoubleClicked:
+        ledLine.setNextEffect();
+        Serial.print(F("NEXT: ")); Serial.println(ledLine.getEffectName());
+        break;
+    case BUTTON_EVENT::RepeatClicked:
+        brightness += MIN_BRIGHTNESS;
+        if (brightness > MAX_BRIGHTNESS + MIN_BRIGHTNESS * 2) brightness = 0;
+        FastLED.setBrightness(constrain(brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS));
+        Serial.print(F("BRIGHTNESS: ")); Serial.println(brightness);
+        break;
+    case BUTTON_EVENT::LongPressed:
+        ledLine.pause();
+        FastLED.clear(true);
+        Serial.println(F("OFF"));
+        break;
+    default:
+        break;
+    }
 }
 
 void onoff_callback(uint32_t x)
@@ -117,6 +148,8 @@ void setup()
     setup_LED();
 
     tickerEffects.attach(EFFECT_DURATION_SEC, handleTimer);
+
+    btn.setEventHandler(handleButtonEvent);
 }
 
 void setup_WiFi()
@@ -187,6 +220,8 @@ void mqtt_loop()
 
 void loop()
 {
+    btn.check();
+
     if (f_publishState)
     {
         f_publishState = false;

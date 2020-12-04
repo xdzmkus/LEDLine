@@ -32,74 +32,90 @@ public:
 		FlagLedEffect::name
 	};
 
-	LEDLine(CRGB leds[], uint16_t count) : leds(leds), numLeds(count)
+	LEDLine(CRGB leds[], uint16_t count) : leds(leds), numLeds(count), isOn(false)
 	{
 	};
-	
-	virtual ~LEDLine()
+
+	~LEDLine()
 	{
 		delete effect;
 	};
 
-	virtual bool setEffectByName(const char* effectName)
+	bool setEffectByName(const char* effectName)
 	{
 		if (strcmp(BugsLedEffect::name, effectName) == 0) {
 			delete effect; effect = new BugsLedEffect(leds, numLeds, 20);
-			return true;
 		}
-		if (strcmp(GlowwormLedEffect::name, effectName) == 0) {
+		else if (strcmp(GlowwormLedEffect::name, effectName) == 0) {
 			delete effect; effect = new GlowwormLedEffect(leds, numLeds, 30);
-			return true;
 		}
-		if (strcmp(ColorsLedEffect::name, effectName) == 0)	{
+		else if (strcmp(ColorsLedEffect::name, effectName) == 0) {
 			delete effect; effect = new ColorsLedEffect(leds, numLeds, 10);
-			return true;
 		}
-		if (strcmp(RainbowLedEffect::name, effectName) == 0) {
+		else if (strcmp(RainbowLedEffect::name, effectName) == 0) {
 			delete effect; effect = new RainbowLedEffect(leds, numLeds, 10);
-			return true;
-}
-		if (strcmp(SparklesLedEffect::name, effectName) == 0) {
+		}
+		else if (strcmp(SparklesLedEffect::name, effectName) == 0) {
 			delete effect; effect = new SparklesLedEffect(leds, numLeds, 10);
-			return true;
 		}
-		if (strcmp(FlameLedEffect::name, effectName) == 0) {
+		else if (strcmp(FlameLedEffect::name, effectName) == 0) {
 			delete effect; effect = new FlameLedEffect(leds, numLeds, 10);
-			return true;
 		}
-		if (strcmp(FlashLedEffect::name, effectName) == 0) {
+		else if (strcmp(FlashLedEffect::name, effectName) == 0) {
 			delete effect; effect = new FlashLedEffect(leds, numLeds, 1, CRGB::Yellow);
-			return true;
 		}
-		if (strcmp(FlagLedEffect::name, effectName) == 0) {
-			delete effect; effect = new FlagLedEffect(leds, numLeds, 30, { CRGB::White, 88, CRGB::Red, 80, CRGB::White, 88 }, 1, 2);
-			return true;
+		else if (strcmp(FlagLedEffect::name, effectName) == 0) {
+			delete effect; effect = new FlagLedEffect(leds, numLeds, 30, { CRGB::White, 3, CRGB::Red, 2, CRGB::White, 3 }, 1, 2);
+		}
+		else {
+			return false;
 		}
 
-		return false;
+		isOn = true;
+		return true;
+
 	};
 
-	virtual void setNextEffect()
+	bool setNextEffect()
 	{
-		if (effect == nullptr) setEffectByName(availableEffects[0]);
-
-		for (uint8_t idx = 0; idx < NUM_EFFECTS - 1; idx++)
+		if (effect != nullptr)
 		{
-			if (strcmp(availableEffects[idx], static_cast<const char*>(*effect)) == 0)
+			for (uint8_t idx = 0; idx < NUM_EFFECTS - 1; idx++)
 			{
-				setEffectByName(availableEffects[idx + 1]);
-				return;
+				if (strcmp(availableEffects[idx], static_cast<const char*>(*effect)) == 0)
+				{
+					return setEffectByName(availableEffects[idx + 1]);
+				}
 			}
 		}
 
-		setEffectByName(availableEffects[0]);
+		// first one by default
+		return setEffectByName(availableEffects[0]);
 	};
 
-	virtual const char* getEffectName() const { return (effect != nullptr) ? static_cast<const char*>(*effect) : nullptr; };
+	const char* getEffectName() const
+	{
+		return (effect != nullptr) ? static_cast<const char*>(*effect) : nullptr;
+	};
 
-	virtual void pause() { if (effect != nullptr) effect->stop(); };
-	virtual void resume() { if (effect != nullptr) effect->start(); };
-	virtual bool paint() { return (effect == nullptr) ? false : effect->paint(); };
+	void pause()
+	{
+		isOn = false;
+		if (effect != nullptr) effect->stop();
+	};
+	void resume()
+	{
+		isOn = true;
+		if (effect != nullptr) effect->start();
+	};
+	bool paint()
+	{
+		return (!isOn || effect == nullptr) ? false : effect->paint();
+	};
+	bool isRunning()
+	{
+		return isOn;
+	};
 
 protected:
 
@@ -107,6 +123,7 @@ protected:
 	const uint16_t numLeds;
 
 	LedEffect* effect = nullptr;
+	bool isOn;
 };
 
 

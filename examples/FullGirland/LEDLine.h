@@ -19,17 +19,13 @@ class LEDLine
 {
 public:
 
-	static const uint8_t NUM_EFFECTS = 8;
+	static const uint8_t NUM_EFFECTS = 4;
 	const char* const availableEffects[NUM_EFFECTS] =
 	{
 		BugsLedEffect::name,
-		GlowwormLedEffect::name,
 		ColorsLedEffect::name,
 		SparklesLedEffect::name,
-		RainbowLedEffect::name,
-		FlameLedEffect::name,
-		FlashLedEffect::name,
-		FlagLedEffect::name
+		RainbowLedEffect::name
 	};
 
 	LEDLine(CRGB leds[], uint16_t count) : leds(leds), numLeds(count), isOn(false)
@@ -65,7 +61,7 @@ public:
 			delete effect; effect = new FlashLedEffect(leds, numLeds, 1, CRGB::Yellow);
 		}
 		else if (strcmp(FlagLedEffect::name, effectName) == 0) {
-			delete effect; effect = new FlagLedEffect(leds, numLeds, 30, { CRGB::White, 3, CRGB::Red, 2, CRGB::White, 3 }, 1, 2);
+			delete effect; effect = new FlagLedEffect(leds, numLeds, 30, { CRGB::White, 4, CRGB::Red, 3, CRGB::White, 4 }, 1, 2);
 		}
 		else {
 			return false;
