@@ -1,12 +1,8 @@
-#if defined(ESP32) || defined(ESP8266)
-#define LED_PIN D1  // D1 leds pin (mapped to D5 on NodeMCU !!!)
-#else
-#define LED_PIN 9   // leds pin
-#endif
+#define LED_PIN 9	// leds pin
 
 #include <FastLED.h>
-#define NUM_LEDS 256
-#define CURRENT_LIMIT 8000
+#define NUM_LEDS 8
+#define CURRENT_LIMIT 500
 #define MAX_BRIGHTNESS 255
 #define MIN_BRIGHTNESS 20
 
@@ -74,6 +70,8 @@ void setup()
 		Serial.println(var);
 
 	setupLED();
+
+	ledLine.setNextEffect();
 }
 
 void loop()

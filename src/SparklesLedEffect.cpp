@@ -25,7 +25,7 @@ bool SparklesLedEffect::paint()
 
 	if (getPixelColor(thisNum) == 0)
 	{
-		ledLine[thisNum] = CHSV(random(0, 255), 255, 255);
+		ledLine[thisNum] = getRandomColor();
 	}
 
 	for (uint16_t i = 0; i < numLeds; i++)

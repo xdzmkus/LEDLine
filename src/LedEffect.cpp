@@ -26,6 +26,11 @@ uint32_t LedEffect::getPixelColor(uint16_t pixel) const
 	return (((uint32_t)ledLine[pixel].r << 16) | ((uint32_t)ledLine[pixel].g << 8) | (uint32_t)ledLine[pixel].b);
 }
 
+CRGB LedEffect::getRandomColor() const
+{
+	return CHSV(random(0, 255), 255, 255);
+}
+
 void LedEffect::fillAllLeds(CRGB color) const
 {
 	for (uint16_t i = 0; i < numLeds; i++)

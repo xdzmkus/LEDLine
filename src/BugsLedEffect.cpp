@@ -19,7 +19,7 @@ BugsLedEffect::BugsLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, uint8_t b
 
 	for (uint8_t i = 0; i < numBugs; i++)
 	{
-		bugColors[i] = CHSV(random(0, 9) * 28, 255, 255);
+		bugColors[i] = getRandomColor();
 		bugPosition[i] = random(0, count);
 		bugSpeed[i] += random(-5, 6);
 	}
@@ -38,7 +38,7 @@ void BugsLedEffect::init()
 
 	for (uint8_t i = 0; i < numBugs; i++)
 	{
-		bugColors[i] = CHSV(random(0, 9) * 28, 255, 255);
+		bugColors[i] = getRandomColor();
 		bugPosition[i] = random(0, numLeds);
 		bugSpeed[i] += random(-5, 6);
 	}

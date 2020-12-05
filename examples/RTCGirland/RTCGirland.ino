@@ -1,6 +1,6 @@
 #if defined(ESP32) || defined(ESP8266)
-#define LED_PIN D1    // D1 leds pin (connected to D5 on NodeMCU 1.0 !!!)
-#define BTN_PIN D0    // D0 button pin
+#define LED_PIN D1    // D1 leds pin (connected to D5 on my NodeMCU 1.0 !!!)
+#define BTN_PIN D6    // D0 button pin
 // #define SCL D1
 // #define SDA D2
 #else

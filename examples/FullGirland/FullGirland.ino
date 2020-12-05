@@ -1,7 +1,7 @@
 #include "data_sensitive.h"
 
-#define LED_PIN D1    // D1 leds pin (mapped to D5 on NodeMCU !!!)
-#define BTN_PIN D0    // D0 button pin
+#define LED_PIN D1    // D1 leds pin (connected to D5 on my NodeMCU 1.0 !!!)
+#define BTN_PIN D6    // D6 button pin
 
 /*********** WiFi Access Point **************/
 #include <ESP8266WiFi.h>
@@ -125,7 +125,7 @@ void newEffect_callback(char* data, uint16_t len)
 
 void publishState()
 {
-    auto currentEffect = ledLine.getEffectName();
+    auto currentEffect = (ledLine.getEffectName() == nullptr || !ledLine.isRunning()) ? "OFF" : ledLine.getEffectName();
 
     Serial.print(F("Publish message: ")); Serial.println(currentEffect);
 

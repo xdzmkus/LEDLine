@@ -1,6 +1,6 @@
 #if defined(ESP32) || defined(ESP8266)
-#define LED_PIN D1    // D1 leds pin (mapped to D5 on NodeMCU !!!)
-#define BTN_PIN D0    // D0 button pin
+#define LED_PIN D1    // D1 leds pin (connected to D5 on my NodeMCU1.0 !!!)
+#define BTN_PIN D6    // D6 button pin
 #else
 #define LED_PIN 9   // leds pin
 #define BTN_PIN 10  // button pin
@@ -17,8 +17,8 @@ Button btn(BTN_PIN, BUTTON_CONNECTED::VCC, BUTTON_NORMAL::OPEN);
 char EFFECT_NAME[EEPROM_EFFECT_LENGTH + 1];
 
 #include <FastLED.h>
-#define NUM_LEDS 256
-#define CURRENT_LIMIT 8000
+#define NUM_LEDS 8
+#define CURRENT_LIMIT 500
 #define MAX_BRIGHTNESS 255
 #define MIN_BRIGHTNESS 20
 
