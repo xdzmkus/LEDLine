@@ -23,23 +23,16 @@ bool SparklesLedEffect::paint()
 
 	uint16_t thisNum = random(0, numLeds);
 
-	if (getPixelColor(thisNum) == 0)
+	if (!ledLine[thisNum])
 	{
 		ledLine[thisNum] = getRandomColor();
 	}
 
 	for (uint16_t i = 0; i < numLeds; i++)
 	{
-		uint32_t thisColor = getPixelColor(i);
+		if (!ledLine[i]) continue;
 
-		if (thisColor == 0) continue;
-
-		uint8_t rgb[3];
-		rgb[0] = (thisColor >> 16) & 0xff;
-		rgb[1] = (thisColor >> 8) & 0xff;
-		rgb[2] = thisColor & 0xff;
-
-		uint8_t maximum = max(max(rgb[0], rgb[1]), rgb[2]);
+		uint8_t maximum = max(max(ledLine[i].red, ledLine[i].green), ledLine[i].blue);
 
 		float k = 0;
 
@@ -48,7 +41,7 @@ bool SparklesLedEffect::paint()
 			k = (float)(maximum - SPARKLES_TRACK_STEP) / maximum;
 		}
 
-		ledLine[i] = CRGB(rgb[0] * k, rgb[1] * k, rgb[2] * k);
+		ledLine[i] = CRGB(ledLine[i].red * k, ledLine[i].green * k, ledLine[i].blue * k);
 	}
 
 	return true;

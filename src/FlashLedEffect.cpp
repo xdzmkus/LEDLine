@@ -8,7 +8,7 @@
 const char* const FlashLedEffect::name = "FLASH";
 
 FlashLedEffect::FlashLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, CRGB color)
-	: LedEffect(leds, count, Hz), flashColor(color)
+	: LedEffect(leds, count, Hz), flashColor(color ? color : getRandomColor())
 {
 }
 

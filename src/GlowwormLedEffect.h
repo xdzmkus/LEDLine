@@ -21,7 +21,7 @@ protected:
 	bool direction = true;
 	
 public:
-	GlowwormLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, CRGB color = CRGB::White);
+	GlowwormLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, CRGB color = CRGB::Black);
 	~GlowwormLedEffect();
 
 	void init() override;

@@ -20,7 +20,7 @@ protected:
 	bool		flashState = false;
 	
 public:
-	FlashLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, CRGB color);
+	FlashLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, CRGB color = CRGB::Black);
 	~FlashLedEffect();
 	
 	void init() override;

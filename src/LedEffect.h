@@ -36,10 +36,8 @@ public:
 	
 protected:
 
-	uint32_t getPixelColor(uint16_t pixel) const;
 	CRGB getRandomColor() const;
-
-	void fillAllLeds(CRGB color) const;
+	void fillAllLeds(CRGB color);
 };
 
 #endif

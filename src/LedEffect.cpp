@@ -21,17 +21,12 @@ void LedEffect::init()
 	memset8((void*)ledLine, 0, sizeof(struct CRGB) * numLeds);
 }
 
-uint32_t LedEffect::getPixelColor(uint16_t pixel) const
-{
-	return (((uint32_t)ledLine[pixel].r << 16) | ((uint32_t)ledLine[pixel].g << 8) | (uint32_t)ledLine[pixel].b);
-}
-
 CRGB LedEffect::getRandomColor() const
 {
-	return CHSV(random(0, 255), 255, 255);
+	return CRGB(CHSV(random(0, 255), 255, 255));
 }
 
-void LedEffect::fillAllLeds(CRGB color) const
+void LedEffect::fillAllLeds(CRGB color)
 {
 	for (uint16_t i = 0; i < numLeds; i++)
 	{

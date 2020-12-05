@@ -62,7 +62,7 @@ public:
 			delete effect; effect = new FlameLedEffect(leds, numLeds, 10);
 		}
 		else if (strcmp(FlashLedEffect::name, effectName) == 0) {
-			delete effect; effect = new FlashLedEffect(leds, numLeds, 1, CRGB::Yellow);
+			delete effect; effect = new FlashLedEffect(leds, numLeds, 1);
 		}
 		else if (strcmp(FlagLedEffect::name, effectName) == 0) {
 			delete effect; effect = new FlagLedEffect(leds, numLeds, 30, { CRGB::White, 3, CRGB::Red, 2, CRGB::White, 3 }, 1, 2);
