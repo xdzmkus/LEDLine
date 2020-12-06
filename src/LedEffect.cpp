@@ -8,7 +8,6 @@
 LedEffect::LedEffect(CRGB leds[], uint16_t count, uint16_t Hz)
 	: MillisTimer(Hz ? 1000UL / Hz : 0), ledLine(leds), numLeds(count)
 {
-	init();
 }
 
 LedEffect::~LedEffect()
@@ -23,7 +22,7 @@ void LedEffect::init()
 
 CRGB LedEffect::getRandomColor() const
 {
-	return CRGB(CHSV(random(0, 255), 255, 255));
+	return CHSV(random(0, 255), 255, 255);
 }
 
 void LedEffect::fillAllLeds(CRGB color)

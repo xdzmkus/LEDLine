@@ -10,12 +10,19 @@ const char* const FlameLedEffect::name = "FLAME";
 FlameLedEffect::FlameLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, bool reversed)
 	: LedEffect(leds, count, Hz), fireReversed(reversed), gPal(HeatColors_p)
 {
+	init();
+
 	heatMap = new uint8_t[count];
 }
 
 FlameLedEffect::~FlameLedEffect()
 {
 	delete[] heatMap;
+}
+
+void FlameLedEffect::init()
+{
+	LedEffect::init();
 }
 
 bool FlameLedEffect::paint()
@@ -33,7 +40,7 @@ bool FlameLedEffect::paint()
 	// Step 1.  Cool down every cell a little
 	for (uint16_t i = 0; i < numLeds; i++)
 	{
-		heatMap[i] = qsub8(heatMap[i], random8(0, 1024/numLeds + 2));
+		heatMap[i] = qsub8(heatMap[i], random8(0, 255/numLeds+3));
 	}
 
 	// Step 2.  heatMap from each cell drifts 'up' and diffuses a little
@@ -45,7 +52,7 @@ bool FlameLedEffect::paint()
 	// Step 3.  Randomly ignite new 'sparks' of heatMap near the bottom
 	if (random8() < SPARKING)
 	{
-		uint8_t y = random8(8);
+		uint8_t y = random8(numLeds>>2);
 		heatMap[y] = qadd8(heatMap[y], random8(160, 255));
 	}
 

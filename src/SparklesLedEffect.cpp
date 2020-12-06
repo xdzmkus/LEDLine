@@ -10,10 +10,16 @@ const char* const SparklesLedEffect::name = "SPARKLES";
 SparklesLedEffect::SparklesLedEffect(CRGB leds[], uint16_t count, uint16_t Hz)
 	: LedEffect(leds, count, Hz)
 {
+	init();
 }
 
 SparklesLedEffect::~SparklesLedEffect()
 {
+}
+
+void SparklesLedEffect::init()
+{
+	LedEffect::init();
 }
 
 bool SparklesLedEffect::paint()

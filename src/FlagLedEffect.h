@@ -26,13 +26,12 @@ protected:
 		CRGB rgb3;
 		uint16_t count3;
 	} flag;
-
 	const uint16_t timesToFade;
 	const uint8_t pulseCount;
 
-	uint8_t fadeForRGB1;
-	uint8_t fadeForRGB2;
-	uint8_t fadeForRGB3;
+	CRGB fadeForRGB1;
+	CRGB fadeForRGB2;
+	CRGB fadeForRGB3;
 	uint8_t pulses;
 	uint16_t restOfFade;
 
