@@ -48,10 +48,6 @@ bool BugsLedEffect::paint()
 		ledLine[bugPosition[i]] = CRGB::Black;
 
 		bugSpeed[i] += random(-5, 6);
-		if (bugSpeed[i] == 0)
-		{
-			bugSpeed[i] = (-5, 6);
-		}
 		if (abs(bugSpeed[i]) > BUGS_MAX_SPEED)
 		{
 			bugSpeed[i] = 0;
