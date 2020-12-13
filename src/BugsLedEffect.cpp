@@ -7,53 +7,47 @@
 
 const char* const BugsLedEffect::name = "BUGS";
 
-BugsLedEffect::BugsLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, uint8_t bugs)
-	: LedEffect(leds, count, Hz)
+BugsLedEffect::BugsLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, uint8_t bugsCount)
+	: LedEffect(leds, count, Hz), numBugs((bugsCount == 0) ? random(count / 10 + 1, count / 5 + 1) : bugsCount)
 {
-	numBugs = (bugs == 0) ? random(count / 10 + 1, count / 5 + 1) : bugs;
-
-	bugColors = new CRGB[numBugs];
-	bugPosition = new uint16_t[numBugs];
-	bugSpeed = new int8_t[numBugs];
+	bugs = new BUGS[numBugs];
 
 	init();
 }
 
 BugsLedEffect::~BugsLedEffect()
 {
-	delete[] bugColors;
-	delete[] bugPosition;
-	delete[] bugSpeed;
+	delete[] bugs;
 }
 
 void BugsLedEffect::init()
 {
-	LedEffect::init();
-
 	for (uint8_t i = 0; i < numBugs; i++)
 	{
-		bugColors[i] = getRandomColor();
-		bugPosition[i] = random(0, numLeds);
-		bugSpeed[i] += random(-5, 6);
+		bugs[i].color = getRandomColor();
+		bugs[i].position = random(0, numLeds);
+		bugs[i].speed += random(-5, 6);
 	}
+
+	LedEffect::init();
 }
 
 bool BugsLedEffect::paint()
 {
-	if (!LedEffect::isReady())
+	if (!isReady())
 		return false;
 		
 	for (uint8_t i = 0; i < numBugs; i++)
 	{
-		ledLine[bugPosition[i]] = CRGB::Black;
+		ledLine[bugs[i].position] = CRGB::Black;
 
-		bugSpeed[i] += random(-5, 6);
-		if (abs(bugSpeed[i]) > BUGS_MAX_SPEED)
+		bugs[i].speed += random(-5, 6);
+		if (abs(bugs[i].speed) > BUGS_MAX_SPEED)
 		{
-			bugSpeed[i] = 0;
+			bugs[i].speed = 0;
 		}
 
-		int16_t newPosition = bugPosition[i] + bugSpeed[i] / 10;
+		int16_t newPosition = bugs[i].position + bugs[i].speed / 10;
 		
 		if (newPosition < 0)
 		{
@@ -64,9 +58,9 @@ bool BugsLedEffect::paint()
 			newPosition = 0;
 		}
 
-		bugPosition[i] = newPosition;
+		bugs[i].position = newPosition;
     
-		ledLine[bugPosition[i]] = bugColors[i];
+		ledLine[bugs[i].position] = bugs[i].color;
 	}
 
 	return true;

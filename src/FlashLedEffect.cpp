@@ -19,13 +19,13 @@ FlashLedEffect::~FlashLedEffect()
 
 void FlashLedEffect::init()
 {
-	LedEffect::init();
 	flashState = false;
+	LedEffect::init();
 }
 
 bool FlashLedEffect::paint()
 {
-	if (!LedEffect::isReady())
+	if (!isReady())
 		return false;
 
 	if (flashState)

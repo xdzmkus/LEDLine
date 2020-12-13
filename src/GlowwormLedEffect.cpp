@@ -20,14 +20,14 @@ GlowwormLedEffect::~GlowwormLedEffect()
 
 void GlowwormLedEffect::init()
 {
-	LedEffect::init();
 	position = 0;
 	direction = true;
+	LedEffect::init();
 }
 
 bool GlowwormLedEffect::paint()
 {
-	if (!LedEffect::isReady())
+	if (!isReady())
 		return false;
 
 	ledLine[position] = CRGB::Black;

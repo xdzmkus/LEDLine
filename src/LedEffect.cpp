@@ -6,7 +6,7 @@
 #include "LedEffect.h"
 
 LedEffect::LedEffect(CRGB leds[], uint16_t count, uint16_t Hz)
-	: MillisTimer(Hz ? 1000UL / Hz : 0), ledLine(leds), numLeds(count)
+	: MillisTimer(Hz ? MillisTimer::CLOCKS_IN_SEC / Hz : 0), ledLine(leds), numLeds(count)
 {
 }
 

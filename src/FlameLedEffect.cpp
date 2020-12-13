@@ -10,9 +10,9 @@ const char* const FlameLedEffect::name = "FLAME";
 FlameLedEffect::FlameLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, bool reversed)
 	: LedEffect(leds, count, Hz), fireReversed(reversed), gPal(HeatColors_p)
 {
-	init();
-
 	heatMap = new uint8_t[count];
+
+	init();
 }
 
 FlameLedEffect::~FlameLedEffect()

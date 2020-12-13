@@ -42,8 +42,8 @@ Button btn(BTN_PIN, BUTTON_CONNECTED::VCC, BUTTON_NORMAL::OPEN);
 
 /*********** WS2812B leds *******************/
 #include <FastLED.h>
-#define NUM_LEDS 396
-#define CURRENT_LIMIT 16000
+#define NUM_LEDS 256
+#define CURRENT_LIMIT 8000
 #define MAX_BRIGHTNESS 255
 #define MIN_BRIGHTNESS 20
 

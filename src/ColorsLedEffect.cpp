@@ -19,13 +19,13 @@ ColorsLedEffect::~ColorsLedEffect()
 
 void ColorsLedEffect::init()
 {
-	LedEffect::init();
 	hue = 0;
+	LedEffect::init();
 }
 
 bool ColorsLedEffect::paint()
 {
-	if (!LedEffect::isReady())
+	if (!isReady())
 		return false;
 
 	hue += 2;

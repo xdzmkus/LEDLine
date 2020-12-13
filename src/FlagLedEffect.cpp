@@ -46,7 +46,7 @@ void FlagLedEffect::init()
 
 bool FlagLedEffect::paint()
 {
-	if (!LedEffect::isReady() || timesToFade == 0)
+	if (!isReady() || timesToFade == 0)
 		return false;
 
 	// black(skipped) pulse?

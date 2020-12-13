@@ -16,7 +16,7 @@ public:
 
 protected:
 
-	const uint8_t SPARKLES_TRACK_STEP = 40;
+	const uint8_t SPARKLES_TRACK_STEP = 20;
 
 public:
 	SparklesLedEffect(CRGB leds[], uint16_t count, uint16_t Hz);

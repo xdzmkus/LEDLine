@@ -14,12 +14,13 @@
 #include "BugsLedEffect.h"
 #include "FlameLedEffect.h"
 #include "FlagLedEffect.h"
+#include "BouncingBallsLedEffect.h"
 
 class LEDLine
 {
 public:
 
-	static const uint8_t NUM_EFFECTS = 8;
+	static const uint8_t NUM_EFFECTS = 9;
 	const char* const availableEffects[NUM_EFFECTS] =
 	{
 		BugsLedEffect::name,
@@ -29,7 +30,8 @@ public:
 		RainbowLedEffect::name,
 		FlameLedEffect::name,
 		FlashLedEffect::name,
-		FlagLedEffect::name
+		FlagLedEffect::name,
+		BouncingBallsLedEffect::name
 	};
 
 	LEDLine(CRGB leds[], uint16_t count) : leds(leds), numLeds(count), isOn(false)
@@ -56,16 +58,19 @@ public:
 			delete effect; effect = new RainbowLedEffect(leds, numLeds, 10);
 		}
 		else if (strcmp(SparklesLedEffect::name, effectName) == 0) {
-			delete effect; effect = new SparklesLedEffect(leds, numLeds, 10);
+			delete effect; effect = new SparklesLedEffect(leds, numLeds, 20);
 		}
 		else if (strcmp(FlameLedEffect::name, effectName) == 0) {
 			delete effect; effect = new FlameLedEffect(leds, numLeds, 10);
 		}
 		else if (strcmp(FlashLedEffect::name, effectName) == 0) {
-			delete effect; effect = new FlashLedEffect(leds, numLeds, 1, CRGB::Yellow);
+			delete effect; effect = new FlashLedEffect(leds, numLeds, 1);
 		}
 		else if (strcmp(FlagLedEffect::name, effectName) == 0) {
 			delete effect; effect = new FlagLedEffect(leds, numLeds, 30, { CRGB::White, 3, CRGB::Red, 2, CRGB::White, 3 }, 1, 2);
+		}
+		else if (strcmp(BouncingBallsLedEffect::name, effectName) == 0) {
+			delete effect; effect = new BouncingBallsLedEffect(leds, numLeds, 50);
 		}
 		else {
 			return false;

@@ -18,9 +18,14 @@ protected:
 
 	const uint8_t BUGS_MAX_SPEED = 20;
 
-	CRGB*		bugColors;
-	int8_t*		bugSpeed;
-	uint16_t*	bugPosition;
+	struct BUGS
+	{
+		CRGB color;
+		int8_t speed;
+		uint16_t position;
+	}
+	*bugs;
+
 	uint8_t		numBugs;
 
 public:

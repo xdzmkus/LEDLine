@@ -20,13 +20,13 @@ RainbowLedEffect::~RainbowLedEffect()
 
 void RainbowLedEffect::init()
 {
-	LedEffect::init();
 	hue = 0;
+	LedEffect::init();
 }
 
 bool RainbowLedEffect::paint()
 {
-	if (!LedEffect::isReady())
+	if (!isReady())
 		return false;
 
 	hue += 5;
