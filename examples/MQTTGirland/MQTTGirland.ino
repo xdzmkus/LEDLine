@@ -36,8 +36,8 @@ Adafruit_MQTT_Subscribe girlandOnOff = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPIC
 
 /*********** WS2812B leds *******************/
 #include <FastLED.h>
-#define NUM_LEDS 8
-#define CURRENT_LIMIT 500
+#define NUM_LEDS 256
+#define CURRENT_LIMIT 8000
 #define MAX_BRIGHTNESS 255
 #define MIN_BRIGHTNESS 20
 

@@ -8,7 +8,7 @@
 const char* const BouncingBallsLedEffect::name = "BOUNSINGBALLS";
 
 BouncingBallsLedEffect::BouncingBallsLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, uint8_t ballsCount)
-	: LedEffect(leds, count, Hz), numBalls(ballsCount == 0 ? random(1, max(1, count / 5)) : ballsCount)
+	: LedEffect(leds, count, Hz), numBalls(ballsCount == 0 ? random(1, max(1, count / 3)) : ballsCount)
 {
 	balls = new BOUNCING[numBalls];
 

@@ -1,23 +1,23 @@
 /*
-* FlagLedEffect.cpp
+* ThreeColorLedEffect.cpp
 *
 */
 
-#include "FlagLedEffect.h"
+#include "ThreeColorLedEffect.h"
 
-const char* const FlagLedEffect::name = "FLAG";
+const char* const ThreeColorLedEffect::name = "THREECOLOR";
 
-FlagLedEffect::FlagLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, FLAG flag, uint8_t pulseTime, uint8_t pulseCount)
+ThreeColorLedEffect::ThreeColorLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, THREECOLOR flag, uint8_t pulseTime, uint8_t pulseCount)
 	: LedEffect(leds, count, Hz), flag(flag), timesToFade(Hz* pulseTime), pulseCount(pulseCount)
 {
 	init();
 }
 
-FlagLedEffect::~FlagLedEffect()
+ThreeColorLedEffect::~ThreeColorLedEffect()
 {
 }
 
-void FlagLedEffect::init()
+void ThreeColorLedEffect::init()
 {
 	LedEffect::init();
 
@@ -44,7 +44,7 @@ void FlagLedEffect::init()
 	pulses = pulseCount;
 }
 
-bool FlagLedEffect::paint()
+bool ThreeColorLedEffect::paint()
 {
 	if (!isReady() || timesToFade == 0)
 		return false;

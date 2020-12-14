@@ -13,7 +13,7 @@
 #include "SparklesLedEffect.h"
 #include "BugsLedEffect.h"
 #include "FlameLedEffect.h"
-#include "FlagLedEffect.h"
+#include "ThreeColorLedEffect.h"
 #include "BouncingBallsLedEffect.h"
 
 class LEDLine
@@ -30,7 +30,7 @@ public:
 		RainbowLedEffect::name,
 		FlameLedEffect::name,
 		FlashLedEffect::name,
-		FlagLedEffect::name,
+		ThreeColorLedEffect::name,
 		BouncingBallsLedEffect::name
 	};
 
@@ -66,8 +66,8 @@ public:
 		else if (strcmp(FlashLedEffect::name, effectName) == 0) {
 			delete effect; effect = new FlashLedEffect(leds, numLeds, 1);
 		}
-		else if (strcmp(FlagLedEffect::name, effectName) == 0) {
-			delete effect; effect = new FlagLedEffect(leds, numLeds, 30, { CRGB::White, 3, CRGB::Red, 2, CRGB::White, 3 }, 1, 2);
+		else if (strcmp(ThreeColorLedEffect::name, effectName) == 0) {
+			delete effect; effect = new ThreeColorLedEffect(leds, numLeds, 30, { CRGB::White, 3, CRGB::Red, 2, CRGB::White, 3 }, 1, 2);
 		}
 		else if (strcmp(BouncingBallsLedEffect::name, effectName) == 0) {
 			delete effect; effect = new BouncingBallsLedEffect(leds, numLeds, 50);

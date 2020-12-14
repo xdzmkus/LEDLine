@@ -1,15 +1,15 @@
 /*
-* FlagLedEffect.h
+* ThreeColorLedEffect.h
 *
 */
 
-#ifndef __FLAGLEDEFFECT_H__
-#define __FLAGLEDEFFECT_H__
+#ifndef __THREECOLORLEDEFFECT_H__
+#define __THREECOLORLEDEFFECT_H__
 
 #include "LedEffect.h"
 
 
-class FlagLedEffect : public LedEffect
+class ThreeColorLedEffect : public LedEffect
 {
 public:
 
@@ -17,7 +17,7 @@ public:
 
 protected:
 
-	const struct FLAG
+	const struct THREECOLOR
 	{
 		CRGB rgb1;
 		uint16_t count1;
@@ -36,8 +36,8 @@ protected:
 	uint16_t restOfFade;
 
 public:
-	FlagLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, FLAG flag, uint8_t pulseTime = 1, uint8_t pulseCount = 2);
-	~FlagLedEffect();
+	ThreeColorLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, THREECOLOR flag, uint8_t pulseTime = 1, uint8_t pulseCount = 2);
+	~ThreeColorLedEffect();
 
 	void init() override;
 	bool paint() override;
@@ -45,9 +45,9 @@ public:
 	operator const char* () const { return name; }
 
 private:
-	FlagLedEffect(const FlagLedEffect&) = delete;
-	FlagLedEffect& operator=(const FlagLedEffect&) = delete;
+	ThreeColorLedEffect(const ThreeColorLedEffect&) = delete;
+	ThreeColorLedEffect& operator=(const ThreeColorLedEffect&) = delete;
 
 };
 
-#endif //__FLAGLEDEFFECT_H__
+#endif
