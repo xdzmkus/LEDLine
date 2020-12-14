@@ -6,15 +6,16 @@
 # Datatypes (KEYWORD1)
 #######################################
 
-LEDEffect			KEYWORD1
-BugsLedEffect		KEYWORD1
-ColorsLedEffect		KEYWORD1
-FlagLedEffect		KEYWORD1
-FlameLedEffect		KEYWORD1
-FlashLedEffect		KEYWORD1
-GlowwormLedEffect   KEYWORD1
-RainbowLedEffect    KEYWORD1
-SparklesLedEffect   KEYWORD1
+LEDEffect				KEYWORD1
+BouncingBallsLedEffect	KEYWORD1
+BugsLedEffect			KEYWORD1
+ColorsLedEffect			KEYWORD1
+FlameLedEffect			KEYWORD1
+FlashLedEffect			KEYWORD1
+GlowwormLedEffect		KEYWORD1
+RainbowLedEffect		KEYWORD1
+SparklesLedEffect		KEYWORD1
+ThreeColorLedEffect		KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
@@ -22,6 +23,9 @@ SparklesLedEffect   KEYWORD1
 
 init				KEYWORD2
 paint				KEYWORD2
+start				KEYWORD2
+stop				KEYWORD2
+isReady				KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
