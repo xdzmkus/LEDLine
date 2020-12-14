@@ -12,10 +12,8 @@
 #include "WProgram.h"
 #endif
 
+#include <EffectTimer.h>
 #include <FastLED.h>
-#include <Denel.h>
-
-using namespace denel;
 
 class LedEffect :  public MillisTimer
 {

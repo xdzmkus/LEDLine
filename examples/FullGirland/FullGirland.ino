@@ -36,9 +36,8 @@ Adafruit_MQTT_Subscribe girlandEffect = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPI
 Adafruit_MQTT_Subscribe girlandOnOff = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPIC_SUB2, MQTT_QOS_1);
 
 /********** Touch button module *************/
-#include <Denel.h>
-using namespace denel;
-Button btn(BTN_PIN, BUTTON_CONNECTED::VCC, BUTTON_NORMAL::OPEN);
+#include <Denel_Button.h>
+Denel_Button btn(BTN_PIN, BUTTON_CONNECTED::VCC, BUTTON_NORMAL::OPEN);
 
 /*********** WS2812B leds *******************/
 #include <FastLED.h>
@@ -65,7 +64,7 @@ void handleTimer()
     f_publishState = true;
 }
 
-void handleButtonEvent(const Button* button, BUTTON_EVENT eventType)
+void handleButtonEvent(const Denel_Button* button, BUTTON_EVENT eventType)
 {
     switch (eventType)
     {
