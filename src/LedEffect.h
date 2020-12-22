@@ -21,6 +21,7 @@ protected:
 
 	CRGB* const ledLine;
 	const uint16_t numLeds;
+	const uint16_t speed;
 
 public:
 
