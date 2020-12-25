@@ -8,16 +8,22 @@
 const char* const BouncingBallsLedEffect::name = "BOUNSINGBALLS";
 
 BouncingBallsLedEffect::BouncingBallsLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, uint8_t ballsCount)
-	: LedEffect(leds, count, Hz), numBalls(ballsCount == 0 ? random(1, max(1, count / 3)) : ballsCount)
+	: LedEffect(leds, count, Hz), numBalls(ballsCount), MaxVelocity(sqrt(2 * Gravity * (count - 1)))
 {
-	balls = new BOUNCING[numBalls];
-
+	if (numBalls > 0)
+	{
+		balls = new BOUNCING[numBalls];
+	}
 	init();
 }
 
 BouncingBallsLedEffect::~BouncingBallsLedEffect()
 {
-	delete[] balls;
+	if (balls != nullptr)
+	{
+		delete[] balls;
+		balls = nullptr;
+	}
 }
 
 void BouncingBallsLedEffect::init()
@@ -25,12 +31,11 @@ void BouncingBallsLedEffect::init()
 	for (int i = 0; i < numBalls; i++)
 	{
 		balls[i].color = getRandomColor();
-		balls[i].clockTimeSinceLastBounce = getClock();
-		balls[i].height = StartHeight;
+		balls[i].startTime = getClock();
+		balls[i].height = 0;
 		balls[i].position = 0;
-		balls[i].impactVelocity = ImpactVelocityStart;
-		balls[i].timeSinceLastBounce = 0;
-		balls[i].dampening = 0.90 - float(i) / pow(numBalls, 2);
+		balls[i].velocity = MaxVelocity;
+		balls[i].dampingPercentage = random(70, 90);
 	}
 
 	LedEffect::init();
@@ -41,31 +46,26 @@ bool BouncingBallsLedEffect::paint()
 	if (isReady())
 		return false;
 
-
 	for (int i = 0; i < numBalls; i++)
 	{
-		ledLine[balls[i].position] = CRGB::Black;
-
-		balls[i].timeSinceLastBounce = getClock() - balls[i].clockTimeSinceLastBounce;
-		balls[i].height = 0.5 * Gravity * pow(balls[i].timeSinceLastBounce / LedEffect::CLOCKS_IN_SEC, 2.0) + balls[i].impactVelocity * balls[i].timeSinceLastBounce / LedEffect::CLOCKS_IN_SEC;
+		float timeOfFlying = static_cast<float>(getClock() - balls[i].startTime) / LedEffect::CLOCKS_IN_SEC;
+		balls[i].height = balls[i].velocity * timeOfFlying - 0.5 * Gravity * timeOfFlying * timeOfFlying;
 
 		if (balls[i].height < 0)
 		{
 			balls[i].height = 0;
-			balls[i].impactVelocity *= balls[i].dampening;
-			balls[i].clockTimeSinceLastBounce = getClock();
+			balls[i].velocity *= balls[i].dampingPercentage / 100.0;
+			balls[i].startTime = getClock();
 
-			if (balls[i].impactVelocity < 0.01)
+			if (balls[i].velocity < 0.01)
 			{
-				balls[i].impactVelocity = ImpactVelocityStart;
+				balls[i].velocity = MaxVelocity;
+				balls[i].dampingPercentage = random(70, 90);
 			}
 		}
 
-		balls[i].position = round(balls[i].height * (numLeds - 1) / StartHeight);
-	}
-
-	for (int i = 0; i < numBalls; i++)
-	{
+		ledLine[balls[i].position] = CRGB::Black;
+		balls[i].position = round(balls[i].height);
 		ledLine[balls[i].position] = balls[i].color;
 	}
 

@@ -12,9 +12,8 @@ class BouncingBallsLedEffect : public LedEffect
 {
 private:
 
-	const float Gravity = -9.81;
-	const int StartHeight = 1;
-	const float ImpactVelocityStart = sqrt(-2 * Gravity * StartHeight);
+	const float Gravity = 9.8;
+	const float MaxVelocity;
 
 public:
 
@@ -27,17 +26,16 @@ protected:
 		CRGB  color;
 		int   position;
 		float height;
-		float impactVelocity;
-		float timeSinceLastBounce;
-		long  clockTimeSinceLastBounce;
-		float dampening;
+		float velocity;
+		byte  dampingPercentage;
+		long  startTime;
 	}
-	*balls;
+	*balls = nullptr;
 
 	uint8_t	numBalls;
 
 public:
-	BouncingBallsLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, uint8_t ballsCount = 0);
+	BouncingBallsLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, uint8_t ballsCount = 1);
 	~BouncingBallsLedEffect();
 	
 	void init() override;

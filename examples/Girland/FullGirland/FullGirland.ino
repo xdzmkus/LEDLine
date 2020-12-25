@@ -1,27 +1,59 @@
-#include "data_sensitive.h"
+#if true // && __has_include("my_data_sensitive.h")
+#include "my_data_sensitive.h"
+#else
 
-#define LED_PIN D3    // D1 leds pin (connected to D5 on my NodeMCU 1.0 !!!)
+#define WLAN_SSID		    "your wifi name"
+#define WLAN_PASS		    "and password"
+#define WLAN_HOSTNAME	    "connect with hostname"
+
+#define MQTT_SERVER		    "127.0.0.1"
+#define MQTT_SERVERPORT	    1883
+#define MQTT_USERNAME	    "your mqtt username"
+#define MQTT_KEY		    "and password"
+
+#define MQTT_TOPIC_PUB      MQTT_USERNAME"/current/state"
+#define MQTT_TOPIC_SUB1     MQTT_USERNAME"/new/effect"
+#define MQTT_TOPIC_SUB2     MQTT_USERNAME"/new/onoff"
+
+#define ON_CODE		        6735
+#define OFF_CODE	        2344
+#define PAUSE_CODE	        2747
+
+#endif
+
+#define LED_PIN D1    // D1 leds pin (connected to D5 on my NodeMCU 1.0 !!!)
 #define BTN_PIN D6    // D6 button pin
 
-/*********** WiFi Access Point **************/
-#include <ESP8266WiFi.h>
+/*********** WS2812B leds *******************/
+#include <FastLED.h>
+#define NUM_LEDS 256
+#define CURRENT_LIMIT 8000
+#define MAX_BRIGHTNESS 255
+#define MIN_BRIGHTNESS 20
 
-#define WLAN_SSID       _WLAN_SSID_
-#define WLAN_PASS       _WLAN_PASS_
-#define WLAN_HOSTNAME   _WLAN_HOSTNAME_
+uint16_t brightness = MAX_BRIGHTNESS / 2;
+
+CRGB leds[NUM_LEDS];
+
+/*********** LED Line Effects ***************/
+#include "LEDLine.h"
+LEDLine ledLine(leds, NUM_LEDS);
+
+#include <Ticker.h>
+#define EFFECT_DURATION_SEC 45
+Ticker tickerEffects;
+volatile boolean f_publishState = true;
+
+/********** Touch button module *************/
+#include <Denel_Button.h>
+Denel_Button btn(BTN_PIN, BUTTON_CONNECTED::VCC, BUTTON_NORMAL::OPEN);
+
+/*********** WiFi Client ********************/
+#include <ESP8266WiFi.h>
 
 /*********** MQTT Server ********************/
 #include <Adafruit_MQTT.h>
 #include <Adafruit_MQTT_Client.h>
-
-#define MQTT_SERVER      _MQTT_SERVER_
-#define MQTT_SERVERPORT  _MQTT_SERVERPORT_
-#define MQTT_USERNAME    _MQTT_USERNAME_
-#define MQTT_KEY         _MQTT_KEY_
-
-#define MQTT_TOPIC_PUB MQTT_USERNAME"/current/state"
-#define MQTT_TOPIC_SUB1 MQTT_USERNAME"/new/effect"
-#define MQTT_TOPIC_SUB2 MQTT_USERNAME"/new/onoff"
 
 // Create an ESP8266 WiFiClient class to connect to the MQTT server.
 WiFiClient client;
@@ -35,28 +67,7 @@ Adafruit_MQTT_Publish girlandState = Adafruit_MQTT_Publish(&mqtt, MQTT_TOPIC_PUB
 Adafruit_MQTT_Subscribe girlandEffect = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPIC_SUB1, MQTT_QOS_1);
 Adafruit_MQTT_Subscribe girlandOnOff = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPIC_SUB2, MQTT_QOS_1);
 
-/********** Touch button module *************/
-#include <Denel_Button.h>
-Denel_Button btn(BTN_PIN, BUTTON_CONNECTED::VCC, BUTTON_NORMAL::OPEN);
-
-/*********** WS2812B leds *******************/
-#include <FastLED.h>
-#define NUM_LEDS 256
-#define CURRENT_LIMIT 8000
-#define MAX_BRIGHTNESS 255
-#define MIN_BRIGHTNESS 20
-
-uint16_t brightness = MAX_BRIGHTNESS / 2;
-
-CRGB leds[NUM_LEDS];
-
-#include "LEDLine.h"
-LEDLine ledLine(leds, NUM_LEDS);
-
-#include <Ticker.h>
-#define EFFECT_DURATION_SEC 60
-Ticker tickerEffects;
-volatile boolean f_publishState = false;
+/********************************************/
 
 void handleTimer()
 {
@@ -73,6 +84,7 @@ void handleButtonEvent(const Denel_Button* button, BUTTON_EVENT eventType)
         break;
     case BUTTON_EVENT::DoubleClicked:
         ledLine.setNextEffect();
+        f_publishState = true;
         Serial.print(F("NEXT: ")); Serial.println(ledLine.getEffectName());
         break;
     case BUTTON_EVENT::RepeatClicked:
@@ -140,15 +152,19 @@ void setup()
 
     Serial.begin(115200);
 
+    setup_LED();
+
     setup_WiFi();
 
     setup_MQTT();
 
-    setup_LED();
-
     tickerEffects.attach(EFFECT_DURATION_SEC, handleTimer);
 
     btn.setEventHandler(handleButtonEvent);
+
+    ledLine.resume();
+
+    ledLine.setNextEffect();
 }
 
 void setup_WiFi()
@@ -221,6 +237,8 @@ void loop()
 {
     btn.check();
 
+    mqtt_loop();
+
     if (f_publishState)
     {
         f_publishState = false;
@@ -232,6 +250,4 @@ void loop()
     {
         FastLED.show();
     }
-
-    mqtt_loop();
 }
