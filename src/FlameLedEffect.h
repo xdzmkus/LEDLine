@@ -16,9 +16,9 @@ public:
 
 protected:
 
-	uint8_t* heatMap;
-	bool fireReversed;
-	CRGBPalette16 gPal;
+	uint8_t* heatMap = nullptr;
+	const bool fireReversed;
+	const CRGBPalette16 gPal;
 
 public:
 	FlameLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, bool reversed = false);

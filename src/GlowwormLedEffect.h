@@ -16,7 +16,7 @@ public:
 
 protected:
 
-	CRGB rgb;
+	const CRGB rgb;
 	uint16_t position = 0;
 	bool direction = true;
 	

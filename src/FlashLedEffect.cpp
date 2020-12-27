@@ -20,7 +20,7 @@ FlashLedEffect::~FlashLedEffect()
 void FlashLedEffect::init()
 {
 	flashState = false;
-	LedEffect::init();
+	clearAllLeds();
 }
 
 bool FlashLedEffect::paint()
@@ -30,7 +30,7 @@ bool FlashLedEffect::paint()
 
 	if (flashState)
 	{
-		fillAllLeds(CRGB::Black);
+		clearAllLeds();
 	}
 	else
 	{

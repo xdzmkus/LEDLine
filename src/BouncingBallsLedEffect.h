@@ -23,16 +23,16 @@ protected:
 
 	struct BOUNCING
 	{
-		CRGB  color;
-		int   position;
-		float height;
-		float velocity;
-		byte  dampingPercentage;
-		long  startTime;
+		CRGB	 color;
+		uint16_t position;
+		float	 height;
+		float	 velocity;
+		uint8_t	 dampingPercentage;
+		unsigned long startTime;
 	}
 	*balls = nullptr;
 
-	uint8_t	numBalls;
+	const uint8_t numBalls;
 
 public:
 	BouncingBallsLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, uint8_t ballsCount = 1);

@@ -18,18 +18,18 @@ protected:
 
 	const uint8_t BUGS_MAX_SPEED = 20;
 
+	const uint8_t numBugs;
+
 	struct BUGS
 	{
 		CRGB color;
 		int8_t speed;
 		uint16_t position;
 	}
-	*bugs;
-
-	uint8_t		numBugs;
+	*bugs = nullptr;
 
 public:
-	BugsLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, uint8_t bugs = 0);
+	BugsLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, uint8_t bugs = 1);
 	~BugsLedEffect();
 	
 	void init() override;

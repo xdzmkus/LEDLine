@@ -20,7 +20,7 @@ ColorsLedEffect::~ColorsLedEffect()
 void ColorsLedEffect::init()
 {
 	hue = 0;
-	LedEffect::init();
+	clearAllLeds();
 }
 
 bool ColorsLedEffect::paint()
@@ -30,10 +30,7 @@ bool ColorsLedEffect::paint()
 
 	hue += 2;
 
-	for (uint16_t i = 0; i < numLeds; i++)
-	{
-		ledLine[i] = CHSV(hue, 255, 255);
-	}
+	fillAllLeds(CHSV(hue, 255, 255));
 
 	return true;
 }

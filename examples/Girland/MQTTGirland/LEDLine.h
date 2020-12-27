@@ -6,15 +6,15 @@
 #include <FastLED.h>
 
 #include "LedEffect.h"
+#include "BouncingBallsLedEffect.h"
+#include "BugsLedEffect.h"
+#include "ColorsLedEffect.h"
+#include "FlameLedEffect.h"
 #include "FlashLedEffect.h"
 #include "GlowwormLedEffect.h"
-#include "ColorsLedEffect.h"
 #include "RainbowLedEffect.h"
 #include "SparklesLedEffect.h"
-#include "BugsLedEffect.h"
-#include "FlameLedEffect.h"
 #include "ThreeColorLedEffect.h"
-#include "BouncingBallsLedEffect.h"
 
 class LEDLine
 {
@@ -23,15 +23,15 @@ public:
 	static const uint8_t NUM_EFFECTS = 9;
 	const char* const availableEffects[NUM_EFFECTS] =
 	{
+		BouncingBallsLedEffect::name,
 		BugsLedEffect::name,
-		GlowwormLedEffect::name,
 		ColorsLedEffect::name,
-		SparklesLedEffect::name,
-		RainbowLedEffect::name,
 		FlameLedEffect::name,
 		FlashLedEffect::name,
-		ThreeColorLedEffect::name,
-		BouncingBallsLedEffect::name
+		GlowwormLedEffect::name,
+		RainbowLedEffect::name,
+		SparklesLedEffect::name,
+		ThreeColorLedEffect::name
 	};
 
 	LEDLine(CRGB leds[], uint16_t count) : leds(leds), numLeds(count), isOn(false)
@@ -45,20 +45,14 @@ public:
 
 	bool setEffectByName(const char* effectName)
 	{
-		if (strcmp(BugsLedEffect::name, effectName) == 0) {
-			delete effect; effect = new BugsLedEffect(leds, numLeds, 20);
+		if (strcmp(BouncingBallsLedEffect::name, effectName) == 0) {
+			delete effect; effect = new BouncingBallsLedEffect(leds, numLeds, 50, random8(0, numLeds / 8));
 		}
-		else if (strcmp(GlowwormLedEffect::name, effectName) == 0) {
-			delete effect; effect = new GlowwormLedEffect(leds, numLeds, 30);
+		else if (strcmp(BugsLedEffect::name, effectName) == 0) {
+			delete effect; effect = new BugsLedEffect(leds, numLeds, 20, random8(0, numLeds / 8));
 		}
 		else if (strcmp(ColorsLedEffect::name, effectName) == 0) {
 			delete effect; effect = new ColorsLedEffect(leds, numLeds, 10);
-		}
-		else if (strcmp(RainbowLedEffect::name, effectName) == 0) {
-			delete effect; effect = new RainbowLedEffect(leds, numLeds, 10);
-		}
-		else if (strcmp(SparklesLedEffect::name, effectName) == 0) {
-			delete effect; effect = new SparklesLedEffect(leds, numLeds, 20);
 		}
 		else if (strcmp(FlameLedEffect::name, effectName) == 0) {
 			delete effect; effect = new FlameLedEffect(leds, numLeds, 10);
@@ -66,11 +60,17 @@ public:
 		else if (strcmp(FlashLedEffect::name, effectName) == 0) {
 			delete effect; effect = new FlashLedEffect(leds, numLeds, 1);
 		}
-		else if (strcmp(ThreeColorLedEffect::name, effectName) == 0) {
-			delete effect; effect = new ThreeColorLedEffect(leds, numLeds, 30, { CRGB::White, 3, CRGB::Red, 2, CRGB::White, 3 }, 1, 2);
+		else if (strcmp(GlowwormLedEffect::name, effectName) == 0) {
+			delete effect; effect = new GlowwormLedEffect(leds, numLeds, 30);
 		}
-		else if (strcmp(BouncingBallsLedEffect::name, effectName) == 0) {
-			delete effect; effect = new BouncingBallsLedEffect(leds, numLeds, 50);
+		else if (strcmp(RainbowLedEffect::name, effectName) == 0) {
+			delete effect; effect = new RainbowLedEffect(leds, numLeds, 10);
+		}
+		else if (strcmp(SparklesLedEffect::name, effectName) == 0) {
+			delete effect; effect = new SparklesLedEffect(leds, numLeds, 20);
+		}
+		else if (strcmp(ThreeColorLedEffect::name, effectName) == 0) {
+			delete effect; effect = new ThreeColorLedEffect(leds, numLeds, 30, { CRGB::White, 3, CRGB::Red, 2, CRGB::White, 3 });
 		}
 		else {
 			return false;
@@ -78,7 +78,6 @@ public:
 
 		isOn = true;
 		return true;
-
 	};
 
 	bool setNextEffect()

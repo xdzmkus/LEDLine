@@ -21,7 +21,7 @@ RainbowLedEffect::~RainbowLedEffect()
 void RainbowLedEffect::init()
 {
 	hue = 0;
-	LedEffect::init();
+	clearAllLeds();
 }
 
 bool RainbowLedEffect::paint()

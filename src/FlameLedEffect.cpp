@@ -17,17 +17,21 @@ FlameLedEffect::FlameLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, bool re
 
 FlameLedEffect::~FlameLedEffect()
 {
-	delete[] heatMap;
+	if (heatMap != nullptr)
+	{
+		delete[] heatMap;
+		heatMap = nullptr;
+	}
 }
 
 void FlameLedEffect::init()
 {
-	LedEffect::init();
+	clearAllLeds();
 }
 
 bool FlameLedEffect::paint()
 {
-	if (!LedEffect::isReady())
+	if (!isReady() || heatMap == nullptr)
 		return false;
 
 	// Step 1.  Cool down every cell a little

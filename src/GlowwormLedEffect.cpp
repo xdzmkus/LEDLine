@@ -22,7 +22,7 @@ void GlowwormLedEffect::init()
 {
 	position = 0;
 	direction = true;
-	LedEffect::init();
+	clearAllLeds();
 }
 
 bool GlowwormLedEffect::paint()

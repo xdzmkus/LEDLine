@@ -21,7 +21,7 @@
 
 #endif
 
-#define LED_PIN D1    // D1 leds pin (connected to D5 on my NodeMCU 1.0 !!!)
+#define LED_PIN D3    // D1 leds pin (connected to D5 on my NodeMCU 1.0 !!!)
 #define BTN_PIN D6    // D6 button pin
 
 /*********** WS2812B leds *******************/

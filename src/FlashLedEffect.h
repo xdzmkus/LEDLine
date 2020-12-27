@@ -16,8 +16,8 @@ public:
 
 protected:
 
-	CRGB		flashColor;
-	bool		flashState = false;
+	const CRGB flashColor;
+	bool flashState = false;
 	
 public:
 	FlashLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, CRGB color = CRGB::Black);

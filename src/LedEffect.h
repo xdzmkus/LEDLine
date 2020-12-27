@@ -28,7 +28,7 @@ public:
 	LedEffect(CRGB leds[], uint16_t count, uint16_t Hz = 10);
 	virtual ~LedEffect();
 
-	virtual void init();
+	virtual void init() = 0;
 	virtual bool paint() = 0;
 
 	virtual operator const char* () const = 0;
@@ -37,6 +37,7 @@ protected:
 
 	CRGB getRandomColor() const;
 	void fillAllLeds(CRGB color);
+	void clearAllLeds();
 };
 
 #endif

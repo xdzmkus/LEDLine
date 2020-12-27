@@ -14,6 +14,7 @@ BouncingBallsLedEffect::BouncingBallsLedEffect(CRGB leds[], uint16_t count, uint
 	{
 		balls = new BOUNCING[numBalls];
 	}
+
 	init();
 }
 
@@ -28,25 +29,28 @@ BouncingBallsLedEffect::~BouncingBallsLedEffect()
 
 void BouncingBallsLedEffect::init()
 {
-	for (int i = 0; i < numBalls; i++)
+	if (balls != nullptr)
 	{
-		balls[i].color = getRandomColor();
-		balls[i].startTime = getClock();
-		balls[i].height = 0;
-		balls[i].position = 0;
-		balls[i].velocity = MaxVelocity;
-		balls[i].dampingPercentage = random(70, 90);
+		for (uint8_t i = 0; i < numBalls; i++)
+		{
+			balls[i].color = getRandomColor();
+			balls[i].startTime = getClock();
+			balls[i].height = 0;
+			balls[i].position = 0;
+			balls[i].velocity = MaxVelocity;
+			balls[i].dampingPercentage = random(70, 90);
+		}
 	}
 
-	LedEffect::init();
+	clearAllLeds();
 }
 
 bool BouncingBallsLedEffect::paint()
 {
-	if (isReady())
+	if (!isReady() || balls == nullptr)
 		return false;
 
-	for (int i = 0; i < numBalls; i++)
+	for (uint8_t i = 0; i < numBalls; i++)
 	{
 		float timeOfFlying = static_cast<float>(getClock() - balls[i].startTime) / LedEffect::CLOCKS_IN_SEC;
 		balls[i].height = balls[i].velocity * timeOfFlying - 0.5 * Gravity * timeOfFlying * timeOfFlying;

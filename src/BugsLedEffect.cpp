@@ -8,33 +8,43 @@
 const char* const BugsLedEffect::name = "BUGS";
 
 BugsLedEffect::BugsLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, uint8_t bugsCount)
-	: LedEffect(leds, count, Hz), numBugs((bugsCount == 0) ? random(count / 10 + 1, count / 5 + 1) : bugsCount)
+	: LedEffect(leds, count, Hz), numBugs(bugsCount)
 {
-	bugs = new BUGS[numBugs];
+	if (numBugs > 0)
+	{
+		bugs = new BUGS[numBugs];
+	}
 
 	init();
 }
 
 BugsLedEffect::~BugsLedEffect()
 {
-	delete[] bugs;
+	if (bugs != nullptr)
+	{
+		delete[] bugs;
+		bugs = nullptr;
+	}
 }
 
 void BugsLedEffect::init()
 {
-	for (uint8_t i = 0; i < numBugs; i++)
+	if (bugs != nullptr)
 	{
-		bugs[i].color = getRandomColor();
-		bugs[i].position = random(0, numLeds);
-		bugs[i].speed += random(-5, 6);
+		for (uint8_t i = 0; i < numBugs; i++)
+		{
+			bugs[i].color = getRandomColor();
+			bugs[i].position = random(0, numLeds);
+			bugs[i].speed += random(-5, 6);
+		}
 	}
 
-	LedEffect::init();
+	clearAllLeds();
 }
 
 bool BugsLedEffect::paint()
 {
-	if (!isReady())
+	if (!isReady() || bugs == nullptr)
 		return false;
 		
 	for (uint8_t i = 0; i < numBugs; i++)

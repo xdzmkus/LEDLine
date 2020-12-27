@@ -19,7 +19,7 @@ SparklesLedEffect::~SparklesLedEffect()
 
 void SparklesLedEffect::init()
 {
-	LedEffect::init();
+	clearAllLeds();
 }
 
 bool SparklesLedEffect::paint()

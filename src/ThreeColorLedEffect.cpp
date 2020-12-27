@@ -19,7 +19,7 @@ ThreeColorLedEffect::~ThreeColorLedEffect()
 
 void ThreeColorLedEffect::init()
 {
-	LedEffect::init();
+	clearAllLeds();
 
 	uint16_t position = 0;
 
@@ -69,7 +69,7 @@ bool ThreeColorLedEffect::paint()
 	{
 		restOfFade = timesToFade;
 		pulses--;
-		fillAllLeds(CRGB::Black);
+		clearAllLeds();
 		return true;
 	}
 
