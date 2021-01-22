@@ -3,8 +3,8 @@
 *
 */
 
-#ifndef _LEDEFFECT_h
-#define _LEDEFFECT_h
+#ifndef _ILEDEFFECT_h
+#define _ILEDEFFECT_h
 
 #if defined(ARDUINO) && ARDUINO >= 100
 #include "Arduino.h"
@@ -12,10 +12,10 @@
 #include "WProgram.h"
 #endif
 
-#include <EffectTimer.h>
+#include <IEffectTimer.h>
 #include <FastLED.h>
 
-class LedEffect :  public MillisTimer
+class ILedEffect :  public MillisTimer
 {
 protected:
 
@@ -25,8 +25,8 @@ protected:
 
 public:
 
-	LedEffect(CRGB leds[], uint16_t count, uint16_t Hz = 10);
-	virtual ~LedEffect();
+	ILedEffect(CRGB leds[], uint16_t count, uint16_t Hz = 10);
+	virtual ~ILedEffect();
 
 	virtual void init() = 0;
 	virtual bool paint() = 0;

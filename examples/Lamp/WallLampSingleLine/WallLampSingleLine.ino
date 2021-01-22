@@ -87,25 +87,19 @@ gz5JWYhbD6c38khSzJb0pNXCo3EuYAVa36kDM96k1BtWuhRS10Q1VXk=
 /*********** WS2812B leds *******************/
 #include <FastLED.h>
 
-#define NUM_LEDS_LEFT 8
-#define NUM_LEDS_CENTER 8
-#define NUM_LEDS_RIGHT 8
+#define NUM_LEDS 17
 
-#define CURRENT_LIMIT 2000
+#define CURRENT_LIMIT 3500
 #define MAX_BRIGHTNESS 255
 #define MIN_BRIGHTNESS 20
 
-uint16_t brightness = MAX_BRIGHTNESS;
+uint16_t brightness = MAX_BRIGHTNESS / 2;
 
-CRGB ledsLeft[NUM_LEDS_LEFT];
-CRGB ledsCenter[NUM_LEDS_CENTER];
-CRGB ledsRight[NUM_LEDS_RIGHT];
+CRGB leds[NUM_LEDS];
 
 /*********** LED Line Effects ***************/
-#include "LEDMultiLine.h"
-LEDLine8leds ledLineLeft(ledsLeft, NUM_LEDS_LEFT);
-LEDLine8leds ledLineCenter(ledsCenter, NUM_LEDS_CENTER);
-LEDLine8leds ledLineRight(ledsRight, NUM_LEDS_RIGHT);
+#include "LEDSingleLine.h"
+LEDLine17leds ledLine(leds, NUM_LEDS);
 
 #include <Ticker.h>
 #define EFFECT_DURATION_SEC 60
@@ -139,7 +133,7 @@ WiFiClient client;  // use WiFiClientSecure for SSL
 // Setup the MQTT client class by passing in the WiFi client
 Adafruit_MQTT_Client mqtt(&client, MQTT_SERVER, MQTT_SERVERPORT, MQTT_USERNAME, MQTT_KEY);
 
-Adafruit_MQTT_Publish   wallLampState  = Adafruit_MQTT_Publish(&mqtt, MQTT_TOPIC_PUB);
+Adafruit_MQTT_Publish   wallLampState = Adafruit_MQTT_Publish(&mqtt, MQTT_TOPIC_PUB);
 
 Adafruit_MQTT_Subscribe wallLampEffect = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPIC_SUB1, MQTT_QOS_1);
 Adafruit_MQTT_Subscribe wallLampAction = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPIC_SUB2, MQTT_QOS_1);
@@ -150,9 +144,7 @@ void turnOnLeds()
 {
     tickerEffects.attach(EFFECT_DURATION_SEC, changeEffect);
 
-    ledLineLeft.resume();
-    ledLineCenter.resume();
-    ledLineRight.resume();
+    ledLine.resume();
 
     digitalWrite(RELAY_PIN, HIGH);
 
@@ -163,9 +155,7 @@ void turnOffLeds()
 {
     tickerEffects.detach();
 
-    ledLineLeft.pause();
-    ledLineCenter.pause();
-    ledLineRight.pause();
+    ledLine.pause();
 
     digitalWrite(RELAY_PIN, LOW);
 
@@ -176,9 +166,7 @@ void changeEffect()
 {
     tickerEffects.detach();
 
-    ledLineLeft.setNextEffect();
-    ledLineCenter.setNextEffect();
-    ledLineRight.setNextEffect();
+    ledLine.setNextEffect();
 
     tickerEffects.attach(EFFECT_DURATION_SEC, changeEffect);
 
@@ -237,13 +225,7 @@ void setAction_callback(uint32_t x)
 
 void setEffect_callback(char* data, uint16_t len)
 {
-    bool success = false;
-
-    success |= ledLineLeft.setEffectByName(data);
-    success |= ledLineCenter.setEffectByName(data);
-    success |= ledLineRight.setEffectByName(data);
-
-    if (success)
+    if (ledLine.setEffectByName(data))
     {
         tickerEffects.detach();
     }
@@ -251,11 +233,7 @@ void setEffect_callback(char* data, uint16_t len)
 
 void publishState()
 {
-    String currentEffect = (ledLineLeft.getEffectName() == nullptr || !ledLineLeft.isRunning()) ? "OFF" : ledLineLeft.getEffectName();
-    currentEffect += " ";
-    currentEffect += (ledLineCenter.getEffectName() == nullptr || !ledLineCenter.isRunning()) ? "OFF" : ledLineCenter.getEffectName();
-    currentEffect += " ";
-    currentEffect += (ledLineRight.getEffectName() == nullptr || !ledLineRight.isRunning()) ? "OFF" : ledLineRight.getEffectName();
+    String currentEffect = (ledLine.getEffectName() == nullptr || !ledLine.isRunning()) ? "OFF" : ledLine.getEffectName();
 
     wallLampState.publish(currentEffect.c_str());
 }
@@ -314,9 +292,9 @@ void setup_MQTT()
 
 void setup_LED()
 {
-    FastLED.addLeds<WS2812B, LED_PIN_1, GRB>(ledsLeft, NUM_LEDS_LEFT);
-    FastLED.addLeds<WS2812B, LED_PIN_2, GRB>(ledsCenter, NUM_LEDS_CENTER);
-    FastLED.addLeds<WS2812B, LED_PIN_3, GRB>(ledsRight, NUM_LEDS_RIGHT);
+    FastLED.addLeds<WS2812B, LED_PIN_1, GRB>(leds, NUM_LEDS);
+    FastLED.addLeds<WS2812B, LED_PIN_2, GRB>(leds, NUM_LEDS);
+    FastLED.addLeds<WS2812B, LED_PIN_3, GRB>(leds, NUM_LEDS);
     FastLED.setMaxPowerInVoltsAndMilliamps(5, CURRENT_LIMIT);
     FastLED.setBrightness(constrain(brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS));
     FastLED.clear(true);
@@ -385,13 +363,7 @@ void loop()
         publishState();
     }
 
-    bool refresh = false;
-
-    refresh |= ledLineLeft.refresh();
-    refresh |= ledLineCenter.refresh();
-    refresh |= ledLineRight.refresh();
-
-    if (refresh)
+    if (ledLine.refresh())
     {
         FastLED.show();
     }

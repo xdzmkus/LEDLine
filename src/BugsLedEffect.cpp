@@ -8,7 +8,7 @@
 const char* const BugsLedEffect::name = "BUGS";
 
 BugsLedEffect::BugsLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, uint8_t bugsCount)
-	: LedEffect(leds, count, Hz), numBugs(bugsCount)
+	: ILedEffect(leds, count, Hz), numBugs(bugsCount)
 {
 	if (numBugs > 0)
 	{

@@ -8,7 +8,7 @@
 const char* const ThreeColorLedEffect::name = "THREECOLOR";
 
 ThreeColorLedEffect::ThreeColorLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, THREECOLOR flag, uint8_t pulseTime, uint8_t pulseCount)
-	: LedEffect(leds, count, Hz), flag(flag), timesToFade(Hz* pulseTime), pulseCount(pulseCount)
+	: ILedEffect(leds, count, Hz), flag(flag), timesToFade(Hz* pulseTime), pulseCount(pulseCount)
 {
 	init();
 }

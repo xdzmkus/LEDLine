@@ -6,10 +6,10 @@
 #ifndef __THREECOLORLEDEFFECT_H__
 #define __THREECOLORLEDEFFECT_H__
 
-#include "LedEffect.h"
+#include "ILedEffect.h"
 
 
-class ThreeColorLedEffect : public LedEffect
+class ThreeColorLedEffect : public ILedEffect
 {
 public:
 

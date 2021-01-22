@@ -1,25 +1,25 @@
 /*
-* LedEffect.cpp
+* ILedEffect.cpp
 *
 */
 
-#include "LedEffect.h"
+#include "ILedEffect.h"
 
-LedEffect::LedEffect(CRGB leds[], uint16_t count, uint16_t Hz)
+ILedEffect::ILedEffect(CRGB leds[], uint16_t count, uint16_t Hz)
 	: MillisTimer(Hz ? MillisTimer::CLOCKS_IN_SEC / Hz : 0), ledLine(leds), numLeds(count), speed(Hz)
 {
 }
 
-LedEffect::~LedEffect()
+ILedEffect::~ILedEffect()
 {
 }
 
-CRGB LedEffect::getRandomColor() const
+CRGB ILedEffect::getRandomColor() const
 {
 	return CHSV(random(0, 255), 255, 255);
 }
 
-void LedEffect::fillAllLeds(CRGB color)
+void ILedEffect::fillAllLeds(CRGB color)
 {
 	for (uint16_t i = 0; i < numLeds; i++)
 	{
@@ -27,7 +27,7 @@ void LedEffect::fillAllLeds(CRGB color)
 	}
 }
 
-void LedEffect::clearAllLeds()
+void ILedEffect::clearAllLeds()
 {
 	// zero out the led data managed by this effect
 	memset8((void*)ledLine, 0, sizeof(struct CRGB) * numLeds);

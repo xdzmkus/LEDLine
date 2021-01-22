@@ -1,13 +1,12 @@
 #if defined(ESP32) || defined(ESP8266)
 #define LED_PIN D3  // D1 leds pin (connected to D5 on my NodeMCU1.0 !!!)
-#define BTN_PIN D6  // D6 button pin
+#define BTN_PIN 16  // D0 button pin
 #else
 #define LED_PIN 9   // leds pin
 #define BTN_PIN 10  // button pin
 #endif
 
 #include <Denel_Button.h>
-
 Denel_Button btn(BTN_PIN, BUTTON_CONNECTED::VCC, BUTTON_NORMAL::OPEN);
 
 #include <EEPROM.h>
@@ -26,32 +25,104 @@ uint16_t brightness = MAX_BRIGHTNESS/2;
 
 CRGB leds[NUM_LEDS];
 
-#include "LEDLine.h"
+#include "LEDLine256.h"
 
-LEDLine ledLine(leds, NUM_LEDS);
+LEDLine256 ledLine(leds, NUM_LEDS);
+
+void loadEffect()
+{
+	Serial.println(F("LEDLine EFFECTS:"));
+	for (uint8_t var = 0; var < ledLine.getAllEffectsNumber(); var++)
+	{
+		Serial.println(ledLine.getAllEffectsNames()[var]);
+	}
+
+#if defined(ESP32) || defined(ESP8266)
+	EEPROM.begin(EEPROM_EFFECT_LENGTH);
+#endif
+
+	for (int i = 0; i < EEPROM_EFFECT_LENGTH; i++)
+	{
+		EFFECT_NAME[i] = EEPROM.read(EEPROM_ADDRESS_EFFECT + i);
+	}
+
+	EFFECT_NAME[EEPROM_EFFECT_LENGTH] = '\0';
+
+	if (ledLine.setEffectByName(EFFECT_NAME))
+	{
+		ledLine.resume();
+	}
+
+	Serial.print(F("LOADED: ")); Serial.println(EFFECT_NAME);
+}
+
+void saveEffect()
+{
+	strncpy(EFFECT_NAME, (ledLine.getEffectName() == nullptr || !ledLine.isRunning()) ? "OFF" : ledLine.getEffectName(), EEPROM_EFFECT_LENGTH);
+
+#if defined(ESP32) || defined(ESP8266)
+	EEPROM.begin(EEPROM_EFFECT_LENGTH + 1);
+#endif
+
+	for (uint8_t i = 0; i < EEPROM_EFFECT_LENGTH + 1; i++)
+	{
+		EEPROM.write(EEPROM_ADDRESS_EFFECT + i, EFFECT_NAME[i]);
+	}
+#if defined(ESP32) || defined(ESP8266)
+	EEPROM.commit();
+#endif
+
+	ledLine.pause();
+
+	Serial.print(F("SAVED: ")); Serial.println(EFFECT_NAME);
+}
+
+void changeEffect()
+{
+	if (ledLine.setNextEffect() && !ledLine.isRunning())
+	{
+		ledLine.resume();
+	}
+
+	Serial.print(F("EFFECT: "));
+	Serial.println(ledLine.getEffectName());
+}
+
+void turnOffLeds()
+{
+	ledLine.pause();
+	FastLED.clear(true);
+
+	Serial.println(F("OFF"));
+}
+
+void adjustBrightness()
+{
+	brightness += MIN_BRIGHTNESS;
+	if (brightness > MAX_BRIGHTNESS + MIN_BRIGHTNESS * 2)
+	{
+		brightness = 0;
+	}
+	FastLED.setBrightness(constrain(brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS));
+
+	Serial.print(F("BRIGHTNESS: ")); Serial.println(brightness);
+}
 
 void handleButtonEvent(const Denel_Button* button, BUTTON_EVENT eventType)
 {
 	switch (eventType)
 	{
 	case BUTTON_EVENT::Clicked:
-		ledLine.setNextEffect();
-		Serial.print(F("EFFECT: ")); Serial.println(ledLine.getEffectName());
+		changeEffect();
 		break;
 	case BUTTON_EVENT::DoubleClicked:
-		save();
-		ledLine.pause();
+		saveEffect();
 		break;
 	case BUTTON_EVENT::RepeatClicked:
-		brightness += MIN_BRIGHTNESS;
-		if (brightness > MAX_BRIGHTNESS + MIN_BRIGHTNESS*2) brightness = 0;
-		FastLED.setBrightness(constrain(brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS));
-		Serial.print(F("BRIGHTNESS: ")); Serial.println(brightness);
+		adjustBrightness();
 		break;
 	case BUTTON_EVENT::LongPressed:
-		ledLine.pause();
-		FastLED.clear(true);
-		Serial.println(F("OFF"));
+		turnOffLeds();
 		break;
 	default:
 		break;
@@ -70,60 +141,22 @@ void setup()
 {
 	Serial.begin(115200);
 
-	Serial.println(F("LEDLine EFFECTS:"));
-	for (auto var : ledLine.availableEffects)
-		Serial.println(var);
-
 	setupLED();
 
+	pinMode(BTN_PIN, INPUT_PULLDOWN_16);
 	btn.setEventHandler(handleButtonEvent);
 
-	load();
+	loadEffect();
 }
 
 void loop()
 {
 	btn.check();
 
-	if (ledLine.paint())
+	if (ledLine.refresh())
 	{
 		FastLED.show();
 	}
 }
 
-void save()
-{
-	strncpy(EFFECT_NAME, (ledLine.getEffectName() == nullptr || !ledLine.isRunning()) ? "OFF" : ledLine.getEffectName(), EEPROM_EFFECT_LENGTH);
 
-#if defined(ESP32) || defined(ESP8266)
-	EEPROM.begin(EEPROM_EFFECT_LENGTH + 1);
-#endif
-
-	for (uint8_t i = 0; i < EEPROM_EFFECT_LENGTH + 1; i++)
-	{
-		EEPROM.write(EEPROM_ADDRESS_EFFECT + i, EFFECT_NAME[i]);
-	}
-#if defined(ESP32) || defined(ESP8266)
-	EEPROM.commit();
-#endif
-
-	Serial.print(F("SAVED: ")); Serial.println(EFFECT_NAME);
-}
-
-void load()
-{
-#if defined(ESP32) || defined(ESP8266)
-	EEPROM.begin(EEPROM_EFFECT_LENGTH);
-#endif
-
-	for (int i = 0; i < EEPROM_EFFECT_LENGTH; i++)
-	{
-		EFFECT_NAME[i] = EEPROM.read(EEPROM_ADDRESS_EFFECT + i);
-	}
-
-	EFFECT_NAME[EEPROM_EFFECT_LENGTH] = '\0';
-
-	ledLine.setEffectByName(EFFECT_NAME);
-
-	Serial.print(F("LOADED: ")); Serial.println(EFFECT_NAME);
-}

@@ -6,9 +6,9 @@
 #ifndef __BUGSLEDEFFECT_H__
 #define __BUGSLEDEFFECT_H__
 
-#include "LedEffect.h"
+#include "ILedEffect.h"
 
-class BugsLedEffect : public LedEffect
+class BugsLedEffect : public ILedEffect
 {
 public:
 

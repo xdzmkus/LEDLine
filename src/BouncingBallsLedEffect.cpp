@@ -5,10 +5,10 @@
 
 #include "BouncingBallsLedEffect.h"
 
-const char* const BouncingBallsLedEffect::name = "BOUNSINGBALLS";
+const char* const BouncingBallsLedEffect::name = "BOUNCINGBALLS";
 
 BouncingBallsLedEffect::BouncingBallsLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, uint8_t ballsCount)
-	: LedEffect(leds, count, Hz), MaxVelocity(sqrt(2 * Gravity * (count - 1))), numBalls(ballsCount)
+	: ILedEffect(leds, count, Hz), MaxVelocity(sqrt(2 * Gravity * (count - 1))), numBalls(ballsCount)
 {
 	if (numBalls > 0)
 	{
@@ -52,7 +52,7 @@ bool BouncingBallsLedEffect::paint()
 
 	for (uint8_t i = 0; i < numBalls; i++)
 	{
-		float timeOfFlying = static_cast<float>(getClock() - balls[i].startTime) / LedEffect::CLOCKS_IN_SEC;
+		float timeOfFlying = static_cast<float>(getClock() - balls[i].startTime) / ILedEffect::CLOCKS_IN_SEC;
 		balls[i].height = balls[i].velocity * timeOfFlying - 0.5 * Gravity * timeOfFlying * timeOfFlying;
 
 		if (balls[i].height < 0)

@@ -11,13 +11,13 @@
 #define MQTT_USERNAME       "your mqtt username"
 #define MQTT_KEY            "and password"
 
-#define MQTT_TOPIC_PUB      MQTT_USERNAME"/current/state"
-#define MQTT_TOPIC_SUB1     MQTT_USERNAME"/new/effect"
-#define MQTT_TOPIC_SUB2     MQTT_USERNAME"/new/onoff"
+#define MQTT_TOPIC_PUB      MQTT_USERNAME"/get/state"
+#define MQTT_TOPIC_SUB1     MQTT_USERNAME"/set/effect"
+#define MQTT_TOPIC_SUB2     MQTT_USERNAME"/set/action"
 
 #define ON_CODE             6735
 #define OFF_CODE            2344
-#define PAUSE_CODE          2747
+#define NEXT_CODE           2747
 
 #endif
 
@@ -35,8 +35,8 @@ uint16_t brightness = MIN_BRIGHTNESS;
 CRGB leds[NUM_LEDS];
 
 /*********** LED Line Effects ***************/
-#include "LEDLine.h"
-LEDLine ledLine(leds, NUM_LEDS);
+#include "LEDLine256.h"
+LEDLine256 ledLine(leds, NUM_LEDS);
 
 #include <Ticker.h>
 #define EFFECT_DURATION_SEC 45
@@ -52,41 +52,72 @@ volatile boolean f_publishState = true;
 #include <Adafruit_MQTT_Client.h>
 
 // Create an ESP8266 WiFiClient class to connect to the MQTT server.
-WiFiClient client;
-//WiFiClientSecure client;  // use WiFiClientSecure for SSL
+WiFiClient client;  // use WiFiClientSecure for SSL
 
 // Setup the MQTT client class by passing in the WiFi client
 Adafruit_MQTT_Client mqtt(&client, MQTT_SERVER, MQTT_SERVERPORT, MQTT_USERNAME, MQTT_KEY);
-//Adafruit_MQTT_Client mqtt(&client, MQTT_SERVER, MQTT_SERVERPORT);
 
-Adafruit_MQTT_Publish garlandState = Adafruit_MQTT_Publish(&mqtt, MQTT_TOPIC_PUB);
+Adafruit_MQTT_Publish   garlandState = Adafruit_MQTT_Publish(&mqtt, MQTT_TOPIC_PUB);
+
 Adafruit_MQTT_Subscribe garlandEffect = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPIC_SUB1, MQTT_QOS_1);
-Adafruit_MQTT_Subscribe garlandOnOff = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPIC_SUB2, MQTT_QOS_1);
+Adafruit_MQTT_Subscribe garlandAction = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPIC_SUB2, MQTT_QOS_1);
 
 /********************************************/
 
-void handleTimer()
+void turnOnLeds()
 {
-    if (ledLine.isRunning()) ledLine.setNextEffect();
+    tickerEffects.attach(EFFECT_DURATION_SEC, changeEffect);
+
+    ledLine.resume();
+
     f_publishState = true;
 }
 
-void onoff_callback(uint32_t x)
+void turnOffLeds()
+{
+    tickerEffects.detach();
+
+    ledLine.pause();
+
+    f_publishState = true;
+}
+
+void changeEffect()
+{
+    tickerEffects.detach();
+
+    ledLine.setNextEffect();
+
+    tickerEffects.attach(EFFECT_DURATION_SEC, changeEffect);
+
+    f_publishState = true;
+}
+
+void adjustBrightness()
+{
+    brightness += MIN_BRIGHTNESS;
+    if (brightness > MAX_BRIGHTNESS + MIN_BRIGHTNESS * 2)
+    {
+        brightness = 0;
+    }
+    FastLED.setBrightness(constrain(brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS));
+}
+
+void setAction_callback(uint32_t x)
 {
     Serial.print(F("on/off with code: "));
     Serial.println(x);
 
     switch (x)
     {
-    case OFF_CODE:
-        FastLED.clear(true);
-        ledLine.pause();
-        break;
-    case PAUSE_CODE:
-        ledLine.pause();
-        break;
     case ON_CODE:
-        ledLine.resume();
+        turnOnLeds();
+        break;
+    case OFF_CODE:
+        turnOffLeds();
+        break;
+    case NEXT_CODE:
+        changeEffect();
         break;
     default:
         f_publishState = true;
@@ -94,19 +125,23 @@ void onoff_callback(uint32_t x)
     }
 }
 
-void newEffect_callback(char* data, uint16_t len)
+void setEffect_callback(char* data, uint16_t len)
 {
     Serial.print(F("new effect requested: "));
     Serial.println(data);
 
-    ledLine.setEffectByName(data);
+    if (ledLine.setEffectByName(data))
+    {
+        tickerEffects.detach();
+    }
 }
 
 void publishState()
 {
     auto currentEffect = (ledLine.getEffectName() == nullptr || !ledLine.isRunning()) ? "OFF" : ledLine.getEffectName();
 
-    Serial.print(F("Publish message: ")); Serial.println(currentEffect);
+    Serial.print(F("Publish message: "));
+    Serial.println(currentEffect);
 
     if (!garlandState.publish(currentEffect))
     {
@@ -126,29 +161,31 @@ void setup()
 
     setup_MQTT();
 
-    tickerEffects.attach(EFFECT_DURATION_SEC, handleTimer);
-
-    ledLine.resume();
-
-    ledLine.setNextEffect();
+    turnOnLeds();
 }
 
 void setup_WiFi()
 {
     Serial.println();
-    Serial.print(F("Connecting to ")); Serial.println(WLAN_SSID);
+    Serial.print(F("Connecting to "));
+    Serial.println(WLAN_SSID);
 
     WiFi.mode(WIFI_STA);                  // Set the ESP8266 to be a WiFi-client
     WiFi.hostname(WLAN_HOSTNAME);
     WiFi.begin(WLAN_SSID, WLAN_PASS);
 
-    while (WiFi.status() != WL_CONNECTED)
+    for (uint8_t s = 0; (WiFi.status() != WL_CONNECTED) && (s < 20); s++)
     {
         digitalWrite(LED_BUILTIN, LOW);   // Turn the LED on (Note that LOW is the voltage level but actually the LED is on; this is because it is active low on the ESP-01)
         delay(500);
         Serial.print(".");
         digitalWrite(LED_BUILTIN, HIGH);  // Turn the LED off by making the voltage HIGH
         delay(200);
+    }
+    if (!WiFi.isConnected())
+    {
+        Serial.println("Connection Failed! Rebooting...");
+        ESP.restart();
     }
 
     Serial.println("");
@@ -159,11 +196,11 @@ void setup_WiFi()
 
 void setup_MQTT()
 {
-    garlandEffect.setCallback(newEffect_callback);
+    garlandEffect.setCallback(setEffect_callback);
     mqtt.subscribe(&garlandEffect);
 
-    garlandOnOff.setCallback(onoff_callback);
-    mqtt.subscribe(&garlandOnOff);
+    garlandAction.setCallback(setAction_callback);
+    mqtt.subscribe(&garlandAction);
 }
 
 void setup_LED()
@@ -210,7 +247,7 @@ void loop()
         publishState();
     }
 
-    if (ledLine.paint())
+    if (ledLine.refresh())
     {
         FastLED.show();
     }

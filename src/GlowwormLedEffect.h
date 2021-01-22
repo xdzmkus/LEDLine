@@ -6,9 +6,9 @@
 #ifndef __GLOWWORMLEDEFFECT_H__
 #define __GLOWWORMLEDEFFECT_H__
 
-#include "LedEffect.h"
+#include "ILedEffect.h"
 
-class GlowwormLedEffect : public LedEffect
+class GlowwormLedEffect : public ILedEffect
 {
 public:
 

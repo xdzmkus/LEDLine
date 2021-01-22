@@ -10,9 +10,9 @@ uint16_t brightness = MAX_BRIGHTNESS/2;
 
 CRGB leds[NUM_LEDS];
 
-#include "LEDLine.h"
+#include "LedLine.h"
 
-LEDLine ledLine(leds, NUM_LEDS);
+LedLine ledLine(leds, NUM_LEDS);
 
 #define NAME_EFFECT_LENGTH 15
 
@@ -65,34 +65,39 @@ void setup()
 {
 	Serial.begin(115200);
 
-	Serial.println(F("LEDLine EFFECTS:"));
-	for (auto var : ledLine.availableEffects)
-		Serial.println(var);
-
 	setupLED();
 
-	ledLine.setNextEffect();
+	Serial.println(F("LEDLine EFFECTS:"));
+	for (uint8_t var = 0; var < ledLine.getAllEffectsNumber(); var++)
+	{
+		Serial.println(ledLine.getAllEffectsNames()[var]);
+	}
+
+	ledLine.setEffectByIdx(0);
+	ledLine.resume();
 }
 
 void loop()
 {
 	if (isNewEffect)
 	{
-		Serial.print(F("NEW_EFFECT:"));	Serial.println(EFFECT_NAME);
-
 		isNewEffect = false;
+
+		Serial.print(F("NEW_EFFECT:"));
+		Serial.println(EFFECT_NAME);
+
 		if (ledLine.setEffectByName(EFFECT_NAME))
 		{
-			ledLine.resume();
+			Serial.println(F("OK"));
 		}
 		else
 		{
-			Serial.println(F("BAD_EFFECT"));
+			Serial.println(F("NONEXISTING"));
 		}
 		Serial.flush();
 	}
 
-	if (ledLine.paint())
+	if (ledLine.refresh())
 	{
 		FastLED.show();
 	}

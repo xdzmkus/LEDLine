@@ -1,7 +1,7 @@
-#ifndef _EFFECT_TIMER_H
-#define _EFFECT_TIMER_H
+#ifndef _IEFFECT_TIMER_H
+#define _IEFFECT_TIMER_H
 
-class EffectTimer
+class IEffectTimer
 {
 protected:
 
@@ -11,12 +11,12 @@ protected:
 
 public:
 
-	EffectTimer(unsigned long interval, bool start = true)
+	IEffectTimer(unsigned long interval, bool start = true)
 		: active(start), interval(interval), lastTime(0)
 	{
 	};
 
-	virtual ~EffectTimer()
+	virtual ~IEffectTimer()
 	{
 	};
 
@@ -42,14 +42,14 @@ protected:
 	virtual unsigned long getClock() const = 0;
 };
 
-class MillisTimer : public EffectTimer
+class MillisTimer : public IEffectTimer
 {
 public:
 
 	static const unsigned long CLOCKS_IN_SEC = 1000UL;
 
 	MillisTimer(unsigned long interval, bool start = true)
-		: EffectTimer(interval, start)
+		: IEffectTimer(interval, start)
 	{
 	};
 
@@ -60,14 +60,14 @@ protected:
 	};
 };
 
-class MicrosTimer : public EffectTimer
+class MicrosTimer : public IEffectTimer
 {
 public:
 
 	static const unsigned long CLOCKS_IN_SEC = 1000000UL;
 
 	MicrosTimer(unsigned long interval, bool start = true)
-		: EffectTimer(interval, start)
+		: IEffectTimer(interval, start)
 	{
 	};
 

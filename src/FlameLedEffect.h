@@ -6,9 +6,9 @@
 #ifndef __FLAMELEDEFFECT_H__
 #define __FLAMELEDEFFECT_H__
 
-#include "LedEffect.h"
+#include "ILedEffect.h"
 
-class FlameLedEffect : public LedEffect
+class FlameLedEffect : public ILedEffect
 {
 public:
 

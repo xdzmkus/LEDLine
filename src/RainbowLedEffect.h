@@ -6,9 +6,9 @@
 #ifndef __RAINBOWLEDEFFECT_H__
 #define __RAINBOWLEDEFFECT_H__
 
-#include "LedEffect.h"
+#include "ILedEffect.h"
 
-class RainbowLedEffect : public LedEffect
+class RainbowLedEffect : public ILedEffect
 {
 public:
 

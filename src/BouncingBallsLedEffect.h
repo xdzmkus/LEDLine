@@ -6,9 +6,9 @@
 #ifndef __BOUNSINGBALLSLEDEFFECT_H__
 #define __BOUNSINGBALLSLEDEFFECT_H__
 
-#include "LedEffect.h"
+#include "ILedEffect.h"
 
-class BouncingBallsLedEffect : public LedEffect
+class BouncingBallsLedEffect : public ILedEffect
 {
 private:
 

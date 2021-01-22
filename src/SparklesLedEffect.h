@@ -6,9 +6,9 @@
 #ifndef __SPARKLESLEDEFFECT_H__
 #define __SPARKLESLEDEFFECT_H__
 
-#include "LedEffect.h"
+#include "ILedEffect.h"
 
-class SparklesLedEffect : public LedEffect
+class SparklesLedEffect : public ILedEffect
 {
 public:
 
