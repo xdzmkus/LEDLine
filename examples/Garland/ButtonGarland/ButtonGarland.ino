@@ -5,6 +5,7 @@
 #define LED_PIN 9   // leds pin
 #define BTN_PIN 10  // button pin
 #endif
+#define UNPINNED_ANALOG_PIN A0 // not connected analog pin
 
 #include <Denel_Button.h>
 Denel_Button btn(BTN_PIN, BUTTON_CONNECTED::VCC, BUTTON_NORMAL::OPEN);
@@ -139,6 +140,8 @@ void setupLED()
 
 void setup()
 {
+	randomSeed(analogRead(UNPINNED_ANALOG_PIN));
+
 	Serial.begin(115200);
 
 	setupLED();

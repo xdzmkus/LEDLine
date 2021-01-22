@@ -1,9 +1,9 @@
 /*
-* LedLine.cpp
+* LEDLine.cpp
 *
 */
 
-#include "LedLine.h"
+#include "LEDLine.h"
 
 #include "BouncingBallsLedEffect.h"
 #include "BugsLedEffect.h"
@@ -15,9 +15,9 @@
 #include "SparklesLedEffect.h"
 #include "ThreeColorLedEffect.h"
 
-const uint8_t LedLine::NUM_EFFECTS = 9;
+const uint8_t LEDLine::NUM_EFFECTS = 9;
 
-const char* LedLine::availableEffects[NUM_EFFECTS] =
+const char* LEDLine::availableEffects[NUM_EFFECTS] =
 {
 	BouncingBallsLedEffect::name,
 	BugsLedEffect::name,
@@ -30,27 +30,27 @@ const char* LedLine::availableEffects[NUM_EFFECTS] =
 	ThreeColorLedEffect::name
 };
 
-LedLine::LedLine(CRGB leds[], uint16_t count, bool start)
+LEDLine::LEDLine(CRGB leds[], uint16_t count, bool start)
 	: leds(leds), numLeds(count), isOn(start)
 {
 }
 
-LedLine::~LedLine()
+LEDLine::~LEDLine()
 {
 	delete effect;
 }
 
-uint8_t LedLine::getAllEffectsNumber() const
+uint8_t LEDLine::getAllEffectsNumber() const
 {
 	return NUM_EFFECTS;
 }
 
-const char** LedLine::getAllEffectsNames() const
+const char** LEDLine::getAllEffectsNames() const
 {
 	return availableEffects;
 }
 
-bool LedLine::setEffectByName(const char* effectName)
+bool LEDLine::setEffectByName(const char* effectName)
 {
 	if (strcmp(BouncingBallsLedEffect::name, effectName) == 0) {
 		delete effect; effect = new BouncingBallsLedEffect(leds, numLeds, 50);
@@ -86,7 +86,7 @@ bool LedLine::setEffectByName(const char* effectName)
 	return true;
 }
 
-bool LedLine::setEffectByIdx(uint8_t idx)
+bool LEDLine::setEffectByIdx(uint8_t idx)
 {
 	if (idx >= getAllEffectsNumber())
 	{
@@ -96,7 +96,7 @@ bool LedLine::setEffectByIdx(uint8_t idx)
 	return setEffectByName(getAllEffectsNames()[idx]);
 }
 
-bool LedLine::setNextEffect()
+bool LEDLine::setNextEffect()
 {
 	uint8_t nextEffectIdx = getEffectIdx() + 1;
 	
@@ -106,12 +106,12 @@ bool LedLine::setNextEffect()
 	return setEffectByIdx(nextEffectIdx);
 }
 
-const char* LedLine::getEffectName() const
+const char* LEDLine::getEffectName() const
 {
 	return (effect != nullptr) ? static_cast<const char*>(*effect) : nullptr;
 }
 
-uint8_t LedLine::getEffectIdx() const
+uint8_t LEDLine::getEffectIdx() const
 {
 	if (effect != nullptr)
 	{
@@ -127,24 +127,24 @@ uint8_t LedLine::getEffectIdx() const
 	return getAllEffectsNumber();		// non-existing effect index
 }
 
-void LedLine::pause()
+void LEDLine::pause()
 {
 	isOn = false;
 	if (effect != nullptr) effect->stop();
 }
 
-void LedLine::resume()
+void LEDLine::resume()
 {
 	isOn = true;
 	if (effect != nullptr) effect->start();
 }
 
-bool LedLine::refresh() const
+bool LEDLine::refresh() const
 {
 	return (!isOn || effect == nullptr) ? false : effect->paint();
 }
 
-bool LedLine::isRunning() const
+bool LEDLine::isRunning() const
 {
 	return isOn;
 }

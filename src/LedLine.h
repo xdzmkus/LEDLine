@@ -1,5 +1,5 @@
 /*
-* LedLine.h
+* LEDLine.h
 *
 */
 
@@ -9,7 +9,7 @@
 #include <FastLED.h>
 #include "ILedEffect.h"
 
-class LedLine
+class LEDLine
 {
 private:
 
@@ -18,9 +18,9 @@ private:
 
 public:
 
-	LedLine(CRGB leds[], uint16_t count, bool start = false);
+	LEDLine(CRGB leds[], uint16_t count, bool start = false);
 
-	virtual ~LedLine();
+	virtual ~LEDLine();
 
 	virtual uint8_t getAllEffectsNumber() const;
 

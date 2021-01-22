@@ -5,7 +5,7 @@
 
 #include <FastLED.h>
 
-#include "LedLine.h"
+#include "LEDLine.h"
 #include "BouncingBallsLedEffect.h"
 #include "BugsLedEffect.h"
 #include "ColorsLedEffect.h"
@@ -16,11 +16,11 @@
 #include "SparklesLedEffect.h"
 #include "ThreeColorLedEffect.h"
 
-class LEDLine256 : public LedLine
+class LEDLine256 : public LEDLine
 {
 public:
 
-	LEDLine256(CRGB leds[], uint16_t count) : LedLine(leds, count)
+	LEDLine256(CRGB leds[], uint16_t count) : LEDLine(leds, count)
 	{
 	};
 

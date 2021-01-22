@@ -1,5 +1,7 @@
 #define LED_PIN 9	// leds pin
 
+#define UNPINNED_ANALOG_PIN A0 // not connected analog pin
+
 #include <FastLED.h>
 #define NUM_LEDS 8
 #define CURRENT_LIMIT 500
@@ -10,9 +12,9 @@ uint16_t brightness = MAX_BRIGHTNESS/2;
 
 CRGB leds[NUM_LEDS];
 
-#include "LedLine.h"
+#include "LEDLine.h"
 
-LedLine ledLine(leds, NUM_LEDS);
+LEDLine ledLine(leds, NUM_LEDS);
 
 #define NAME_EFFECT_LENGTH 15
 
@@ -63,6 +65,8 @@ void setupLED()
 
 void setup()
 {
+	randomSeed(analogRead(UNPINNED_ANALOG_PIN));
+
 	Serial.begin(115200);
 
 	setupLED();
