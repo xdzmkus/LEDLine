@@ -45,7 +45,7 @@ uint8_t LEDLine::getAllEffectsNumber() const
 	return NUM_EFFECTS;
 }
 
-const char** LEDLine::getAllEffectsNames() const
+const char* const* LEDLine::getAllEffectsNames() const
 {
 	return availableEffects;
 }

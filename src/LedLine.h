@@ -24,7 +24,7 @@ public:
 
 	virtual uint8_t getAllEffectsNumber() const;
 
-	virtual const char** getAllEffectsNames() const;
+	virtual const char* const* getAllEffectsNames() const;
 
 	virtual const char* getEffectName() const;
 
