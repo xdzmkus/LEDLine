@@ -23,6 +23,8 @@ protected:
 	const uint16_t numLeds;
 	const uint16_t speed;
 
+	String id;
+
 public:
 
 	ILedEffect(CRGB leds[], uint16_t count, uint16_t Hz = 10);
@@ -33,6 +35,8 @@ public:
 
 	virtual operator const char* () const = 0;
 	
+	virtual void setId(const char* id);
+
 protected:
 
 	CRGB getRandomColor() const;

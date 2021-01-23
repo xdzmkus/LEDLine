@@ -14,6 +14,11 @@ ILedEffect::~ILedEffect()
 {
 }
 
+void ILedEffect::setId(const char* id)
+{
+	this->id = String(id);
+}
+
 CRGB ILedEffect::getRandomColor() const
 {
 	return CHSV(random(0, 255), 255, 255);

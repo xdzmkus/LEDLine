@@ -113,11 +113,13 @@ const char* LEDLine::getEffectName() const
 
 uint8_t LEDLine::getEffectIdx() const
 {
-	if (effect != nullptr)
+	const char* effectName = getEffectName();
+
+	if (effectName != nullptr)
 	{
 		for (uint8_t idx = 0; idx < getAllEffectsNumber(); idx++)
 		{
-			if (strcmp(getAllEffectsNames()[idx], static_cast<const char*>(*effect)) == 0)
+			if (strcmp(getAllEffectsNames()[idx], effectName) == 0)
 			{
 				return idx;
 			}
