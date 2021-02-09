@@ -39,7 +39,7 @@ public:
 	ThreeColorLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, THREECOLOR flag, uint8_t pulseTime = 1, uint8_t pulseCount = 2);
 	~ThreeColorLedEffect();
 
-	void init() override;
+	void reset() override;
 	bool paint() override;
 
 	operator const char* () const { return name; }

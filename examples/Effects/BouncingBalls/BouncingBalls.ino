@@ -31,6 +31,8 @@ void setup()
 	setupLED();
 
 	effect = new BouncingBallsLedEffect(leds, NUM_LEDS, 30, 3);
+
+	effect->start();
 }
 
 void loop()

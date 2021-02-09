@@ -30,7 +30,7 @@ CRGB leds[NUM_LEDS];
 
 LEDLine256 ledLine(leds, NUM_LEDS);
 
-void loadEffect()
+void loadState()
 {
 	Serial.println(F("LEDLine EFFECTS:"));
 	for (uint8_t var = 0; var < ledLine.getAllEffectsNumber(); var++)
@@ -51,15 +51,19 @@ void loadEffect()
 
 	if (ledLine.setEffectByName(EFFECT_NAME))
 	{
-		ledLine.resume();
+		Serial.print(F("LOADED EFFECT: "));
+	}
+	else
+	{
+		Serial.print(F("WRONG EFFECT: "));
 	}
 
-	Serial.print(F("LOADED: ")); Serial.println(EFFECT_NAME);
+	Serial.println(EFFECT_NAME);
 }
 
-void saveEffect()
+void saveState()
 {
-	strncpy(EFFECT_NAME, (ledLine.getEffectName() == nullptr || !ledLine.isRunning()) ? "OFF" : ledLine.getEffectName(), EEPROM_EFFECT_LENGTH);
+	strncpy(EFFECT_NAME, (ledLine.getEffectName() == nullptr || !ledLine.isOn()) ? "OFF" : ledLine.getEffectName(), EEPROM_EFFECT_LENGTH);
 
 #if defined(ESP32) || defined(ESP8266)
 	EEPROM.begin(EEPROM_EFFECT_LENGTH + 1);
@@ -73,17 +77,15 @@ void saveEffect()
 	EEPROM.commit();
 #endif
 
-	ledLine.pause();
+	ledLine.turnOff();
 
-	Serial.print(F("SAVED: ")); Serial.println(EFFECT_NAME);
+	Serial.print(F("SAVED EFFECT: "));
+	Serial.println(EFFECT_NAME);
 }
 
 void changeEffect()
 {
-	if (ledLine.setNextEffect() && !ledLine.isRunning())
-	{
-		ledLine.resume();
-	}
+	ledLine.setNextEffect();
 
 	Serial.print(F("EFFECT: "));
 	Serial.println(ledLine.getEffectName());
@@ -91,7 +93,7 @@ void changeEffect()
 
 void turnOffLeds()
 {
-	ledLine.pause();
+	ledLine.turnOff();
 	FastLED.clear(true);
 
 	Serial.println(F("OFF"));
@@ -106,7 +108,8 @@ void adjustBrightness()
 	}
 	FastLED.setBrightness(constrain(brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS));
 
-	Serial.print(F("BRIGHTNESS: ")); Serial.println(brightness);
+	Serial.print(F("BRIGHTNESS: "));
+	Serial.println(brightness);
 }
 
 void handleButtonEvent(const Denel_Button* button, BUTTON_EVENT eventType)
@@ -117,7 +120,7 @@ void handleButtonEvent(const Denel_Button* button, BUTTON_EVENT eventType)
 		changeEffect();
 		break;
 	case BUTTON_EVENT::DoubleClicked:
-		saveEffect();
+		saveState();
 		break;
 	case BUTTON_EVENT::RepeatClicked:
 		adjustBrightness();
@@ -149,7 +152,7 @@ void setup()
 	pinMode(BTN_PIN, INPUT_PULLDOWN_16);
 	btn.setEventHandler(handleButtonEvent);
 
-	loadEffect();
+	loadState();
 }
 
 void loop()
@@ -161,5 +164,3 @@ void loop()
 		FastLED.show();
 	}
 }
-
-

@@ -18,7 +18,7 @@ private:
 
 public:
 
-	LEDLine(CRGB leds[], uint16_t count, bool start = false);
+	LEDLine(CRGB leds[], uint16_t count);
 
 	virtual ~LEDLine();
 
@@ -33,16 +33,16 @@ public:
 	virtual bool setEffectByName(const char* effectName);
 
 	virtual bool setEffectByIdx(uint8_t idx);
-	
+
 	virtual bool setNextEffect();
 
-	virtual void pause();
+	virtual void turnOn() const;
 
-	virtual void resume();
+	virtual void turnOff() const;
+
+	virtual bool isOn() const;
 
 	virtual bool refresh() const;
-
-	virtual bool isRunning() const;
 
 protected:
 
@@ -50,8 +50,6 @@ protected:
 	const uint16_t numLeds;
 
 	ILedEffect* effect = nullptr;
-
-	bool isOn = false;
 };
 
 #endif

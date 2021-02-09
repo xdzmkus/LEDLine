@@ -1,18 +1,25 @@
 #ifndef _IEFFECT_TIMER_H
 #define _IEFFECT_TIMER_H
 
+#if defined(ARDUINO) && ARDUINO >= 100
+#include "Arduino.h"
+#else
+#include "WProgram.h"
+#endif
+
+template <class T>
 class IEffectTimer
 {
 protected:
 
-	bool active;
-	unsigned long interval;
-	unsigned long lastTime;
+	T interval;
+	T lastTime;
+
+	bool active = false;
 
 public:
 
-	IEffectTimer(unsigned long interval, bool start = true)
-		: active(start), interval(interval), lastTime(0)
+	IEffectTimer(T interval) : interval(interval)
 	{
 	};
 
@@ -20,9 +27,26 @@ public:
 	{
 	};
 
-	virtual void start() { active = true; lastTime = getClock(); };
+	virtual void start()
+	{
+		active = true;
+		reset();
+	};
 
-	virtual void stop() { active = false; };
+	virtual void stop()
+	{
+		active = false;
+	};
+
+	virtual void reset()
+	{
+		lastTime = getClock();
+	};
+
+	virtual bool isActive() const
+	{
+		return active;
+	};
 
 	virtual bool isReady()
 	{
@@ -39,17 +63,16 @@ public:
 	};
 
 protected:
-	virtual unsigned long getClock() const = 0;
+	virtual T getClock() const = 0;
 };
 
-class MillisTimer : public IEffectTimer
+class MillisTimer : public IEffectTimer<unsigned long>
 {
 public:
 
 	static const unsigned long CLOCKS_IN_SEC = 1000UL;
 
-	MillisTimer(unsigned long interval, bool start = true)
-		: IEffectTimer(interval, start)
+	MillisTimer(unsigned long interval) : IEffectTimer(interval)
 	{
 	};
 
@@ -60,14 +83,13 @@ protected:
 	};
 };
 
-class MicrosTimer : public IEffectTimer
+class MicrosTimer : public IEffectTimer<unsigned long>
 {
 public:
 
 	static const unsigned long CLOCKS_IN_SEC = 1000000UL;
 
-	MicrosTimer(unsigned long interval, bool start = true)
-		: IEffectTimer(interval, start)
+	MicrosTimer(unsigned long interval)	: IEffectTimer(interval)
 	{
 	};
 

@@ -26,6 +26,8 @@ public:
 
 	bool setEffectByName(const char* effectName) override
 	{
+		bool restart = isOn();
+
 		if (strcmp(BouncingBallsLedEffect::name, effectName) == 0) {
 			delete effect; effect = new BouncingBallsLedEffect(leds, numLeds, 50, random8(0, 20));
 		}
@@ -55,6 +57,11 @@ public:
 		}
 		else {
 			return false;
+		}
+
+		if (restart)
+		{
+			turnOn();
 		}
 
 		return true;

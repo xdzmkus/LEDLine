@@ -78,7 +78,6 @@ void setup()
 	}
 
 	ledLine.setEffectByIdx(0);
-	ledLine.resume();
 }
 
 void loop()

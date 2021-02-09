@@ -14,9 +14,14 @@ ILedEffect::~ILedEffect()
 {
 }
 
-void ILedEffect::setId(const char* id)
+void ILedEffect::setId(const EffectID id)
 {
-	this->id = String(id);
+	this->id = id;
+}
+
+const EffectID ILedEffect::getId() const
+{
+	return id;
 }
 
 CRGB ILedEffect::getRandomColor() const

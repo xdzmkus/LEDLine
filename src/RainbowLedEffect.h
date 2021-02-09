@@ -23,7 +23,7 @@ public:
 	RainbowLedEffect(CRGB leds[], uint16_t count, uint16_t Hz);
 	~RainbowLedEffect();
 	
-	void init() override;
+	void reset() override;
 	bool paint() override;
 
 	operator const char* () const { return name; }

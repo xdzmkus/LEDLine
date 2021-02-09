@@ -15,7 +15,7 @@ BouncingBallsLedEffect::BouncingBallsLedEffect(CRGB leds[], uint16_t count, uint
 		balls = new BOUNCING[numBalls];
 	}
 
-	init();
+	reset();
 }
 
 BouncingBallsLedEffect::~BouncingBallsLedEffect()
@@ -27,8 +27,10 @@ BouncingBallsLedEffect::~BouncingBallsLedEffect()
 	}
 }
 
-void BouncingBallsLedEffect::init()
+void BouncingBallsLedEffect::reset()
 {
+	ILedEffect::reset();
+
 	if (balls != nullptr)
 	{
 		for (uint8_t i = 0; i < numBalls; i++)
@@ -38,7 +40,7 @@ void BouncingBallsLedEffect::init()
 			balls[i].height = 0;
 			balls[i].position = 0;
 			balls[i].velocity = MaxVelocity;
-			balls[i].dampingPercentage = random(70, 90);
+			balls[i].dampingPercentage = random8(70, 90);
 		}
 	}
 
@@ -64,7 +66,7 @@ bool BouncingBallsLedEffect::paint()
 			if (balls[i].velocity < 0.01)
 			{
 				balls[i].velocity = MaxVelocity;
-				balls[i].dampingPercentage = random(70, 90);
+				balls[i].dampingPercentage = random8(70, 90);
 			}
 		}
 

@@ -10,15 +10,16 @@ const char* const FlashLedEffect::name = "FLASH";
 FlashLedEffect::FlashLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, CRGB color)
 	: ILedEffect(leds, count, Hz), flashColor(color ? color : getRandomColor())
 {
-	init();
+	reset();
 }
 
 FlashLedEffect::~FlashLedEffect()
 {
 }
 
-void FlashLedEffect::init()
+void FlashLedEffect::reset()
 {
+	ILedEffect::reset();
 	flashState = false;
 	clearAllLeds();
 }

@@ -30,8 +30,8 @@ const char* LEDLine::availableEffects[NUM_EFFECTS] =
 	ThreeColorLedEffect::name
 };
 
-LEDLine::LEDLine(CRGB leds[], uint16_t count, bool start)
-	: leds(leds), numLeds(count), isOn(start)
+LEDLine::LEDLine(CRGB leds[], uint16_t count)
+	: leds(leds), numLeds(count)
 {
 }
 
@@ -52,6 +52,8 @@ const char* const* LEDLine::getAllEffectsNames() const
 
 bool LEDLine::setEffectByName(const char* effectName)
 {
+	bool restart = isOn();
+
 	if (strcmp(BouncingBallsLedEffect::name, effectName) == 0) {
 		delete effect; effect = new BouncingBallsLedEffect(leds, numLeds, 50);
 	}
@@ -81,6 +83,12 @@ bool LEDLine::setEffectByName(const char* effectName)
 	}
 	else {
 		return false;
+	}
+
+	// start new effect if previous one was started
+	if (restart)
+	{
+		turnOn();
 	}
 
 	return true;
@@ -126,27 +134,25 @@ uint8_t LEDLine::getEffectIdx() const
 		}
 	}
 
-	return getAllEffectsNumber();		// non-existing effect index
+	return getAllEffectsNumber();	// non-existing effect index
 }
 
-void LEDLine::pause()
+void LEDLine::turnOn() const
 {
-	isOn = false;
+	if (effect != nullptr) effect->start();
+}
+
+void LEDLine::turnOff() const
+{
 	if (effect != nullptr) effect->stop();
 }
 
-void LEDLine::resume()
+bool LEDLine::isOn() const
 {
-	isOn = true;
-	if (effect != nullptr) effect->start();
+	return (effect != nullptr) ? effect->isActive() : false;
 }
 
 bool LEDLine::refresh() const
 {
-	return (!isOn || effect == nullptr) ? false : effect->paint();
-}
-
-bool LEDLine::isRunning() const
-{
-	return isOn;
+	return (effect != nullptr) ? effect->paint() : false;
 }

@@ -10,7 +10,7 @@ const char* const GlowwormLedEffect::name = "GLOWWORM";
 GlowwormLedEffect::GlowwormLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, CRGB color)
 	: ILedEffect(leds, count, Hz), rgb(color ? color : getRandomColor())
 {
-	init();
+	reset();
 }
 
 
@@ -18,10 +18,13 @@ GlowwormLedEffect::~GlowwormLedEffect()
 {
 }
 
-void GlowwormLedEffect::init()
+void GlowwormLedEffect::reset()
 {
+	ILedEffect::reset();
+
 	position = 0;
 	direction = true;
+
 	clearAllLeds();
 }
 

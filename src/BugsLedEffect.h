@@ -32,7 +32,7 @@ public:
 	BugsLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, uint8_t bugs = 1);
 	~BugsLedEffect();
 	
-	void init() override;
+	void reset() override;
 	bool paint() override;
 
 	operator const char* () const {	return name; }

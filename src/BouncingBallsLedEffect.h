@@ -38,7 +38,7 @@ public:
 	BouncingBallsLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, uint8_t ballsCount = 1);
 	~BouncingBallsLedEffect();
 	
-	void init() override;
+	void reset() override;
 	bool paint() override;
 
 	operator const char* () const {	return name; }

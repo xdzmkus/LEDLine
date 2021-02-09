@@ -24,7 +24,7 @@ public:
 	GlowwormLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, CRGB color = CRGB::Black);
 	~GlowwormLedEffect();
 
-	void init() override;
+	void reset() override;
 	bool paint() override;
 
 	operator const char* () const { return name; }

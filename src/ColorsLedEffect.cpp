@@ -10,16 +10,19 @@ const char* const ColorsLedEffect::name = "COLORS";
 ColorsLedEffect::ColorsLedEffect(CRGB leds[], uint16_t count, uint16_t Hz)
 	: ILedEffect(leds, count, Hz)
 {
-	init();
+	reset();
 }
 
 ColorsLedEffect::~ColorsLedEffect()
 {
 }
 
-void ColorsLedEffect::init()
+void ColorsLedEffect::reset()
 {
+	ILedEffect::reset();
+
 	hue = 0;
+
 	clearAllLeds();
 }
 

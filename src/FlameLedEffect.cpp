@@ -12,7 +12,7 @@ FlameLedEffect::FlameLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, bool re
 {
 	heatMap = new uint8_t[count];
 
-	init();
+	reset();
 }
 
 FlameLedEffect::~FlameLedEffect()
@@ -24,8 +24,9 @@ FlameLedEffect::~FlameLedEffect()
 	}
 }
 
-void FlameLedEffect::init()
+void FlameLedEffect::reset()
 {
+	ILedEffect::reset();
 	clearAllLeds();
 }
 

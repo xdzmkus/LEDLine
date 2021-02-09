@@ -15,7 +15,7 @@ BugsLedEffect::BugsLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, uint8_t b
 		bugs = new BUGS[numBugs];
 	}
 
-	init();
+	reset();
 }
 
 BugsLedEffect::~BugsLedEffect()
@@ -27,14 +27,16 @@ BugsLedEffect::~BugsLedEffect()
 	}
 }
 
-void BugsLedEffect::init()
+void BugsLedEffect::reset()
 {
+	ILedEffect::reset();
+
 	if (bugs != nullptr)
 	{
 		for (uint8_t i = 0; i < numBugs; i++)
 		{
 			bugs[i].color = getRandomColor();
-			bugs[i].position = random(0, numLeds);
+			bugs[i].position = random16(0, numLeds);
 			bugs[i].speed += random(-5, 6);
 		}
 	}

@@ -2,9 +2,9 @@
 #include "my_data_sensitive.h"
 #else
 
-#define WLAN_SSID           "your wifi name"
+#define WLAN_SSID           "AP wifi name"
 #define WLAN_PASS           "and password"
-#define WLAN_HOSTNAME       "connect with hostname"
+#define WLAN_HOSTNAME       "set hostname"
 
 #define UPDATE_PATH         "/firmware"
 
@@ -84,35 +84,46 @@ gz5JWYhbD6c38khSzJb0pNXCo3EuYAVa36kDM96k1BtWuhRS10Q1VXk=
 
 #define RELAY_PIN 15  // D8 - GPIO15 - relay pin
 
+#define UNPINNED_ANALOG_PIN A0 // not connected analog pin
+
 /*********** WS2812B leds *******************/
 #include <FastLED.h>
 
-#define NUM_LEDS 17
+//#define NUM_LEDS 17
+#define NUM_LEDS 8
 
 #define CURRENT_LIMIT 3500
 #define MAX_BRIGHTNESS 255
 #define MIN_BRIGHTNESS 20
 
-uint16_t brightness = MAX_BRIGHTNESS / 2;
+#define EFFECT_DURATION_SEC 60
+
+uint16_t brightness = MAX_BRIGHTNESS;
 
 CRGB leds[NUM_LEDS];
 
 /*********** LED Line Effects ***************/
 #include "LEDSingleLine.h"
-LEDLine17leds ledLine(leds, NUM_LEDS);
+//LEDLine17leds ledLine(leds, NUM_LEDS);
+LEDLine8leds ledLine(leds, NUM_LEDS);
 
 #include <Ticker.h>
-#define EFFECT_DURATION_SEC 60
-Ticker tickerEffects;
+Ticker effectsTicker;
+Ticker ledTicker;
+Ticker mqttTicker;
 
-volatile boolean f_publishState = true;
+volatile boolean f_publishState = false;
+
+boolean f_setupMode = false;
 
 /********** Touch button module *************/
 #include <Denel_Button.h>
 Denel_Button btn(BTN_PIN, BUTTON_CONNECTED::VCC, BUTTON_NORMAL::OPEN);
 
 /*********** WiFi ***************************/
-#include <ESP8266WiFi.h>
+#include <WiFiManager.h>
+
+/*********** OTA  ***************************/
 #include <ESP8266mDNS.h>
 #include <ESP8266WebServerSecure.h>
 #include <ESP8266HTTPUpdateServer.h>
@@ -123,39 +134,58 @@ BearSSL::X509List chain(serverCert);
 BearSSL::PrivateKey pk(serverKey);
 
 /*********** MQTT Server ********************/
+#include <WiFiClient.h>
 #include <Adafruit_MQTT.h>
 #include <Adafruit_MQTT_Client.h>
-#include <WiFiClient.h>
 
 // Create an ESP8266 WiFiClient class to connect to the MQTT server.
 WiFiClient client;  // use WiFiClientSecure for SSL
 
 // Setup the MQTT client class by passing in the WiFi client
-Adafruit_MQTT_Client mqtt(&client, MQTT_SERVER, MQTT_SERVERPORT, MQTT_USERNAME, MQTT_KEY);
-
-Adafruit_MQTT_Publish   wallLampState = Adafruit_MQTT_Publish(&mqtt, MQTT_TOPIC_PUB);
-
-Adafruit_MQTT_Subscribe wallLampEffect = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPIC_SUB1, MQTT_QOS_1);
-Adafruit_MQTT_Subscribe wallLampAction = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPIC_SUB2, MQTT_QOS_1);
+Adafruit_MQTT_Client    mqtt(&client, MQTT_SERVER, MQTT_SERVERPORT, MQTT_USERNAME, MQTT_KEY);
+Adafruit_MQTT_Publish   wallLampState(&mqtt, MQTT_TOPIC_PUB);
+Adafruit_MQTT_Subscribe wallLampEffect(&mqtt, MQTT_TOPIC_SUB1, MQTT_QOS_1);
+Adafruit_MQTT_Subscribe wallLampAction(&mqtt, MQTT_TOPIC_SUB2, MQTT_QOS_1);
 
 /********************************************/
 
+void blinkLED()
+{
+    //toggle LED state
+    digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
+}
+
 void turnOnLeds()
 {
-    tickerEffects.attach(EFFECT_DURATION_SEC, changeEffect);
+    effectsTicker.detach();
 
-    ledLine.resume();
+    ledLine.setEffectByIdx(0);
+
+    ledLine.turnOn();
+
+    effectsTicker.attach(EFFECT_DURATION_SEC, changeEffect);
 
     digitalWrite(RELAY_PIN, HIGH);
 
     f_publishState = true;
 }
 
+void turnOnFlashLeds()
+{
+    char flash[] = "FLASH";
+
+    ledLine.setEffectByName(flash);
+
+    ledLine.turnOn();
+
+    digitalWrite(RELAY_PIN, HIGH);
+}
+
 void turnOffLeds()
 {
-    tickerEffects.detach();
+    effectsTicker.detach();
 
-    ledLine.pause();
+    ledLine.turnOff();
 
     digitalWrite(RELAY_PIN, LOW);
 
@@ -164,11 +194,11 @@ void turnOffLeds()
 
 void changeEffect()
 {
-    tickerEffects.detach();
+    effectsTicker.detach();
 
     ledLine.setNextEffect();
 
-    tickerEffects.attach(EFFECT_DURATION_SEC, changeEffect);
+    effectsTicker.attach(EFFECT_DURATION_SEC, changeEffect);
 
     f_publishState = true;
 }
@@ -225,84 +255,17 @@ void setAction_callback(uint32_t x)
 
 void setEffect_callback(char* data, uint16_t len)
 {
-    if (ledLine.setEffectByName(data))
+    bool success = ledLine.setEffectByName(data);
+
+    if (success)
     {
-        tickerEffects.detach();
-    }
-}
-
-void publishState()
-{
-    String currentEffect = (ledLine.getEffectName() == nullptr || !ledLine.isRunning()) ? "OFF" : ledLine.getEffectName();
-
-    wallLampState.publish(currentEffect.c_str());
-}
-
-void setup_WiFi()
-{
-    Serial.println();
-    Serial.print(F("Connecting to "));
-    Serial.println(WLAN_SSID);
-
-    WiFi.mode(WIFI_STA);                  // Set the ESP8266 to be a WiFi-client
-    WiFi.hostname(WLAN_HOSTNAME);
-    WiFi.begin(WLAN_SSID, WLAN_PASS);
-
-    for (uint8_t s = 0; (WiFi.status() != WL_CONNECTED) && (s < 20); s++)
-    {
-        digitalWrite(LED_BUILTIN, LOW);   // Turn the LED on (Note that LOW is the voltage level but actually the LED is on; this is because it is active low on the ESP-01)
-        delay(500);
-        Serial.print(".");
-        digitalWrite(LED_BUILTIN, HIGH);  // Turn the LED off by making the voltage HIGH
-        delay(200);
-    }
-    if (!WiFi.isConnected())
-    {
-        Serial.println("Connection Failed! Rebooting...");
-        ESP.restart();
+        effectsTicker.detach();
     }
 
-    Serial.println("");
-    Serial.println(F("WiFi connected"));
-    Serial.print(F("IP address: "));
-    Serial.println(WiFi.localIP());
+    f_publishState = true;
 }
 
-void setup_OTA()
-{
-    configTime(3 * 3600, 0, "pool.ntp.org", "time.nist.gov");
-
-    MDNS.begin(WLAN_HOSTNAME);
-
-    httpServer.getServer().setRSACert(&chain, &pk);
-    httpUpdater.setup(&httpServer, UPDATE_PATH, MQTT_USERNAME, MQTT_KEY);
-    httpServer.begin();
-
-    MDNS.addService("https", "tcp", 443);
-}
-
-void setup_MQTT()
-{
-    wallLampEffect.setCallback(setEffect_callback);
-    mqtt.subscribe(&wallLampEffect);
-
-    wallLampAction.setCallback(setAction_callback);
-    mqtt.subscribe(&wallLampAction);
-}
-
-void setup_LED()
-{
-    FastLED.addLeds<WS2812B, LED_PIN_1, GRB>(leds, NUM_LEDS);
-    FastLED.addLeds<WS2812B, LED_PIN_2, GRB>(leds, NUM_LEDS);
-    FastLED.addLeds<WS2812B, LED_PIN_3, GRB>(leds, NUM_LEDS);
-    FastLED.setMaxPowerInVoltsAndMilliamps(5, CURRENT_LIMIT);
-    FastLED.setBrightness(constrain(brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS));
-    FastLED.clear(true);
-}
-
-// Function to connect and reconnect as necessary to the MQTT server.
-// Should be called in the loop function and it will take care if connecting.
-void mqtt_loop()
+void pingMQTT()
 {
     if (!mqtt.connected())
     {
@@ -322,49 +285,158 @@ void mqtt_loop()
         }
     }
 
-    mqtt.processPackets(10);
+    mqtt.ping();
 }
 
-void setup()
+void processMQTT()
 {
-    pinMode(LED_BUILTIN, OUTPUT);        // Initialize the BUILTIN_LED pin as an output
-    pinMode(RELAY_PIN, OUTPUT);          // Initialize the RELAY pin as an output
-    pinMode(BTN_PIN, INPUT_PULLDOWN_16); // Re-Initialize the BUTTON pin as an input pulldown
+    mqtt.processPackets(10);
 
-    digitalWrite(RELAY_PIN, LOW);        // turn off leds
+    if (f_publishState && mqtt.connected())
+    {
+        String currentEffect = (ledLine.getEffectName() == nullptr || !ledLine.isOn()) ? "OFF" : ledLine.getEffectName();
 
-    Serial.begin(115200);
-
-    setup_WiFi();
-
-    setup_OTA();
-
-    setup_MQTT();
-
-    setup_LED();
-
-    btn.setEventHandler(handleButtonEvent);
+        if (wallLampState.publish(currentEffect.c_str()))
+        {
+            f_publishState = false;
+        }
+    }
 }
 
-void loop()
+void processOTA()
 {
     MDNS.update();
 
     httpServer.handleClient();
+}
 
-    mqtt_loop();
+void setup_LED()
+{
+    FastLED.addLeds<WS2812B, LED_PIN_1, GRB>(leds, NUM_LEDS);
+    FastLED.addLeds<WS2812B, LED_PIN_2, GRB>(leds, NUM_LEDS);
+    FastLED.addLeds<WS2812B, LED_PIN_3, GRB>(leds, NUM_LEDS);
+    FastLED.setMaxPowerInVoltsAndMilliamps(5, CURRENT_LIMIT);
+    FastLED.setBrightness(constrain(brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS));
+    FastLED.clear(true);
+}
 
-    btn.check();
+void setup_WiFi(bool setupMode)
+{
+    WiFi.mode(WIFI_STA);                // Set the ESP8266 to be a WiFi-client
+    WiFi.hostname(WLAN_HOSTNAME);
 
-    if (f_publishState)
+    Serial.println(WLAN_HOSTNAME);
+
+    WiFiManager wm;
+
+    wm.setConfigPortalTimeout(180);
+
+    if (setupMode)
     {
-        f_publishState = false;
-
-        publishState();
+        wm.setConfigPortalBlocking(true);
+        if (wm.startConfigPortal(WLAN_SSID, WLAN_PASS))
+        {
+            Serial.println(F("WiFi Reconfigured! Rebooting..."));
+            delay(5000);
+            ESP.restart();
+        }
+        // continue if wifi settings are not changed
+    }
+    else
+    {
+        if (!wm.autoConnect(WLAN_SSID, WLAN_PASS))
+        {
+            Serial.println(F("Connection Failed! Rebooting..."));
+            delay(5000);
+            ESP.restart();
+        }
     }
 
-    if (ledLine.refresh())
+    Serial.println(F("WiFi connected"));
+    Serial.print(F("IP address: "));
+    Serial.println(WiFi.localIP());
+}
+
+void setup_MQTT()
+{
+    wallLampEffect.setCallback(setEffect_callback);
+    mqtt.subscribe(&wallLampEffect);
+
+    wallLampAction.setCallback(setAction_callback);
+    mqtt.subscribe(&wallLampAction);
+
+    mqttTicker.attach_scheduled(10.0, pingMQTT);
+}
+
+void setup_OTA()
+{
+    configTime(3 * 3600, 0, "pool.ntp.org", "time.nist.gov");
+
+    MDNS.begin(WLAN_HOSTNAME);
+
+    httpServer.getServer().setRSACert(&chain, &pk);
+    httpUpdater.setup(&httpServer, UPDATE_PATH, MQTT_USERNAME, MQTT_KEY);
+    httpServer.begin();
+
+    MDNS.addService("https", "tcp", 443);
+}
+
+void setup()
+{
+    randomSeed(analogRead(UNPINNED_ANALOG_PIN));
+
+    pinMode(LED_BUILTIN, OUTPUT);        // Initialize the BUILTIN_LED pin as an output
+    pinMode(RELAY_PIN, OUTPUT);          // Initialize the RELAY pin as an output
+    pinMode(BTN_PIN, INPUT_PULLDOWN_16); // Re-Initialize the BUTTON pin as an input pulldown
+
+    digitalWrite(RELAY_PIN, LOW);        // Turn off leds
+
+    Serial.begin(115200);
+
+    ledTicker.attach_ms(500, blinkLED);  // Blink builtin led while setup
+
+    delay(5000);
+
+    f_setupMode = btn.check();           // Check button while booting
+    btn.setEventHandler(handleButtonEvent);
+
+    setup_LED();
+
+    setup_WiFi(f_setupMode);
+
+    if (f_setupMode)
+    {
+        setup_OTA();
+
+        turnOnFlashLeds();
+    }
+    else
+    {
+        setup_MQTT();
+    }
+
+    ledTicker.detach();
+    digitalWrite(LED_BUILTIN, HIGH);     // Turn the builtin led off by making the voltage HIGH
+}
+
+void loop()
+{
+    btn.check();
+
+    if (f_setupMode)
+    {
+        processOTA();
+    }
+    else
+    {
+        processMQTT();
+    }
+
+    bool refresh = ledLine.refresh();
+
+    if (refresh)
     {
         FastLED.show();
     }
 }
+
