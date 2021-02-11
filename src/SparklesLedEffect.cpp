@@ -7,8 +7,8 @@
 
 const char* const SparklesLedEffect::name = "SPARKLES";
 
-SparklesLedEffect::SparklesLedEffect(CRGB leds[], uint16_t count, uint16_t Hz)
-	: ILedEffect(leds, count, Hz)
+SparklesLedEffect::SparklesLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, CRGB color)
+	: ILedEffect(leds, count, Hz), color(color)
 {
 	reset();
 }
@@ -33,7 +33,7 @@ bool SparklesLedEffect::paint()
 
 	if (!ledLine[thisNum])
 	{
-		ledLine[thisNum] = getRandomColor();
+		ledLine[thisNum] = !color ? getRandomColor() : color;
 	}
 
 	for (uint16_t i = 0; i < numLeds; i++)
