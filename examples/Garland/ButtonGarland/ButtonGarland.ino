@@ -1,6 +1,6 @@
 #if defined(ESP32) || defined(ESP8266)
-#define LED_PIN D3  // D1 leds pin (connected to D5 on my NodeMCU1.0 !!!)
-#define BTN_PIN 16  // D0 button pin
+#define LED_PIN D1  // D1 leds pin (connected to D5 on my NodeMCU1.0 !!!)
+#define BTN_PIN D0  // 16 button pin
 #else
 #define LED_PIN 9   // leds pin
 #define BTN_PIN 10  // button pin
@@ -17,8 +17,8 @@ Denel_Button btn(BTN_PIN, BUTTON_CONNECTED::VCC, BUTTON_NORMAL::OPEN);
 char EFFECT_NAME[EEPROM_EFFECT_LENGTH + 1];
 
 #include <FastLED.h>
-#define NUM_LEDS 256
-#define CURRENT_LIMIT 8000
+#define NUM_LEDS 8
+#define CURRENT_LIMIT 500
 #define MAX_BRIGHTNESS 255
 #define MIN_BRIGHTNESS 20
 
@@ -26,9 +26,9 @@ uint16_t brightness = MAX_BRIGHTNESS/2;
 
 CRGB leds[NUM_LEDS];
 
-#include "LEDLine256.h"
+#include "LEDLineEx.h"
 
-LEDLine256 ledLine(leds, NUM_LEDS);
+LEDLineEx ledLine(leds, NUM_LEDS);
 
 void loadState()
 {
@@ -51,6 +51,7 @@ void loadState()
 
 	if (ledLine.setEffectByName(EFFECT_NAME))
 	{
+		ledLine.turnOn();
 		Serial.print(F("LOADED EFFECT: "));
 	}
 	else
@@ -86,6 +87,7 @@ void saveState()
 void changeEffect()
 {
 	ledLine.setNextEffect();
+	ledLine.turnOn();
 
 	Serial.print(F("EFFECT: "));
 	Serial.println(ledLine.getEffectName());

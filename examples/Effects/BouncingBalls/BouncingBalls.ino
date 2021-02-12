@@ -1,4 +1,4 @@
-#define LED_PIN D3    // D1 leds pin (connected to D5 on my NodeMCU 1.0 !!!)
+#define LED_PIN D1    // D1 leds pin (connected to D5 on my NodeMCU 1.0 !!!)
 
 #include <FastLED.h>
 #define NUM_LEDS 8
