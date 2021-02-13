@@ -6,17 +6,16 @@
 #ifndef _ILEDEFFECT_H
 #define _ILEDEFFECT_H
 
-#include <IEffectTimer.h>
+#include "IEffectTimer.h"
+#include "ILedLine.h"
 #include <FastLED.h>
 
 typedef String EffectID;
 
-class ILedEffect : public MillisTimer
+class ILedEffect : public MillisTimer, public ILedLine
 {
 protected:
 
-	CRGB* const	ledLine;
-	const uint16_t numLeds;
 	const uint16_t speed;
 
 	EffectID id;
@@ -32,12 +31,6 @@ public:
 	
 	virtual void setId(const EffectID id);
 	virtual const EffectID getId() const;
-
-protected:
-
-	CRGB getRandomColor() const;
-	void fillAllLeds(CRGB color);
-	void clearAllLeds();
 };
 
 #endif
