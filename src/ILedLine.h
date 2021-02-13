@@ -22,11 +22,16 @@ public:
 
 	CRGB& operator[](uint16_t index);
 
-protected:
-
-	CRGB getRandomColor() const;
 	void fillAllLeds(CRGB color);
 	void clearAllLeds();
+
+	static CRGB getRandomColor();
+
+private:
+
+	ILedLine(const ILedLine&) = delete;
+	ILedLine& operator=(const ILedLine&) = delete;
+
 };
 
 #endif

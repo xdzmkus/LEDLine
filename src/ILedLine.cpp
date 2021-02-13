@@ -19,11 +19,6 @@ CRGB& ILedLine::operator[](uint16_t index)
 	return ledLine[index];
 }
 
-CRGB ILedLine::getRandomColor() const
-{
-	return CHSV(random(0, 255), 255, 255);
-}
-
 void ILedLine::fillAllLeds(CRGB color)
 {
 	for (uint16_t i = 0; i < numLeds; i++)
@@ -36,4 +31,9 @@ void ILedLine::clearAllLeds()
 {
 	// zero out the led data managed by this effect
 	memset8((void*)ledLine, 0, sizeof(struct CRGB) * numLeds);
+}
+
+CRGB ILedLine::getRandomColor()
+{
+	return CHSV(random(0, 255), 255, 255);
 }
