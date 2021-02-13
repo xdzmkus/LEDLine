@@ -8,7 +8,7 @@
 
 #include "ILedEffect.h"
 
-class GlowwormLedEffect : public ILedEffect
+class GlowwormLedEffect : public ILedLine, public ILedEffect
 {
 public:
 

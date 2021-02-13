@@ -8,7 +8,7 @@
 const char* const GlowwormLedEffect::name = "GLOWWORM";
 
 GlowwormLedEffect::GlowwormLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, CRGB color)
-	: ILedEffect(leds, count, Hz), rgb(color ? color : getRandomColor())
+	: ILedLine(leds, count), ILedEffect(Hz), rgb(color ? color : getRandomColor())
 {
 	reset();
 }

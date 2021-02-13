@@ -8,7 +8,7 @@
 
 #include "ILedEffect.h"
 
-class BouncingBallsLedEffect : public ILedEffect
+class BouncingBallsLedEffect : public ILedLine, public ILedEffect
 {
 private:
 

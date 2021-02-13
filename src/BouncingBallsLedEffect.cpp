@@ -8,7 +8,7 @@
 const char* const BouncingBallsLedEffect::name = "BOUNCINGBALLS";
 
 BouncingBallsLedEffect::BouncingBallsLedEffect(CRGB leds[], uint16_t count, uint16_t Hz, uint8_t ballsCount)
-	: ILedEffect(leds, count, Hz), MaxVelocity(sqrt(2 * Gravity * (count - 1))), numBalls(ballsCount)
+	: ILedLine(leds, count), ILedEffect(Hz), MaxVelocity(sqrt(2 * Gravity * (count - 1))), numBalls(ballsCount)
 {
 	if (numBalls > 0)
 	{

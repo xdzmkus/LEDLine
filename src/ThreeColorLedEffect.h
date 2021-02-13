@@ -9,7 +9,7 @@
 #include "ILedEffect.h"
 
 
-class ThreeColorLedEffect : public ILedEffect
+class ThreeColorLedEffect : public ILedLine, public ILedEffect
 {
 public:
 

@@ -8,7 +8,7 @@
 const char* const ColorsLedEffect::name = "COLORS";
 
 ColorsLedEffect::ColorsLedEffect(CRGB leds[], uint16_t count, uint16_t Hz)
-	: ILedEffect(leds, count, Hz)
+	: ILedLine(leds, count), ILedEffect(Hz)
 {
 	reset();
 }

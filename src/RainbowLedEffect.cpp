@@ -9,7 +9,7 @@
 const char* const RainbowLedEffect::name = "RAINBOW";
 
 RainbowLedEffect::RainbowLedEffect(CRGB leds[], uint16_t count, uint16_t Hz)
-	: ILedEffect(leds, count, Hz), k(255/count + 1)
+	: ILedLine(leds, count), ILedEffect(Hz), k(255/count + 1)
 {
 	reset();
 }

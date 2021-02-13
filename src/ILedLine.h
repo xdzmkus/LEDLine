@@ -20,7 +20,7 @@ public:
 	ILedLine(CRGB leds[], uint16_t count);
 	virtual ~ILedLine();
 
-	virtual CRGB& operator[](uint16_t index);
+	CRGB& operator[](uint16_t index);
 
 protected:
 

@@ -12,7 +12,7 @@
 
 typedef String EffectID;
 
-class ILedEffect : public MillisTimer, public ILedLine
+class ILedEffect : public MillisTimer
 {
 protected:
 
@@ -22,7 +22,7 @@ protected:
 
 public:
 
-	ILedEffect(CRGB leds[], uint16_t count, uint16_t Hz = 10);
+	ILedEffect(uint16_t Hz = 10);
 	virtual ~ILedEffect();
 
 	virtual bool paint() = 0;

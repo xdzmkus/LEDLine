@@ -8,7 +8,7 @@
 
 #include "ILedEffect.h"
 
-class RainbowLedEffect : public ILedEffect
+class RainbowLedEffect : public ILedLine, public ILedEffect
 {
 public:
 

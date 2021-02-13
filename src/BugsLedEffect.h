@@ -8,7 +8,7 @@
 
 #include "ILedEffect.h"
 
-class BugsLedEffect : public ILedEffect
+class BugsLedEffect : public ILedLine, public ILedEffect
 {
 public:
 

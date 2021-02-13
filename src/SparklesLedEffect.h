@@ -8,7 +8,7 @@
 
 #include "ILedEffect.h"
 
-class SparklesLedEffect : public ILedEffect
+class SparklesLedEffect : public ILedLine, public ILedEffect
 {
 public:
 
