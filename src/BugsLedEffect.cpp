@@ -63,9 +63,9 @@ bool BugsLedEffect::paint()
 		
 		if (newPosition < 0)
 		{
-			newPosition = numLeds - 1;
+			newPosition = static_cast<int16_t>(numLeds) - 1;
 		}
-		if (newPosition > numLeds - 1)
+		if (newPosition > static_cast<int16_t>(numLeds) - 1)
 		{
 			newPosition = 0;
 		}
