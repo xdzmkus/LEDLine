@@ -26,14 +26,9 @@ void ColorsLedEffect::reset()
 	clearAllLeds();
 }
 
-bool ColorsLedEffect::paint()
+void ColorsLedEffect::paint()
 {
-	if (!isReady())
-		return false;
-
 	hue += 2;
 
 	fillAllLeds(CHSV(hue, 255, 255));
-
-	return true;
 }

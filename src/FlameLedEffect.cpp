@@ -30,10 +30,10 @@ void FlameLedEffect::reset()
 	clearAllLeds();
 }
 
-bool FlameLedEffect::paint()
+void FlameLedEffect::paint()
 {
-	if (!isReady() || heatMap == nullptr)
-		return false;
+	if (heatMap == nullptr)
+		return;
 
 	// Step 1.  Cool down every cell a little
 	for (uint16_t i = 0; i < numLeds; i++)
@@ -63,6 +63,4 @@ bool FlameLedEffect::paint()
 		uint16_t pixelnumber = fireReversed ? (numLeds - 1 - j) : j;
 		ledLine[pixelnumber] = color;
 	}
-
-	return true;
 }

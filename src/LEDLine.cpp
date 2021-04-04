@@ -154,5 +154,10 @@ bool LEDLine::isOn() const
 
 bool LEDLine::refresh() const
 {
-	return (effect != nullptr) ? effect->paint() : false;
+	if(effect == nullptr || !effect->isReady()) 
+		return false;
+	
+	effect->paint();
+	
+	return true;
 }

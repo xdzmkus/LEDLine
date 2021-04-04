@@ -24,11 +24,8 @@ void SparklesLedEffect::reset()
 	clearAllLeds();
 }
 
-bool SparklesLedEffect::paint()
+void SparklesLedEffect::paint()
 {
-	if (!isReady())
-		return false;
-
 	uint16_t thisNum = random(0, numLeds);
 
 	if (!ledLine[thisNum])
@@ -51,6 +48,4 @@ bool SparklesLedEffect::paint()
 
 		ledLine[i] = CRGB(ledLine[i].red * k, ledLine[i].green * k, ledLine[i].blue * k);
 	}
-
-	return true;
 }

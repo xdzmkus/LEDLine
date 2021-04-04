@@ -28,11 +28,8 @@ void GlowwormLedEffect::reset()
 	clearAllLeds();
 }
 
-bool GlowwormLedEffect::paint()
+void GlowwormLedEffect::paint()
 {
-	if (!isReady())
-		return false;
-
 	ledLine[position] = CRGB::Black;
 
 	if (direction)
@@ -53,6 +50,4 @@ bool GlowwormLedEffect::paint()
 	}
 
 	ledLine[position] = rgb;
-
-	return true;
 }

@@ -25,7 +25,7 @@ public:
 	ILedEffect(uint16_t Hz = 10);
 	virtual ~ILedEffect();
 
-	virtual bool paint() = 0;
+	virtual void paint() = 0;
 
 	virtual operator const char* () const = 0;
 	

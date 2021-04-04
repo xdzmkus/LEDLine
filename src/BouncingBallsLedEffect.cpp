@@ -47,10 +47,10 @@ void BouncingBallsLedEffect::reset()
 	clearAllLeds();
 }
 
-bool BouncingBallsLedEffect::paint()
+void BouncingBallsLedEffect::paint()
 {
-	if (!isReady() || balls == nullptr)
-		return false;
+	if (balls == nullptr)
+		return;
 
 	for (uint8_t i = 0; i < numBalls; i++)
 	{
@@ -74,6 +74,4 @@ bool BouncingBallsLedEffect::paint()
 		balls[i].position = round(balls[i].height);
 		ledLine[balls[i].position] = balls[i].color;
 	}
-
-	return true;
 }

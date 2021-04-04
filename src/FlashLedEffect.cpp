@@ -24,11 +24,8 @@ void FlashLedEffect::reset()
 	clearAllLeds();
 }
 
-bool FlashLedEffect::paint()
+void FlashLedEffect::paint()
 {
-	if (!isReady())
-		return false;
-
 	if (flashState)
 	{
 		clearAllLeds();
@@ -39,6 +36,4 @@ bool FlashLedEffect::paint()
 	}
 
 	flashState = !flashState;
-
-	return true;
 }

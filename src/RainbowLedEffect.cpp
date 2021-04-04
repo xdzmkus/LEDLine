@@ -27,17 +27,12 @@ void RainbowLedEffect::reset()
 	clearAllLeds();
 }
 
-bool RainbowLedEffect::paint()
+void RainbowLedEffect::paint()
 {
-	if (!isReady())
-		return false;
-
 	hue += 5;
 
 	for (uint16_t i = 0; i < numLeds; i++)
 	{
 		ledLine[i] = CHSV((uint8_t)(hue + i * k), 255, 255);
 	}
-
-	return true;
 }

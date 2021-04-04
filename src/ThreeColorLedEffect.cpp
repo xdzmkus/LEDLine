@@ -46,10 +46,10 @@ void ThreeColorLedEffect::reset()
 	pulses = pulseCount;
 }
 
-bool ThreeColorLedEffect::paint()
+void ThreeColorLedEffect::paint()
 {
-	if (!isReady() || timesToFade == 0)
-		return false;
+	if (timesToFade == 0)
+		return;
 
 	// black(skipped) pulse?
 	if (pulses == 0)
@@ -63,7 +63,7 @@ bool ThreeColorLedEffect::paint()
 		{
 			restOfFade--;
 		}
-		return false;
+		return;
 	}
 
 	// almost black (pulse done)?
@@ -72,7 +72,7 @@ bool ThreeColorLedEffect::paint()
 		restOfFade = timesToFade;
 		pulses--;
 		clearAllLeds();
-		return true;
+		return;
 	}
 
 	uint16_t position = 0;
@@ -102,6 +102,4 @@ bool ThreeColorLedEffect::paint()
 	}
 
 	restOfFade--;
-
-	return true;
 }

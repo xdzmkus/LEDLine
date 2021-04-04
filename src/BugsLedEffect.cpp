@@ -44,10 +44,10 @@ void BugsLedEffect::reset()
 	clearAllLeds();
 }
 
-bool BugsLedEffect::paint()
+void BugsLedEffect::paint()
 {
-	if (!isReady() || bugs == nullptr)
-		return false;
+	if (bugs == nullptr)
+		return;
 		
 	for (uint8_t i = 0; i < numBugs; i++)
 	{
@@ -74,6 +74,4 @@ bool BugsLedEffect::paint()
     
 		ledLine[bugs[i].position] = bugs[i].color;
 	}
-
-	return true;
 }

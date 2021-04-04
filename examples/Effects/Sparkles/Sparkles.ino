@@ -1,8 +1,8 @@
-#define LED_PIN 9    // D1 leds pin (connected to D5 on my NodeMCU 1.0 !!!)
+#define LED_PIN D3    // D1 leds pin (connected to D5 on my NodeMCU 1.0 !!!)
 
 #include <FastLED.h>
-#define NUM_LEDS 8
-#define CURRENT_LIMIT 500
+#define NUM_LEDS 256
+#define CURRENT_LIMIT 8000
 #define MAX_BRIGHTNESS 255
 #define MIN_BRIGHTNESS 20
 
@@ -37,8 +37,9 @@ void setup()
 
 void loop()
 {
-	if (effect->paint())
+	if (effect->isReady())
 	{
+		effect->paint();
 		FastLED.show();
 	}
 }
