@@ -1,4 +1,4 @@
-#if defined(ESP32) || defined(ESP8266)
+#if defined(ESP8266)
 #define LED_PIN D1  // D1 leds pin (connected to D5 on my NodeMCU1.0 !!!)
 #define BTN_PIN D0  // 16 button pin
 #else
@@ -7,8 +7,8 @@
 #endif
 #define UNPINNED_ANALOG_PIN A0 // not connected analog pin
 
-#include <Denel_Button.h>
-Denel_Button btn(BTN_PIN, BUTTON_CONNECTED::VCC, BUTTON_NORMAL::OPEN);
+#include <ArduinoDebounceButton.h>
+ArduinoDebounceButton btn(BTN_PIN, BUTTON_CONNECTED::VCC, BUTTON_NORMAL::OPEN);
 
 #include <EEPROM.h>
 #define EEPROM_ADDRESS_EFFECT 0
@@ -17,8 +17,8 @@ Denel_Button btn(BTN_PIN, BUTTON_CONNECTED::VCC, BUTTON_NORMAL::OPEN);
 char EFFECT_NAME[EEPROM_EFFECT_LENGTH + 1];
 
 #include <FastLED.h>
-#define NUM_LEDS 8
-#define CURRENT_LIMIT 500
+#define NUM_LEDS 256
+#define CURRENT_LIMIT 8000
 #define MAX_BRIGHTNESS 255
 #define MIN_BRIGHTNESS 20
 
@@ -114,7 +114,7 @@ void adjustBrightness()
 	Serial.println(brightness);
 }
 
-void handleButtonEvent(const Denel_Button* button, BUTTON_EVENT eventType)
+void handleButtonEvent(const DebounceButton* button, BUTTON_EVENT eventType)
 {
 	switch (eventType)
 	{
@@ -151,7 +151,12 @@ void setup()
 
 	setupLED();
 
+#if defined(ESP8266) && (BTN_PIN == 16)
 	pinMode(BTN_PIN, INPUT_PULLDOWN_16);
+#else
+	btn.initPin();
+#endif
+
 	btn.setEventHandler(handleButtonEvent);
 
 	loadState();
