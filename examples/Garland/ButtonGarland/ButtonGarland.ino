@@ -5,6 +5,7 @@
 #define LED_PIN 9   // leds pin
 #define BTN_PIN 10  // button pin
 #endif
+
 #define UNPINNED_ANALOG_PIN A0 // not connected analog pin
 
 #include <ArduinoDebounceButton.h>
@@ -51,7 +52,6 @@ void loadState()
 
 	if (ledLine.setEffectByName(EFFECT_NAME))
 	{
-		ledLine.turnOn();
 		Serial.print(F("LOADED EFFECT: "));
 	}
 	else
@@ -60,6 +60,8 @@ void loadState()
 	}
 
 	Serial.println(EFFECT_NAME);
+
+	ledLine.turnOn();
 }
 
 void saveState()
@@ -137,7 +139,7 @@ void handleButtonEvent(const DebounceButton* button, BUTTON_EVENT eventType)
 
 void setupLED()
 {
-	FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS);
+	FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS).setCorrection(TypicalSMD5050);
 	FastLED.setMaxPowerInVoltsAndMilliamps(5, CURRENT_LIMIT);
 	FastLED.setBrightness(constrain(brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS));
 	FastLED.clear(true);

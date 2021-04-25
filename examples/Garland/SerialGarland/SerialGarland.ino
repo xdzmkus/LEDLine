@@ -4,8 +4,8 @@
 #define UNPINNED_ANALOG_PIN A0 // not connected analog pin
 
 #include <FastLED.h>
-#define NUM_LEDS 8
-#define CURRENT_LIMIT 500
+#define NUM_LEDS 256
+#define CURRENT_LIMIT 8000
 #define MAX_BRIGHTNESS 255
 #define MIN_BRIGHTNESS 20
 
@@ -58,7 +58,7 @@ void serialEvent()
 
 void setupLED()
 {
-	FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS);
+	FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS).setCorrection(TypicalSMD5050);
 	FastLED.setMaxPowerInVoltsAndMilliamps(5, CURRENT_LIMIT);
 	FastLED.setBrightness(constrain(brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS));
 	FastLED.clear(true);
@@ -78,7 +78,7 @@ void setup()
 		Serial.println(ledLine.getAllEffectsNames()[var]);
 	}
 
-	ledLine.setEffectByIdx(0);
+	ledLine.turnOn();
 }
 
 void loop()

@@ -225,7 +225,7 @@ void setup()
 
 void setup_LED()
 {
-    FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS);
+    FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS).setCorrection(TypicalSMD5050);
     FastLED.setMaxPowerInVoltsAndMilliamps(5, CURRENT_LIMIT);
     FastLED.setBrightness(constrain(brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS));
     FastLED.clear(true);

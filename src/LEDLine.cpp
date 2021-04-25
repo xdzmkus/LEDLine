@@ -137,12 +137,14 @@ uint8_t LEDLine::getEffectIdx() const
 	return getAllEffectsNumber();	// non-existing effect index
 }
 
-void LEDLine::turnOn() const
+void LEDLine::turnOn()
 {
+	if (effect == nullptr) setEffectByIdx(0);
+
 	if (effect != nullptr) effect->start();
 }
 
-void LEDLine::turnOff() const
+void LEDLine::turnOff()
 {
 	if (effect != nullptr) effect->stop();
 }
@@ -152,7 +154,7 @@ bool LEDLine::isOn() const
 	return (effect != nullptr) ? effect->isActive() : false;
 }
 
-bool LEDLine::refresh() const
+bool LEDLine::refresh()
 {
 	if(effect == nullptr || !effect->isReady()) 
 		return false;

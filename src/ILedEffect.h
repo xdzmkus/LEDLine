@@ -6,7 +6,7 @@
 #ifndef _ILEDEFFECT_H
 #define _ILEDEFFECT_H
 
-#include "IEffectTimer.h"
+#include "EffectTimer.h"
 #include "ILedLine.h"
 #include <FastLED.h>
 

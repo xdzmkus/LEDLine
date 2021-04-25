@@ -312,9 +312,9 @@ void processOTA()
 
 void setup_LED()
 {
-    FastLED.addLeds<WS2812B, LED_PIN_1, GRB>(leds, NUM_LEDS);
-    FastLED.addLeds<WS2812B, LED_PIN_2, GRB>(leds, NUM_LEDS);
-    FastLED.addLeds<WS2812B, LED_PIN_3, GRB>(leds, NUM_LEDS);
+    FastLED.addLeds<WS2812B, LED_PIN_1, GRB>(leds, NUM_LEDS).setCorrection(TypicalSMD5050);
+    FastLED.addLeds<WS2812B, LED_PIN_2, GRB>(leds, NUM_LEDS).setCorrection(TypicalSMD5050);
+    FastLED.addLeds<WS2812B, LED_PIN_3, GRB>(leds, NUM_LEDS).setCorrection(TypicalSMD5050);
     FastLED.setMaxPowerInVoltsAndMilliamps(5, CURRENT_LIMIT);
     FastLED.setBrightness(constrain(brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS));
     FastLED.clear(true);
@@ -437,9 +437,7 @@ void loop()
         processMQTT();
     }
 
-    bool refresh = ledLine.refresh();
-
-    if (refresh)
+    if (ledLine.refresh())
     {
         FastLED.show();
     }

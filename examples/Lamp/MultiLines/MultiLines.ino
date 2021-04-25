@@ -336,9 +336,9 @@ void processOTA()
 
 void setup_LED()
 {
-    FastLED.addLeds<WS2812B, LED_PIN_1, GRB>(ledsLeft, NUM_LEDS_LEFT);
-    FastLED.addLeds<WS2812B, LED_PIN_2, GRB>(ledsCenter, NUM_LEDS_CENTER);
-    FastLED.addLeds<WS2812B, LED_PIN_3, GRB>(ledsRight, NUM_LEDS_RIGHT);
+    FastLED.addLeds<WS2812B, LED_PIN_1, GRB>(ledsLeft, NUM_LEDS_LEFT).setCorrection(TypicalSMD5050);
+    FastLED.addLeds<WS2812B, LED_PIN_2, GRB>(ledsCenter, NUM_LEDS_CENTER).setCorrection(TypicalSMD5050);
+    FastLED.addLeds<WS2812B, LED_PIN_3, GRB>(ledsRight, NUM_LEDS_RIGHT).setCorrection(TypicalSMD5050);
     FastLED.setMaxPowerInVoltsAndMilliamps(5, CURRENT_LIMIT);
     FastLED.setBrightness(constrain(brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS));
     FastLED.clear(true);

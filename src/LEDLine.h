@@ -36,13 +36,13 @@ public:
 
 	virtual bool setNextEffect();
 
-	virtual void turnOn() const;
+	virtual void turnOn();
 
-	virtual void turnOff() const;
+	virtual void turnOff();
 
 	virtual bool isOn() const;
 
-	virtual bool refresh() const;
+	virtual bool refresh();
 
 protected:
 

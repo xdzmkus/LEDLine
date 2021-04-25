@@ -6,14 +6,6 @@
 #include <FastLED.h>
 
 #include "LEDLine.h"
-#include "BouncingBallsLedEffect.h"
-#include "BugsLedEffect.h"
-#include "ColorsLedEffect.h"
-#include "FlameLedEffect.h"
-#include "FlashLedEffect.h"
-#include "GlowwormLedEffect.h"
-#include "RainbowLedEffect.h"
-#include "SparklesLedEffect.h"
 #include "ThreeColorLedEffect.h"
 
 class LEDLineEx : public LEDLine

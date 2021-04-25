@@ -1,5 +1,5 @@
-#ifndef _IEFFECT_TIMER_H
-#define _IEFFECT_TIMER_H
+#ifndef _EFFECT_TIMER_H
+#define _EFFECT_TIMER_H
 
 #if defined(ARDUINO) && ARDUINO >= 100
 #include "Arduino.h"
@@ -8,7 +8,7 @@
 #endif
 
 template <class T>
-class IEffectTimer
+class EffectTimer
 {
 protected:
 
@@ -19,11 +19,11 @@ protected:
 
 public:
 
-	IEffectTimer(T interval) : interval(interval)
+	EffectTimer(T interval) : interval(interval)
 	{
 	};
 
-	virtual ~IEffectTimer()
+	virtual ~EffectTimer()
 	{
 	};
 
@@ -66,13 +66,13 @@ protected:
 	virtual T getClock() const = 0;
 };
 
-class MillisTimer : public IEffectTimer<unsigned long>
+class MillisTimer : public EffectTimer<unsigned long>
 {
 public:
 
 	static const unsigned long CLOCKS_IN_SEC = 1000UL;
 
-	MillisTimer(unsigned long interval) : IEffectTimer(interval)
+	MillisTimer(unsigned long interval) : EffectTimer(interval)
 	{
 	};
 
@@ -83,13 +83,13 @@ protected:
 	};
 };
 
-class MicrosTimer : public IEffectTimer<unsigned long>
+class MicrosTimer : public EffectTimer<unsigned long>
 {
 public:
 
 	static const unsigned long CLOCKS_IN_SEC = 1000000UL;
 
-	MicrosTimer(unsigned long interval)	: IEffectTimer(interval)
+	MicrosTimer(unsigned long interval)	: EffectTimer(interval)
 	{
 	};
 
