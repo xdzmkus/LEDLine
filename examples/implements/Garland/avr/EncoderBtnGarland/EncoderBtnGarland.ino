@@ -4,12 +4,19 @@
 #else
 #define LED_PIN 9   // leds pin
 #define BTN_PIN 4   // button pin
+#define ENC1_PIN 3  // encoder S1 pin
+#define ENC2_PIN 2	// encoder S2 pin
 #endif
 
 #define UNPINNED_ANALOG_PIN A0 // not connected analog pin
 
 #include <ArduinoDebounceButton.h>
-ArduinoDebounceButton btn(BTN_PIN, BUTTON_CONNECTED::VCC, BUTTON_NORMAL::OPEN);
+ArduinoDebounceButton btn(BTN_PIN, BUTTON_CONNECTED::GND, BUTTON_NORMAL::OPEN);
+
+#include "ArduinoRotaryEncoder.h"
+#include "EventsQueue.hpp"
+ArduinoRotaryEncoder encoder(ENC2_PIN, ENC1_PIN);
+EventsQueue<ENCODER_EVENT, 10> queue;
 
 #include <EEPROM.h>
 #define EEPROM_ADDRESS_EFFECT 0
@@ -18,12 +25,10 @@ ArduinoDebounceButton btn(BTN_PIN, BUTTON_CONNECTED::VCC, BUTTON_NORMAL::OPEN);
 char EFFECT_NAME[EEPROM_EFFECT_LENGTH + 1];
 
 #include <FastLED.h>
-#define NUM_LEDS 256
+#define NUM_LEDS 128
 #define CURRENT_LIMIT 8000
-#define MAX_BRIGHTNESS 255
-#define MIN_BRIGHTNESS 20
 
-uint16_t brightness = MAX_BRIGHTNESS/2;
+uint8_t brightness = 100;
 
 CRGB leds[NUM_LEDS];
 
@@ -103,17 +108,49 @@ void turnOffLeds()
 	Serial.println(F("OFF"));
 }
 
-void adjustBrightness()
+void adjustBrightness(int8_t delta)
 {
-	brightness += MIN_BRIGHTNESS;
-	if (brightness > MAX_BRIGHTNESS + MIN_BRIGHTNESS * 2)
-	{
-		brightness = 0;
-	}
-	FastLED.setBrightness(constrain(brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS));
+	brightness += delta;
+	FastLED.setBrightness(brightness);
 
 	Serial.print(F("BRIGHTNESS: "));
 	Serial.println(brightness);
+}
+
+void processEncoder()
+{
+	bool processEncEvent;
+	ENCODER_EVENT encEvent;
+
+	do
+	{
+		noInterrupts();
+
+		processEncEvent = queue.length();
+
+		if (processEncEvent)
+		{
+			encEvent = queue.pop();
+		}
+
+		interrupts();
+
+		if (processEncEvent)
+		{
+			switch (encEvent)
+			{
+			case ENCODER_EVENT::LEFT:
+				adjustBrightness(-5);
+				break;
+			case ENCODER_EVENT::RIGHT:
+				adjustBrightness(5);
+				break;
+			default:
+				break;
+			}
+		}
+	} while (processEncEvent);
+
 }
 
 void handleButtonEvent(const DebounceButton* button, BUTTON_EVENT eventType)
@@ -126,9 +163,6 @@ void handleButtonEvent(const DebounceButton* button, BUTTON_EVENT eventType)
 	case BUTTON_EVENT::DoubleClicked:
 		saveState();
 		break;
-	case BUTTON_EVENT::RepeatClicked:
-		adjustBrightness();
-		break;
 	case BUTTON_EVENT::LongPressed:
 		turnOffLeds();
 		break;
@@ -137,11 +171,21 @@ void handleButtonEvent(const DebounceButton* button, BUTTON_EVENT eventType)
 	}
 }
 
+void catchEncoderTicks()
+{
+	encoder.catchTicks();
+}
+
+void handleEncoderEvent(const RotaryEncoder* enc, ENCODER_EVENT eventType)
+{
+	queue.push(eventType);
+}
+
 void setupLED()
 {
 	FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS).setCorrection(TypicalSMD5050);
 	FastLED.setMaxPowerInVoltsAndMilliamps(5, CURRENT_LIMIT);
-	FastLED.setBrightness(constrain(brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS));
+	FastLED.setBrightness(brightness);
 	FastLED.clear(true);
 }
 
@@ -161,12 +205,21 @@ void setup()
 
 	btn.setEventHandler(handleButtonEvent);
 
+	encoder.initPins();
+
+	encoder.setEventHandler(handleEncoderEvent);
+
+	attachInterrupt(digitalPinToInterrupt(2), catchEncoderTicks, CHANGE);
+	attachInterrupt(digitalPinToInterrupt(3), catchEncoderTicks, CHANGE);
+
 	loadState();
 }
 
 void loop()
 {
 	btn.check();
+
+	processEncoder();
 
 	if (ledLine.refresh())
 	{
