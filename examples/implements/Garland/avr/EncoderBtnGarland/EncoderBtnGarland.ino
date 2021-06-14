@@ -1,6 +1,8 @@
 #if defined(ESP8266)
-#define LED_PIN D1  // D1 leds pin (connected to D5 on my NodeMCU1.0 !!!)
-#define BTN_PIN D0  // 16 button pin
+#define LED_PIN D5  // leds pin
+#define BTN_PIN D0  // 16(pulldown) - button pin
+#define ENC1_PIN D1 // encoder S1 pin
+#define ENC2_PIN D2	// encoder S2 pin
 #else
 #define LED_PIN 9   // leds pin
 #define BTN_PIN 4   // button pin
@@ -13,9 +15,10 @@
 #include <ArduinoDebounceButton.h>
 ArduinoDebounceButton btn(BTN_PIN, BUTTON_CONNECTED::GND, BUTTON_NORMAL::OPEN);
 
-#include "ArduinoRotaryEncoder.h"
-#include "EventsQueue.hpp"
+#include <ArduinoRotaryEncoder.h>
 ArduinoRotaryEncoder encoder(ENC2_PIN, ENC1_PIN);
+
+#include <EventsQueue.hpp>
 EventsQueue<ENCODER_EVENT, 10> queue;
 
 #include <EEPROM.h>
@@ -25,7 +28,7 @@ EventsQueue<ENCODER_EVENT, 10> queue;
 char EFFECT_NAME[EEPROM_EFFECT_LENGTH + 1];
 
 #include <FastLED.h>
-#define NUM_LEDS 128
+#define NUM_LEDS 256
 #define CURRENT_LIMIT 8000
 
 uint8_t brightness = 100;
@@ -117,6 +120,37 @@ void adjustBrightness(int8_t delta)
 	Serial.println(brightness);
 }
 
+void handleButtonEvent(const DebounceButton* button, BUTTON_EVENT eventType)
+{
+	switch (eventType)
+	{
+	case BUTTON_EVENT::Clicked:
+		changeEffect();
+		break;
+	case BUTTON_EVENT::DoubleClicked:
+		saveState();
+		break;
+	case BUTTON_EVENT::LongPressed:
+		turnOffLeds();
+		break;
+	default:
+		break;
+	}
+}
+
+#if defined(ESP8266)
+IRAM_ATTR
+#endif
+void catchEncoderTicks()
+{
+	encoder.catchTicks();
+}
+
+void handleEncoderEvent(const RotaryEncoder* enc, ENCODER_EVENT eventType)
+{
+	queue.push(eventType);
+}
+
 void processEncoder()
 {
 	bool processEncEvent;
@@ -153,34 +187,6 @@ void processEncoder()
 
 }
 
-void handleButtonEvent(const DebounceButton* button, BUTTON_EVENT eventType)
-{
-	switch (eventType)
-	{
-	case BUTTON_EVENT::Clicked:
-		changeEffect();
-		break;
-	case BUTTON_EVENT::DoubleClicked:
-		saveState();
-		break;
-	case BUTTON_EVENT::LongPressed:
-		turnOffLeds();
-		break;
-	default:
-		break;
-	}
-}
-
-void catchEncoderTicks()
-{
-	encoder.catchTicks();
-}
-
-void handleEncoderEvent(const RotaryEncoder* enc, ENCODER_EVENT eventType)
-{
-	queue.push(eventType);
-}
-
 void setupLED()
 {
 	FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS).setCorrection(TypicalSMD5050);
@@ -197,11 +203,7 @@ void setup()
 
 	setupLED();
 
-#if defined(ESP8266) && (BTN_PIN == 16)
-	pinMode(BTN_PIN, INPUT_PULLDOWN_16);
-#else
 	btn.initPin();
-#endif
 
 	btn.setEventHandler(handleButtonEvent);
 
@@ -209,8 +211,8 @@ void setup()
 
 	encoder.setEventHandler(handleEncoderEvent);
 
-	attachInterrupt(digitalPinToInterrupt(2), catchEncoderTicks, CHANGE);
-	attachInterrupt(digitalPinToInterrupt(3), catchEncoderTicks, CHANGE);
+	attachInterrupt(digitalPinToInterrupt(ENC1_PIN), catchEncoderTicks, CHANGE);
+	attachInterrupt(digitalPinToInterrupt(ENC2_PIN), catchEncoderTicks, CHANGE);
 
 	loadState();
 }
