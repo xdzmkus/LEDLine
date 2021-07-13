@@ -64,8 +64,6 @@ void setAction_callback(uint32_t x)
 	default:
 		break;
 	}
-
-	publishState();
 }
 
 void setEffect_callback(char* data, uint16_t len)
@@ -74,8 +72,6 @@ void setEffect_callback(char* data, uint16_t len)
 	Serial.println(data);
 
 	setEffect(data);
-
-	publishState();
 }
 
 void configure_WiFi()

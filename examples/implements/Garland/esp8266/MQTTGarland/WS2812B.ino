@@ -40,6 +40,8 @@ void turnOnLeds()
 	ledLine.turnOn();
 
 	effectsTicker.attach(EFFECT_DURATION_SEC, changeEffect);
+
+	publishState();
 }
 
 void turnOffLeds()
@@ -49,6 +51,8 @@ void turnOffLeds()
 	ledLine.turnOff();
 
 	FastLED.clear(true);
+
+	publishState();
 }
 
 void changeEffect()
@@ -58,6 +62,8 @@ void changeEffect()
 	ledLine.setNextEffect();
 
 	effectsTicker.attach(EFFECT_DURATION_SEC, changeEffect);
+
+	publishState();
 }
 
 void setEffect(const char* data)
@@ -66,6 +72,8 @@ void setEffect(const char* data)
 	{
 		effectsTicker.detach();
 	}
+
+	publishState();
 }
 
 const char* getEffect()
