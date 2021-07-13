@@ -21,21 +21,30 @@
 
 #endif
 
-#define LED_PIN D3    // D1 leds pin (connected to D5 on my NodeMCU 1.0 !!!)
-
-#define BTN_PIN 16    // D0 - GPIO16 - touch button pin
+#define LED_PIN  D5 // leds pin
+#define BTN_PIN  D0 // button pin
+#define ENC1_PIN D1 // encoder S1 pin
+#define ENC2_PIN D2	// encoder S2 pin
 
 #define UNPINNED_ANALOG_PIN A0 // not connected analog pin
+
+#include <ArduinoDebounceButton.h>
+ArduinoDebounceButton btn(BTN_PIN, BUTTON_CONNECTED::GND, BUTTON_NORMAL::OPEN);
+
+#include <ArduinoRotaryEncoder.h>
+ArduinoRotaryEncoder encoder(ENC2_PIN, ENC1_PIN);
+
+#include <EventsQueue.hpp>
+EventsQueue<ENCODER_EVENT, 10> queue;
 
 /*********** WS2812B leds *******************/
 #include <FastLED.h>
 #define NUM_LEDS 256
 #define CURRENT_LIMIT 8000
-#define MAX_BRIGHTNESS 255
-#define MIN_BRIGHTNESS 20
+
 #define EFFECT_DURATION_SEC 45
 
-uint16_t brightness = MIN_BRIGHTNESS;
+uint8_t brightness = 127;
 
 CRGB leds[NUM_LEDS];
 
@@ -69,213 +78,287 @@ Adafruit_MQTT_Subscribe garlandAction(&mqtt, MQTT_TOPIC_SUB2, MQTT_QOS_1);
 
 /********************************************/
 
+IRAM_ATTR void catchEncoderTicks()
+{
+	encoder.catchTicks();
+}
+
+void handleEncoderEvent(const RotaryEncoder* enc, ENCODER_EVENT eventType)
+{
+	queue.push(eventType);
+}
+
+void processEncoder()
+{
+	bool processEncEvent;
+	ENCODER_EVENT encEvent;
+
+	do
+	{
+		noInterrupts();
+
+		processEncEvent = queue.length();
+
+		if (processEncEvent)
+		{
+			encEvent = queue.pop();
+		}
+
+		interrupts();
+
+		if (processEncEvent)
+		{
+			switch (encEvent)
+			{
+			case ENCODER_EVENT::LEFT:
+				adjustBrightness(-5);
+				break;
+			case ENCODER_EVENT::RIGHT:
+				adjustBrightness(5);
+				break;
+			default:
+				break;
+			}
+		}
+	} while (processEncEvent);
+}
+
 void turnOnLeds()
 {
-    effectsTicker.detach();
+	effectsTicker.detach();
 
-    ledLine.setEffectByIdx(0);
-    ledLine.turnOn();
+	ledLine.setEffectByIdx(0);
+	ledLine.turnOn();
 
-    effectsTicker.attach(EFFECT_DURATION_SEC, changeEffect);
+	effectsTicker.attach(EFFECT_DURATION_SEC, changeEffect);
 
-    f_publishState = true;
+	f_publishState = true;
 }
 
 void turnOffLeds()
 {
-    effectsTicker.detach();
+	effectsTicker.detach();
 
-    ledLine.turnOff();
+	ledLine.turnOff();
 
-    f_publishState = true;
+	FastLED.clear(true);
+
+	f_publishState = true;
 }
 
 void changeEffect()
 {
-    effectsTicker.detach();
+	effectsTicker.detach();
 
-    ledLine.setNextEffect();
+	ledLine.setNextEffect();
 
-    effectsTicker.attach(EFFECT_DURATION_SEC, changeEffect);
+	effectsTicker.attach(EFFECT_DURATION_SEC, changeEffect);
 
-    f_publishState = true;
+	f_publishState = true;
 }
 
-void adjustBrightness()
+void handleButtonEvent(const DebounceButton* button, BUTTON_EVENT eventType)
 {
-    brightness += MIN_BRIGHTNESS;
-    if (brightness > MAX_BRIGHTNESS + MIN_BRIGHTNESS * 2)
-    {
-        brightness = 0;
-    }
-    FastLED.setBrightness(constrain(brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS));
+	switch (eventType)
+	{
+	case BUTTON_EVENT::Clicked:
+		changeEffect();
+		break;
+	case BUTTON_EVENT::DoubleClicked:
+		turnOnLeds();
+		break;
+	case BUTTON_EVENT::LongPressed:
+		turnOffLeds();
+		break;
+	default:
+		break;
+	}
+}
+
+void adjustBrightness(int8_t delta)
+{
+	brightness += delta;
+	FastLED.setBrightness(brightness);
 }
 
 void setAction_callback(uint32_t x)
 {
-    Serial.print(F("new action requested: "));
-    Serial.println(x);
+	Serial.print(F("new action requested: "));
+	Serial.println(x);
 
-    switch (x)
-    {
-    case ON_CODE:
-        turnOnLeds();
-        break;
-    case OFF_CODE:
-        turnOffLeds();
-        break;
-    case NEXT_CODE:
-        changeEffect();
-        break;
-    default:
-        f_publishState = true;
-        break;
-    }
+	switch (x)
+	{
+	case ON_CODE:
+		turnOnLeds();
+		break;
+	case OFF_CODE:
+		turnOffLeds();
+		break;
+	case NEXT_CODE:
+		changeEffect();
+		break;
+	default:
+		f_publishState = true;
+		break;
+	}
 }
 
 void setEffect_callback(char* data, uint16_t len)
 {
-    Serial.print(F("new effect requested: "));
-    Serial.println(data);
+	Serial.print(F("new effect requested: "));
+	Serial.println(data);
 
-    if (ledLine.setEffectByName(data))
-    {
-        effectsTicker.detach();
-    }
+	if (ledLine.setEffectByName(data))
+	{
+		effectsTicker.detach();
+	}
 
-    f_publishState = true;
+	f_publishState = true;
 }
 
 void pingMQTT()
 {
-    if (!mqtt.connected())
-    {
-        uint8_t ret(mqtt.connect());
+	if (!mqtt.connected())
+	{
+		uint8_t ret(mqtt.connect());
 
-        Serial.println(F("Connecting to MQTT... "));
-        if (ret != 0)
-        {
-            Serial.println(mqtt.connectErrorString(ret));
-            Serial.println(F("Retry MQTT connection ..."));
-            mqtt.disconnect();
-            return;
-        }
-        else
-        {
-            Serial.println(F("MQTT Connected!"));
-        }
-    }
+		Serial.println(F("Connecting to MQTT... "));
+		if (ret != 0)
+		{
+			Serial.println(mqtt.connectErrorString(ret));
+			Serial.println(F("Retry MQTT connection ..."));
+			mqtt.disconnect();
+			return;
+		}
+		else
+		{
+			Serial.println(F("MQTT Connected!"));
+		}
+	}
 
-    mqtt.ping();
+	mqtt.ping();
 }
 
 void processMQTT()
 {
-    mqtt.processPackets(10);
+	mqtt.processPackets(10);
 
-    if (f_publishState && mqtt.connected())
-    {
-        auto currentEffect = (ledLine.getEffectName() == nullptr || !ledLine.isOn()) ? "OFF" : ledLine.getEffectName();
+	if (f_publishState && mqtt.connected())
+	{
+		auto currentEffect = (ledLine.getEffectName() == nullptr || !ledLine.isOn()) ? "OFF" : ledLine.getEffectName();
 
-        Serial.print(F("Publish message: "));
-        Serial.println(currentEffect);
+		Serial.print(F("Publish message: "));
+		Serial.println(currentEffect);
 
-        if (!garlandState.publish(currentEffect))
-        {
-            Serial.println(F("Publish Message Failed"));
-            return;
-        }
+		if (!garlandState.publish(currentEffect))
+		{
+			Serial.println(F("Publish Message Failed"));
+			return;
+		}
 
-        f_publishState = false;
-    }
+		f_publishState = false;
+	}
 }
 
 void blinkLED()
 {
-    //toggle LED state
-    digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
+	//toggle LED state
+	digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
 }
 
 void setup()
 {
-    randomSeed(analogRead(UNPINNED_ANALOG_PIN));
+	randomSeed(analogRead(UNPINNED_ANALOG_PIN));
 
-    pinMode(BTN_PIN, INPUT_PULLDOWN_16); // Re-Initialize the BUTTON pin as an input pulldown
+	btn.initPin();
 
-    pinMode(LED_BUILTIN, OUTPUT);        // Initialize the BUILTIN_LED pin as an output
-    ledTicker.attach_ms(500, blinkLED);  // Blink led while setup
+	pinMode(LED_BUILTIN, OUTPUT);        // Initialize the BUILTIN_LED pin as an output
+	ledTicker.attach_ms(500, blinkLED);  // Blink led while setup
 
-    Serial.begin(115200);
+	Serial.begin(115200);
 
-    setup_LED();
+	setup_LED();
 
-    delay(5000);
+	delay(5000);
 
-    bool resetWiFi = digitalRead(BTN_PIN);
+	bool resetWiFi = btn.check();
 
-    setup_WiFi(resetWiFi);
+	setup_WiFi(resetWiFi);
 
-    setup_MQTT();
+	setup_MQTT();
 
-    turnOnLeds();
+	ledTicker.detach();
+	digitalWrite(LED_BUILTIN, HIGH);    // Turn the LED off by making the voltage HIGH
 
-    ledTicker.detach();
-    digitalWrite(LED_BUILTIN, HIGH);    // Turn the LED off by making the voltage HIGH
+	encoder.initPins();
+
+	encoder.setEventHandler(handleEncoderEvent);
+
+	attachInterrupt(digitalPinToInterrupt(ENC1_PIN), catchEncoderTicks, CHANGE);
+	attachInterrupt(digitalPinToInterrupt(ENC2_PIN), catchEncoderTicks, CHANGE);
+
+	btn.setEventHandler(handleButtonEvent);
+
+	turnOnLeds();
 }
 
 void setup_LED()
 {
-    FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS).setCorrection(TypicalSMD5050);
-    FastLED.setMaxPowerInVoltsAndMilliamps(5, CURRENT_LIMIT);
-    FastLED.setBrightness(constrain(brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS));
-    FastLED.clear(true);
+	FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS).setCorrection(TypicalSMD5050);
+	FastLED.setMaxPowerInVoltsAndMilliamps(5, CURRENT_LIMIT);
+	FastLED.setBrightness(brightness);
+	FastLED.clear(true);
 }
 
 void setup_WiFi(bool setupMode)
 {
-    WiFi.mode(WIFI_STA);                // Set the ESP8266 to be a WiFi-client
-    WiFi.hostname(WLAN_HOSTNAME);
+	WiFi.mode(WIFI_STA);                // Set the ESP8266 to be a WiFi-client
+	WiFi.hostname(WLAN_HOSTNAME);
 
-    Serial.println(WLAN_HOSTNAME);
+	Serial.println(WLAN_HOSTNAME);
 
-    WiFiManager wm;
+	WiFiManager wm;
 
-    if (setupMode)
-    {
-        Serial.println(F("Reset WiFi settings"));
+	if (setupMode)
+	{
+		Serial.println(F("Reset WiFi settings"));
 
-        wm.resetSettings();             // Reset settings - wipe credentials for reconfiguration
-    }
+		wm.resetSettings();             // Reset settings - wipe credentials for reconfiguration
+	}
 
-    if (!wm.autoConnect(WLAN_SSID, WLAN_PASS))
-    {
-        Serial.println(F("Connection Failed! Rebooting..."));
-        delay(5000);
-        ESP.restart();
-    }
+	if (!wm.autoConnect(WLAN_SSID, WLAN_PASS))
+	{
+		Serial.println(F("Connection Failed! Rebooting..."));
+		delay(5000);
+		ESP.restart();
+	}
 
-    Serial.println(F("WiFi connected"));
-    Serial.print(F("IP address: "));
-    Serial.println(WiFi.localIP());
+	Serial.println(F("WiFi connected"));
+	Serial.print(F("IP address: "));
+	Serial.println(WiFi.localIP());
 }
 
 void setup_MQTT()
 {
-    garlandEffect.setCallback(setEffect_callback);
-    mqtt.subscribe(&garlandEffect);
+	garlandEffect.setCallback(setEffect_callback);
+	mqtt.subscribe(&garlandEffect);
 
-    garlandAction.setCallback(setAction_callback);
-    mqtt.subscribe(&garlandAction);
+	garlandAction.setCallback(setAction_callback);
+	mqtt.subscribe(&garlandAction);
 
-    mqttTicker.attach_scheduled(10.0, pingMQTT);
+	mqttTicker.attach_scheduled(10.0, pingMQTT);
 }
 
 void loop()
-{   
-    processMQTT();
+{
+	processMQTT();
 
-    if (ledLine.refresh())
-    {
-        FastLED.show();
-    }
+	processEncoder();
+
+	btn.check();
+
+	if (ledLine.refresh())
+	{
+		FastLED.show();
+	}
 }

@@ -1,11 +1,11 @@
 #if defined(ESP8266)
-#define LED_PIN D5  // leds pin
-#define BTN_PIN D0  // 16(pulldown) - button pin
+#define LED_PIN  D5 // leds pin
+#define BTN_PIN  D0 // button pin
 #define ENC1_PIN D1 // encoder S1 pin
 #define ENC2_PIN D2	// encoder S2 pin
 #else
-#define LED_PIN 9   // leds pin
-#define BTN_PIN 4   // button pin
+#define LED_PIN  9  // leds pin
+#define BTN_PIN  4  // button pin
 #define ENC1_PIN 3  // encoder S1 pin
 #define ENC2_PIN 2	// encoder S2 pin
 #endif

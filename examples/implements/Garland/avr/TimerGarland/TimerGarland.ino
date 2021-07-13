@@ -1,5 +1,5 @@
 #if defined(ESP8266)
-#define LED_PIN D1  // D1 leds pin (connected to D5 on my NodeMCU1.0 !!!)
+#define LED_PIN D5  // leds pin
 #else
 #define LED_PIN 9   // leds pin
 #endif
@@ -9,10 +9,8 @@
 #include <FastLED.h>
 #define NUM_LEDS 256
 #define CURRENT_LIMIT 8000
-#define MAX_BRIGHTNESS 255
-#define MIN_BRIGHTNESS 20
 
-uint16_t brightness = MAX_BRIGHTNESS / 2;
+uint8_t brightness = 127;
 
 CRGB leds[NUM_LEDS];
 
@@ -38,7 +36,7 @@ void setupLED()
 {
 	FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS).setCorrection(TypicalSMD5050);
 	FastLED.setMaxPowerInVoltsAndMilliamps(5, CURRENT_LIMIT);
-	FastLED.setBrightness(constrain(brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS));
+	FastLED.setBrightness(brightness);
 	FastLED.clear(true);
 }
 

@@ -1,6 +1,6 @@
 #if defined(ESP8266)
-#define LED_PIN D1  // D1 leds pin (connected to D5 on my NodeMCU1.0 !!!)
-#define BTN_PIN D0  // 16 button pin
+#define LED_PIN D5  // leds pin
+#define BTN_PIN D0  // button pin
 #else
 #define LED_PIN 9   // leds pin
 #define BTN_PIN 4   // button pin
@@ -20,10 +20,8 @@ char EFFECT_NAME[EEPROM_EFFECT_LENGTH + 1];
 #include <FastLED.h>
 #define NUM_LEDS 256
 #define CURRENT_LIMIT 8000
-#define MAX_BRIGHTNESS 255
-#define MIN_BRIGHTNESS 20
 
-uint16_t brightness = MAX_BRIGHTNESS/2;
+uint8_t brightness = 100;
 
 CRGB leds[NUM_LEDS];
 
@@ -103,14 +101,10 @@ void turnOffLeds()
 	Serial.println(F("OFF"));
 }
 
-void adjustBrightness()
+void adjustBrightness(int8_t delta)
 {
-	brightness += MIN_BRIGHTNESS;
-	if (brightness > MAX_BRIGHTNESS + MIN_BRIGHTNESS * 2)
-	{
-		brightness = 0;
-	}
-	FastLED.setBrightness(constrain(brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS));
+	brightness += delta;
+	FastLED.setBrightness(brightness);
 
 	Serial.print(F("BRIGHTNESS: "));
 	Serial.println(brightness);
@@ -127,7 +121,7 @@ void handleButtonEvent(const DebounceButton* button, BUTTON_EVENT eventType)
 		saveState();
 		break;
 	case BUTTON_EVENT::RepeatClicked:
-		adjustBrightness();
+		adjustBrightness(5);
 		break;
 	case BUTTON_EVENT::LongPressed:
 		turnOffLeds();
@@ -141,7 +135,7 @@ void setupLED()
 {
 	FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS).setCorrection(TypicalSMD5050);
 	FastLED.setMaxPowerInVoltsAndMilliamps(5, CURRENT_LIMIT);
-	FastLED.setBrightness(constrain(brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS));
+	FastLED.setBrightness(brightness);
 	FastLED.clear(true);
 }
 
