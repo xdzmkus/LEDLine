@@ -1,9 +1,7 @@
 /*********** PINS ***************************/
-#define LED_PIN  D5 // leds pin
 #define BTN_PIN  D0 // button pin
 #define ENC1_PIN D1 // encoder S1 pin
 #define ENC2_PIN D2	// encoder S2 pin
-
 #define UNPINNED_ANALOG_PIN A0 // not connected analog pin
 
 /********** Encoder button module ***********/

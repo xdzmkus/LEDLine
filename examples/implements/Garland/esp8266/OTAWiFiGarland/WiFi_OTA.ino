@@ -1,4 +1,4 @@
-#if true // && __has_include("my_data_sensitive.h")
+#if __has_include("my_data_sensitive.h")
 #include "my_data_sensitive.h"
 #else
 

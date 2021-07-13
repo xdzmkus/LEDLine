@@ -32,39 +32,45 @@ void processLED()
     }
 }
 
-void turnOnFlashLeds()
-{
-    ledLine.setEffectByName("FLASH");
-
-    ledLine.turnOn();
-}
-
 void turnOnLeds()
 {
-    effectsTicker.detach();
+	effectsTicker.detach();
 
-    ledLine.setEffectByIdx(0);
-    ledLine.turnOn();
+	ledLine.setEffectByIdx(0);
+	ledLine.turnOn();
 
-    effectsTicker.attach(EFFECT_DURATION_SEC, changeEffect);
+	effectsTicker.attach(EFFECT_DURATION_SEC, changeEffect);
 }
 
 void turnOffLeds()
 {
-    effectsTicker.detach();
+	effectsTicker.detach();
 
-    ledLine.turnOff();
+	ledLine.turnOff();
 
-    FastLED.clear(true);
+	FastLED.clear(true);
 }
 
 void changeEffect()
 {
-    effectsTicker.detach();
+	effectsTicker.detach();
 
-    ledLine.setNextEffect();
+	ledLine.setNextEffect();
 
-    effectsTicker.attach(EFFECT_DURATION_SEC, changeEffect);
+	effectsTicker.attach(EFFECT_DURATION_SEC, changeEffect);
+}
+
+void setEffect(const char* data)
+{
+	if (ledLine.setEffectByName(data))
+	{
+		effectsTicker.detach();
+	}
+}
+
+const char* getEffect()
+{
+	return !ledLine.isOn() ? nullptr : ledLine.getEffectName();
 }
 
 void adjustBrightness(int8_t delta)
@@ -72,4 +78,3 @@ void adjustBrightness(int8_t delta)
     brightness += delta;
     FastLED.setBrightness(brightness);
 }
-
