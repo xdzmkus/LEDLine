@@ -1,6 +1,7 @@
-#if __has_include("my_data_sensitive.h")
+#if true //__has_include("my_data_sensitive.h")
 #include "my_data_sensitive.h"
 #else
+#pragma message "default credentials are used"
 
 #define WLAN_SSID           "AP wifi name"
 #define WLAN_PASS           "and password"
