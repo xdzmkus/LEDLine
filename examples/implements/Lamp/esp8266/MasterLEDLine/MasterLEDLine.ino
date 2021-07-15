@@ -1,4 +1,3 @@
-
 #define BTN_PIN   16  // D0 - GPIO16 - touch button pin
 
 #define UNPINNED_ANALOG_PIN A0 // not connected analog pin
@@ -31,9 +30,8 @@ void handleButtonEvent(const DebounceButton* button, BUTTON_EVENT eventType)
     default:
         return;
     }
-
-    publishState();
 }
+
 void blinkLED()
 {
     //toggle LED state
