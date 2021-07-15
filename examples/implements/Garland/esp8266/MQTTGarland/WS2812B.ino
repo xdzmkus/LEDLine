@@ -4,8 +4,6 @@
 #define CURRENT_LIMIT 8000
 #define EFFECT_DURATION_SEC 45
 
-extern void publishState();
-
 #include <FastLED.h>
 CRGB leds[NUM_LEDS];
 

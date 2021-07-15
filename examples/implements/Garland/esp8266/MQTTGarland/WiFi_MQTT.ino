@@ -21,12 +21,6 @@
 
 #endif
 
-extern void turnOnLeds();
-extern void turnOffLeds();
-extern void changeEffect();
-extern void setEffect(const char*);
-extern const char* getEffect();
-
 /*********** WiFi ***************************/
 #include <WiFiManager.h>
 

@@ -12,8 +12,6 @@
 #define CURRENT_LIMIT 2000
 #define EFFECT_DURATION_SEC 60
 
-extern void publishState();
-
 #include <FastLED.h>
 CRGB ledsLeft[NUM_LEDS_LEFT];
 CRGB ledsCenter[NUM_LEDS_CENTER];

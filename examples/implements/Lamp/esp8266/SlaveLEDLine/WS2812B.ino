@@ -10,8 +10,6 @@
 #define CURRENT_LIMIT 3500
 #define EFFECT_DURATION_SEC 60
 
-extern void publishSlaveEffect();
-
 #include <FastLED.h>
 CRGB leds[NUM_LEDS];
 

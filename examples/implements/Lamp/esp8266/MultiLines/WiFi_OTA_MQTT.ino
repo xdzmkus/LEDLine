@@ -78,14 +78,6 @@ gz5JWYhbD6c38khSzJb0pNXCo3EuYAVa36kDM96k1BtWuhRS10Q1VXk=
 
 #endif
 
-/*
-extern void turnOnLeds();
-extern void turnOffLeds();
-extern void changeEffect();
-extern void setEffect(const char*);
-extern const char* getEffect(LED_LINE);
-*/
-
 /*********** WiFi ***************************/
 #include <WiFiManager.h>
 
