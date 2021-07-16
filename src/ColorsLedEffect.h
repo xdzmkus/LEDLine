@@ -6,6 +6,7 @@
 #ifndef __COLORSLEDEFFECT_H__
 #define __COLORSLEDEFFECT_H__
 
+#include "ILedLine.h"
 #include "ILedEffect.h"
 
 class ColorsLedEffect : public ILedLine, public ILedEffect

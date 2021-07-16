@@ -6,8 +6,8 @@
 #ifndef __THREECOLORLEDEFFECT_H__
 #define __THREECOLORLEDEFFECT_H__
 
+#include "ILedLine.h"
 #include "ILedEffect.h"
-
 
 class ThreeColorLedEffect : public ILedLine, public ILedEffect
 {

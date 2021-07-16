@@ -6,6 +6,7 @@
 #ifndef __RAINBOWLEDEFFECT_H__
 #define __RAINBOWLEDEFFECT_H__
 
+#include "ILedLine.h"
 #include "ILedEffect.h"
 
 class RainbowLedEffect : public ILedLine, public ILedEffect

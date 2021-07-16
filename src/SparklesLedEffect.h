@@ -6,6 +6,7 @@
 #ifndef __SPARKLESLEDEFFECT_H__
 #define __SPARKLESLEDEFFECT_H__
 
+#include "ILedLine.h"
 #include "ILedEffect.h"
 
 class SparklesLedEffect : public ILedLine, public ILedEffect

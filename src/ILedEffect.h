@@ -7,8 +7,6 @@
 #define _ILEDEFFECT_H
 
 #include "EffectTimer.h"
-#include "ILedLine.h"
-#include <FastLED.h>
 
 typedef String EffectID;
 

@@ -6,6 +6,7 @@
 #ifndef __FLAMELEDEFFECT_H__
 #define __FLAMELEDEFFECT_H__
 
+#include "ILedLine.h"
 #include "ILedEffect.h"
 
 class FlameLedEffect : public ILedLine, public ILedEffect

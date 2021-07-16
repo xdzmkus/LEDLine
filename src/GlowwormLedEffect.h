@@ -6,6 +6,7 @@
 #ifndef __GLOWWORMLEDEFFECT_H__
 #define __GLOWWORMLEDEFFECT_H__
 
+#include "ILedLine.h"
 #include "ILedEffect.h"
 
 class GlowwormLedEffect : public ILedLine, public ILedEffect

@@ -6,6 +6,7 @@
 #ifndef __BOUNSINGBALLSLEDEFFECT_H__
 #define __BOUNSINGBALLSLEDEFFECT_H__
 
+#include "ILedLine.h"
 #include "ILedEffect.h"
 
 class BouncingBallsLedEffect : public ILedLine, public ILedEffect

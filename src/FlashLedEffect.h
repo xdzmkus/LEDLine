@@ -6,6 +6,7 @@
 #ifndef __FLASHLEDEFFECT_H__
 #define __FLASHLEDEFFECT_H__
 
+#include "ILedLine.h"
 #include "ILedEffect.h"
 
 class FlashLedEffect : public ILedLine, public ILedEffect

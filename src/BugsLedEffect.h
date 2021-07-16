@@ -6,6 +6,7 @@
 #ifndef __BUGSLEDEFFECT_H__
 #define __BUGSLEDEFFECT_H__
 
+#include "ILedLine.h"
 #include "ILedEffect.h"
 
 class BugsLedEffect : public ILedLine, public ILedEffect
