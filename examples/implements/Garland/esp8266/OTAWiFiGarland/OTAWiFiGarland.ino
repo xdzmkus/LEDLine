@@ -1,8 +1,9 @@
-/*********** PINS ***************************/
+#if defined(ESP8266)
 #define BTN_PIN  D0 // button pin
 #define ENC1_PIN D1 // encoder S1 pin
 #define ENC2_PIN D2	// encoder S2 pin
 #define UNPINNED_ANALOG_PIN A0 // not connected analog pin
+#endif
 
 /********** Encoder button module ***********/
 #include <ArduinoDebounceButton.h>
@@ -15,7 +16,7 @@ ArduinoRotaryEncoder encoder(ENC2_PIN, ENC1_PIN);
 EventsQueue<ENCODER_EVENT, 10> queue;
 
 #include <Ticker.h>
-Ticker ledTicker;
+Ticker builtinLedTicker;
 
 boolean f_setupMode;
 
@@ -105,20 +106,20 @@ void setup()
 
     delay(5000);
 
-    ledTicker.attach_ms(500, blinkLED);  // Blink led while setup
+    builtinLedTicker.attach_ms(500, blinkLED);  // Blink led while setup
 
     f_setupMode = btn.check();
 
     if (f_setupMode)
     {
         configure_WiFi();
-        setup_WiFi();
+        connect_WiFi();
         setup_OTA();
         turnOnFlashLeds();
     }
     else
     {
-        setup_WiFi();
+        connect_WiFi();
         turnOnLeds();
     }
 
@@ -130,7 +131,7 @@ void setup()
 
     btn.setEventHandler(handleButtonEvent);
 
-    ledTicker.detach();
+    builtinLedTicker.detach();
     digitalWrite(LED_BUILTIN, HIGH);    // Turn the LED off by making the voltage HIGH
 }
 

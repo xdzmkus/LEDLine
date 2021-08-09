@@ -1,10 +1,15 @@
+#define DYNAMIC_EFFECTS
+
 #if defined(ESP8266)
 #define LED_PIN D5  // leds pin
+#define UNPINNED_ANALOG_PIN A0 // not connected analog pin
+#elif defined(ESP32)
+#define LED_PIN  16 // leds pin
+#define UNPINNED_ANALOG_PIN 35 // not connected analog pin
 #else
 #define LED_PIN 9   // leds pin
-#endif
-
 #define UNPINNED_ANALOG_PIN A0 // not connected analog pin
+#endif
 
 #include <FastLED.h>
 #define NUM_LEDS 256
@@ -14,11 +19,15 @@ uint8_t brightness = 127;
 
 CRGB leds[NUM_LEDS];
 
-#include "LEDLine.h"
+#ifdef DYNAMIC_EFFECTS
+#include "DynamicLEDLine.hpp"
+DynamicLEDLine<leds, NUM_LEDS> ledLine;
+#else
+#include "StaticLEDLine.hpp"
+StaticLEDLine<leds, NUM_LEDS> ledLine;
+#endif
 
-LEDLine ledLine(leds, NUM_LEDS);
-
-#include "EffectTimer.h"
+#include "EffectTimer.hpp"
 
 #define EFFECT_DURATION_SEC 60
 MillisTimer timerEffects(EFFECT_DURATION_SEC * MillisTimer::CLOCKS_IN_SEC);
@@ -47,7 +56,7 @@ void setup()
 	Serial.begin(115200);
 
 	Serial.println(F("LEDLine EFFECTS:"));
-	for (uint8_t var = 0; var < ledLine.getAllEffectsNumber(); var++)
+	for (uint8_t var = 0; var < ledLine.howManyEffects(); var++)
 	{
 		Serial.println(ledLine.getAllEffectsNames()[var]);
 	}

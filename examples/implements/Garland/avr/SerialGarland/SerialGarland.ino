@@ -1,5 +1,6 @@
-#define LED_PIN 9   // leds pin
+#define DYNAMIC_EFFECTS
 
+#define LED_PIN 9   // leds pin
 #define UNPINNED_ANALOG_PIN A0 // not connected analog pin
 
 #include <FastLED.h>
@@ -10,9 +11,13 @@ uint8_t brightness = 127;
 
 CRGB leds[NUM_LEDS];
 
-#include "LEDLine.h"
-
-LEDLine ledLine(leds, NUM_LEDS);
+#ifdef DYNAMIC_EFFECTS
+#include "DynamicLEDLine.hpp"
+DynamicLEDLine<leds, NUM_LEDS> ledLine;
+#else
+#include "StaticLEDLine.hpp"
+StaticLEDLine<leds, NUM_LEDS> ledLine;
+#endif
 
 #define NAME_EFFECT_LENGTH 15
 
@@ -70,7 +75,7 @@ void setup()
 	setupLED();
 
 	Serial.println(F("LEDLine EFFECTS:"));
-	for (uint8_t var = 0; var < ledLine.getAllEffectsNumber(); var++)
+	for (uint8_t var = 0; var < ledLine.howManyEffects(); var++)
 	{
 		Serial.println(ledLine.getAllEffectsNames()[var]);
 	}

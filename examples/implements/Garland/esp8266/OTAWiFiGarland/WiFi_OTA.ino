@@ -94,7 +94,7 @@ void configure_WiFi()
     }
 }
 
-void setup_WiFi()
+void connect_WiFi()
 {
     WiFiManager wm;
 
@@ -133,4 +133,13 @@ void processOTA()
     MDNS.update();
 
     httpServer.handleClient();
+}
+
+void publishState()
+{
+    auto currentEffect = getEffect();
+    if (currentEffect == nullptr) currentEffect = "OFF";
+
+    Serial.print(F("Publish message: "));
+    Serial.println(currentEffect);
 }

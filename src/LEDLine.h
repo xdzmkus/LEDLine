@@ -6,35 +6,33 @@
 #ifndef _LEDLINE_H_
 #define _LEDLINE_H_
 
-#include <FastLED.h>
-#include "ILedEffect.h"
+#include "ILedEffect.hpp"
 
 class LEDLine
 {
-private:
+protected:
 
-	static const uint8_t NUM_EFFECTS;
-	static const char* availableEffects[];
+	ILedEffect* effect = nullptr;
 
 public:
 
-	LEDLine(CRGB leds[], uint16_t count);
+	LEDLine();
 
 	virtual ~LEDLine();
 
-	virtual uint8_t getAllEffectsNumber() const;
+	virtual uint8_t howManyEffects() const = 0;
 
-	virtual const char* const* getAllEffectsNames() const;
+	virtual const char* const* getAllEffectsNames() const = 0;
 
-	virtual const char* getEffectName() const;
-
-	virtual uint8_t getEffectIdx() const;
-
-	virtual bool setEffectByName(const char* effectName);
+	virtual bool setEffectByName(const char* effectName) = 0;
 
 	virtual bool setEffectByIdx(uint8_t idx);
 
 	virtual bool setNextEffect();
+
+	virtual const char* getEffectName() const;
+
+	virtual uint8_t getEffectIdx() const;
 
 	virtual void turnOn();
 
@@ -43,13 +41,6 @@ public:
 	virtual bool isOn() const;
 
 	virtual bool refresh();
-
-protected:
-
-	CRGB* const leds;
-	const uint16_t numLeds;
-
-	ILedEffect* effect = nullptr;
 };
 
 #endif

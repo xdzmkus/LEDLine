@@ -1,6 +1,8 @@
 /*********** WS2812B leds *******************/
 #if defined(ESP8266)
 #define LED_PIN  D5 // leds pin
+#elif defined(ESP32)
+#define LED_PIN  16 // leds pin
 #endif
 
 #define NUM_LEDS 256
