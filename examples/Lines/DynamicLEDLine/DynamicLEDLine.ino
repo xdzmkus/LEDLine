@@ -30,7 +30,7 @@ StaticLEDLine<leds, NUM_LEDS> ledLine;
 #include "EffectTimer.hpp"
 
 #define EFFECT_DURATION_SEC 60
-MillisTimer timerEffects(EFFECT_DURATION_SEC * MillisTimer::CLOCKS_IN_SEC);
+MillisTimer timerEffects(EFFECT_DURATION_SEC* MillisTimer::CLOCKS_IN_SEC);
 
 
 void changeEffect()
