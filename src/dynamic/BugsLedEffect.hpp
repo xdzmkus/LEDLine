@@ -6,8 +6,8 @@
 #ifndef __BUGSLEDEFFECT_HPP__
 #define __BUGSLEDEFFECT_HPP__
 
-#include "ILedLine.hpp"
-#include "ILedEffect.hpp"
+#include "internal/ILedLine.hpp"
+#include "internal/ILedEffect.hpp"
 
 template <CRGB* const ledLine, const uint16_t numLeds>
 class BugsLedEffect : public ILedLine<ledLine, numLeds>, public ILedEffect

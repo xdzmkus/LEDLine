@@ -6,10 +6,14 @@
 #ifndef _LEDLINE_H_
 #define _LEDLINE_H_
 
-#include "ILedEffect.hpp"
+#include "internal/ILedEffect.hpp"
 
 class LEDLine
 {
+private:
+	
+	const char* const OFF = "OFF";
+
 protected:
 
 	ILedEffect* effect = nullptr;
@@ -41,6 +45,8 @@ public:
 	virtual bool isOn() const;
 
 	virtual bool refresh();
+
+	virtual const char* getState() const;
 };
 
 #endif

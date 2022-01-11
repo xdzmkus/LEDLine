@@ -27,8 +27,6 @@ DynamicLEDLine<leds, NUM_LEDS> ledLine;
 StaticLEDLine<leds, NUM_LEDS> ledLine;
 #endif
 
-#include "EffectTimer.hpp"
-
 #define EFFECT_DURATION_SEC 60
 MillisTimer timerEffects(EFFECT_DURATION_SEC* MillisTimer::CLOCKS_IN_SEC);
 

@@ -70,3 +70,9 @@ bool LEDLine::refresh()
 	return true;
 }
 
+const char* LEDLine::getState() const
+{
+	const char* currentEffect = getEffectName();
+
+	return (!isOn() || currentEffect == nullptr) ? OFF : currentEffect;
+};

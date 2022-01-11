@@ -6,8 +6,8 @@
 #ifndef __SPARKLESLEDEFFECT_HPP__
 #define __SPARKLESLEDEFFECT_HPP__
 
-#include "ILedLine.hpp"
-#include "ILedEffect.hpp"
+#include "internal/ILedLine.hpp"
+#include "internal/ILedEffect.hpp"
 
 template <CRGB* const ledLine, const uint16_t numLeds>
 class SparklesLedEffect : public ILedLine<ledLine, numLeds>, public ILedEffect

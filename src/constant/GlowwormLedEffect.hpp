@@ -6,8 +6,8 @@
 #ifndef __GLOWWORMLEDEFFECT_HPP__
 #define __GLOWWORMLEDEFFECT_HPP__
 
-#include "ILedLine.hpp"
-#include "ILedEffect.hpp"
+#include "internal/ILedLine.hpp"
+#include "internal/ILedEffect.hpp"
 
 template <CRGB* const ledLine, const uint16_t numLeds>
 class GlowwormLedEffect : public ILedLine<ledLine, numLeds>, public ILedEffect
