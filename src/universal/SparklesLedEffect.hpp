@@ -6,15 +6,15 @@
 #ifndef __SPARKLESLEDEFFECT_HPP__
 #define __SPARKLESLEDEFFECT_HPP__
 
-#include "internal/ILedLine.hpp"
-#include "internal/ILedEffect.hpp"
+#include "ILedLine.hpp"
+#include "ILedEffect.hpp"
 
 template <CRGB* const ledLine, const uint16_t numLeds>
 class SparklesLedEffect : public ILedLine<ledLine, numLeds>, public ILedEffect
 {
 public:
 
-	static const char* const name;
+	static LedEffectName const name;
 
 private:
 
@@ -30,7 +30,7 @@ public:
 	void reset() override;
 	void paint() override;
 
-	operator const char* () const { return name; }
+	operator LedEffectName () const { return name; }
 
 private:
 
@@ -39,7 +39,7 @@ private:
 };
 
 template <CRGB* const ledLine, const uint16_t numLeds>
-const char* const SparklesLedEffect<ledLine, numLeds>::name = "SPARKLES";
+LedEffectName const SparklesLedEffect<ledLine, numLeds>::name = "SPARKLES";
 
 template <CRGB* const ledLine, const uint16_t numLeds>
 SparklesLedEffect<ledLine, numLeds>::SparklesLedEffect(uint16_t Hz, CRGB color)

@@ -6,15 +6,15 @@
 #ifndef __BUGSLEDEFFECT_HPP__
 #define __BUGSLEDEFFECT_HPP__
 
-#include "internal/ILedLine.hpp"
-#include "internal/ILedEffect.hpp"
+#include "ILedLine.hpp"
+#include "ILedEffect.hpp"
 
 template <CRGB* const ledLine, const uint16_t numLeds>
 class BugsLedEffect : public ILedLine<ledLine, numLeds>, public ILedEffect
 {
 public:
 
-	static const char* const name;
+	static LedEffectName const name;
 
 private:
 
@@ -38,7 +38,7 @@ public:
 	void reset() override;
 	void paint() override;
 
-	operator const char* () const {	return name; }
+	operator LedEffectName () const {	return name; }
 
 	const uint8_t getNumBugs() const { return numBugs; };
 
@@ -50,7 +50,7 @@ private:
 };
 
 template <CRGB* const ledLine, const uint16_t numLeds>
-const char* const BugsLedEffect<ledLine, numLeds>::name = "BUGS";
+LedEffectName const BugsLedEffect<ledLine, numLeds>::name = "BUGS";
 
 template <CRGB* const ledLine, const uint16_t numLeds>
 BugsLedEffect<ledLine, numLeds>::BugsLedEffect(uint16_t Hz, uint8_t bugsCount)

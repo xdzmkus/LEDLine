@@ -6,9 +6,10 @@
 #ifndef _ILEDEFFECT_HPP_
 #define _ILEDEFFECT_HPP_
 
-#include "EffectTimer.hpp"
+#include "internal/EffectTimer.hpp"
 
-typedef String EffectID;
+typedef String LedEffectID;
+typedef const char* LedEffectName;
 
 class ILedEffect : public MillisTimer
 {
@@ -16,7 +17,7 @@ protected:
 
 	const uint16_t speed;
 
-	EffectID id;
+	LedEffectID id;
 
 public:
 
@@ -30,14 +31,14 @@ public:
 
 	virtual void paint() = 0;
 
-	virtual operator const char* () const = 0;
+	virtual operator LedEffectName () const = 0;
 	
-	virtual void setId(const EffectID id)
+	virtual void setId(const LedEffectID id)
 	{
 		this->id = id;
 	};
 
-	virtual const EffectID getId() const
+	virtual const LedEffectID getId() const
 	{
 		return id;
 	};

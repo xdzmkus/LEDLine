@@ -6,15 +6,15 @@
 #ifndef __GLOWWORMLEDEFFECT_HPP__
 #define __GLOWWORMLEDEFFECT_HPP__
 
-#include "internal/ILedLine.hpp"
-#include "internal/ILedEffect.hpp"
+#include "ILedLine.hpp"
+#include "ILedEffect.hpp"
 
 template <CRGB* const ledLine, const uint16_t numLeds>
 class GlowwormLedEffect : public ILedLine<ledLine, numLeds>, public ILedEffect
 {
 public:
 
-	static const char* const name;
+	static LedEffectName const name;
 
 private:
 
@@ -30,7 +30,7 @@ public:
 	void reset() override;
 	void paint() override;
 
-	operator const char* () const { return name; }
+	operator LedEffectName () const { return name; }
 
 private:
 
@@ -40,7 +40,7 @@ private:
 };
 
 template <CRGB* const ledLine, const uint16_t numLeds>
-const char* const GlowwormLedEffect<ledLine, numLeds>::name = "GLOWWORM";
+LedEffectName const GlowwormLedEffect<ledLine, numLeds>::name = "GLOWWORM";
 
 template <CRGB* const ledLine, const uint16_t numLeds>
 GlowwormLedEffect<ledLine, numLeds>::GlowwormLedEffect(uint16_t Hz, CRGB color)

@@ -24,14 +24,14 @@ bool LEDLine::setNextEffect()
 	return setEffectByIdx(nextEffectIdx);
 }
 
-const char* LEDLine::getEffectName() const
+LedEffectName LEDLine::getEffectName() const
 {
-	return (effect != nullptr) ? static_cast<const char*>(*effect) : nullptr;
+	return (activeEffect != nullptr) ? static_cast<LedEffectName>(*activeEffect) : nullptr;
 }
 
 uint8_t LEDLine::getEffectIdx() const
 {
-	const char* effectName = getEffectName();
+	LedEffectName effectName = getEffectName();
 
 	if (effectName != nullptr)
 	{
@@ -46,33 +46,33 @@ uint8_t LEDLine::getEffectIdx() const
 
 void LEDLine::turnOn()
 {
-	if (effect == nullptr) setEffectByIdx(0);
+	if (activeEffect == nullptr) setEffectByIdx(0);
 
-	if (effect != nullptr) effect->start();
+	if (activeEffect != nullptr) activeEffect->start();
 }
 
 void LEDLine::turnOff()
 {
-	if (effect != nullptr) effect->stop();
+	if (activeEffect != nullptr) activeEffect->stop();
 }
 
 bool LEDLine::isOn() const
 {
-	return (effect != nullptr) ? effect->isActive() : false;
+	return (activeEffect != nullptr) ? activeEffect->isActive() : false;
 }
 
 bool LEDLine::refresh()
 {
-	if (effect == nullptr || !effect->isReady()) return false;
+	if (activeEffect == nullptr || !activeEffect->isReady()) return false;
 
-	effect->paint();
+	activeEffect->paint();
 
 	return true;
 }
 
-const char* LEDLine::getState() const
+LedEffectName LEDLine::getState() const
 {
-	const char* currentEffect = getEffectName();
+	LedEffectName currentEffectName = getEffectName();
 
-	return (!isOn() || currentEffect == nullptr) ? OFF : currentEffect;
+	return (!isOn() || currentEffectName == nullptr) ? OFF : currentEffectName;
 };

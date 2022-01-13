@@ -11,6 +11,7 @@
 
 #include "LEDLine.h"
 #include "StaticLEDLineEffects.h"
+#include "UniversalLEDLineEffects.h"
 
 template <CRGB* const leds, const uint16_t numLeds>
 class StaticLEDLine : public LEDLine
@@ -19,32 +20,45 @@ private:
 
 	static const uint8_t NUM_EFFECTS = 9;
 
-	BouncingBallsLedEffect<leds, numLeds, NUM_BALLS> eff1;
-	BugsLedEffect<leds, numLeds, NUM_BUGS> eff2;
-	ColorsLedEffect<leds, numLeds> eff3;
-	FlameLedEffect<leds, numLeds> eff4;
-	FlashLedEffect<leds, numLeds> eff5;
-	GlowwormLedEffect<leds, numLeds> eff6;
-	RainbowLedEffect<leds, numLeds> eff7;
-	SparklesLedEffect<leds, numLeds> eff8;
-	ThreeColorLedEffect<leds, numLeds> eff9;
+	static BouncingBallsLedEffect<leds, numLeds, NUM_BALLS> bouncingBallsEffect;
+	static BugsLedEffect<leds, numLeds, NUM_BUGS> bugsEffect;
+	static ColorsLedEffect<leds, numLeds> colorsEffect;
+	static FlameLedEffect<leds, numLeds> flameEffect;
+	static FlashLedEffect<leds, numLeds> flashEffect;
+	static GlowwormLedEffect<leds, numLeds> glowwormEffect;
+	static RainbowLedEffect<leds, numLeds> rainbowEffect;
+	static SparklesLedEffect<leds, numLeds> sparklesEffect;
+	static ThreeColorLedEffect<leds, numLeds> threeColorEffect;
 
-	const char* const availableEffects[NUM_EFFECTS] = { eff1.name, eff2.name, eff3.name, eff4.name, eff5.name, eff6.name, eff7.name, eff8.name, eff9.name };
+	ILedEffect* effects[NUM_EFFECTS] =
+	{
+		&bouncingBallsEffect,
+		&bugsEffect,
+		&colorsEffect,
+		&flameEffect,
+		&flashEffect,
+		&glowwormEffect,
+		&rainbowEffect,
+		&sparklesEffect,
+		&threeColorEffect
+	};
 
-	ILedEffect* const effects[NUM_EFFECTS] = { &eff1, &eff2, &eff3, &eff4, &eff5, &eff6, &eff7, &eff8, &eff9 };
-
+	LedEffectName const availableEffects[NUM_EFFECTS] =
+	{ 
+		bouncingBallsEffect.name,
+		bugsEffect.name,
+		colorsEffect.name,
+		flameEffect.name,
+		flashEffect.name,
+		glowwormEffect.name,
+		rainbowEffect.name,
+		sparklesEffect.name,
+		threeColorEffect.name
+	};
+	
 public:
 
-	StaticLEDLine()	:
-		eff1(50),
-		eff2(20),
-		eff3(10),
-		eff4(10),
-		eff5(1),
-		eff6(30),
-		eff7(10),
-		eff8(20),
-		eff9(30, { CRGB::White, 3, CRGB::Red, 2, CRGB::White, 3 })
+	StaticLEDLine()
 	{
 	};
 
@@ -57,19 +71,19 @@ public:
 		return NUM_EFFECTS;
 	};
 
-	virtual const char* const* getAllEffectsNames() const override
+	virtual LedEffectName const* getAllEffectsNames() const override
 	{
 		return availableEffects;
 	};
 
-	virtual bool setEffectByName(const char* effectName) override
+	virtual bool setEffectByName(LedEffectName effectName) override
 	{
 		for (uint8_t idx = 0; idx < NUM_EFFECTS; ++idx)
 		{
 			if (strcmp(*(effects[idx]), effectName) == 0)
 			{
-				effect = effects[idx];
-				effect->start();
+				activeEffect = effects[idx];
+				activeEffect->start();
 				return true;
 			}
 		}
@@ -78,9 +92,34 @@ public:
 	};
 };
 
-/*
+
 template <CRGB* const leds, const uint16_t numLeds>
-const uint8_t StaticLEDLine<leds, numLeds>::NUM_EFFECTS = 9;
-*/
+BouncingBallsLedEffect<leds, numLeds, NUM_BALLS> StaticLEDLine<leds, numLeds>::bouncingBallsEffect(50);
+
+template <CRGB* const leds, const uint16_t numLeds>
+BugsLedEffect<leds, numLeds, NUM_BUGS> StaticLEDLine<leds, numLeds>::bugsEffect(20);
+
+template <CRGB* const leds, const uint16_t numLeds>
+ColorsLedEffect<leds, numLeds> StaticLEDLine<leds, numLeds>::colorsEffect(10);
+
+template <CRGB* const leds, const uint16_t numLeds>
+FlameLedEffect<leds, numLeds> StaticLEDLine<leds, numLeds>::flameEffect(10);
+
+template <CRGB* const leds, const uint16_t numLeds>
+FlashLedEffect<leds, numLeds> StaticLEDLine<leds, numLeds>::flashEffect(1);
+
+template <CRGB* const leds, const uint16_t numLeds>
+GlowwormLedEffect<leds, numLeds> StaticLEDLine<leds, numLeds>::glowwormEffect(30);
+
+template <CRGB* const leds, const uint16_t numLeds>
+RainbowLedEffect<leds, numLeds> StaticLEDLine<leds, numLeds>::rainbowEffect(10);
+
+template <CRGB* const leds, const uint16_t numLeds>
+SparklesLedEffect<leds, numLeds> StaticLEDLine<leds, numLeds>::sparklesEffect(20);
+
+template <CRGB* const leds, const uint16_t numLeds>
+ThreeColorLedEffect<leds, numLeds> StaticLEDLine<leds, numLeds>::threeColorEffect(30, { CRGB::White, 3, CRGB::Red, 2, CRGB::White, 3 });
+
+
 
 #endif

@@ -15,8 +15,7 @@ uint8_t brightness = 128;
 
 CRGB leds[NUM_LEDS];
 
-#include "StaticLEDLineEffects.h"
-
+#include "UniversalLEDLineEffects.h"
 ColorsLedEffect<leds, NUM_LEDS> effect(RATE_HZ);
 
 void setupLED()

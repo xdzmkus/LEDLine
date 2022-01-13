@@ -6,8 +6,8 @@
 #ifndef __BOUNSINGBALLSLEDEFFECT_HPP__
 #define __BOUNSINGBALLSLEDEFFECT_HPP__
 
-#include "internal/ILedLine.hpp"
-#include "internal/ILedEffect.hpp"
+#include "ILedLine.hpp"
+#include "ILedEffect.hpp"
 
 template <CRGB* const ledLine, const uint16_t numLeds, const uint8_t numBalls>
 class BouncingBallsLedEffect : public ILedLine<ledLine, numLeds>, public ILedEffect
@@ -15,7 +15,7 @@ class BouncingBallsLedEffect : public ILedLine<ledLine, numLeds>, public ILedEff
 
 public:
 
-	static const char* const name;
+	static LedEffectName const name;
 
 private:
 
@@ -41,7 +41,7 @@ public:
 	void reset() override;
 	void paint() override;
 
-	operator const char* () const {	return name; }
+	operator LedEffectName () const {	return name; }
 
 private:
 
@@ -51,7 +51,7 @@ private:
 };
 
 template <CRGB* const ledLine, const uint16_t numLeds, const uint8_t numBalls>
-const char* const BouncingBallsLedEffect<ledLine, numLeds, numBalls>::name = "BOUNCINGBALLS";
+LedEffectName const BouncingBallsLedEffect<ledLine, numLeds, numBalls>::name = "BOUNCINGBALLS";
 
 template <CRGB* const ledLine, const uint16_t numLeds, const uint8_t numBalls>
 BouncingBallsLedEffect<ledLine, numLeds, numBalls>::BouncingBallsLedEffect(uint16_t Hz)

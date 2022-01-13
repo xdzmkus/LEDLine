@@ -6,7 +6,7 @@
 #define UNPINNED_ANALOG_PIN A0 // not connected analog pin
 
 #define NUM_LEDS 256
-#define RATE_HZ 50
+#define RATE_HZ 10
 #define CURRENT_LIMIT 8000
 
 uint8_t brightness = 128;
@@ -15,8 +15,8 @@ uint8_t brightness = 128;
 
 CRGB leds[NUM_LEDS];
 
-#include "StaticLEDLineEffects.h"
-ThreeColorLedEffect<leds, NUM_LEDS> effect(RATE_HZ, { CRGB::White, 2, CRGB::Red, 4, CRGB::White, 2 });
+#include "UniversalLEDLineEffects.h"
+SparklesLedEffect<leds, NUM_LEDS> effect(RATE_HZ);
 
 void setupLED()
 {

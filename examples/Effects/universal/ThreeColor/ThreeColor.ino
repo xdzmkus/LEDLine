@@ -6,7 +6,7 @@
 #define UNPINNED_ANALOG_PIN A0 // not connected analog pin
 
 #define NUM_LEDS 256
-#define RATE_HZ 1
+#define RATE_HZ 50
 #define CURRENT_LIMIT 8000
 
 uint8_t brightness = 128;
@@ -15,9 +15,8 @@ uint8_t brightness = 128;
 
 CRGB leds[NUM_LEDS];
 
-#include "StaticLEDLineEffects.h"
-
-FlashLedEffect<leds, NUM_LEDS> effect(RATE_HZ);
+#include "UniversalLEDLineEffects.h"
+ThreeColorLedEffect<leds, NUM_LEDS> effect(RATE_HZ, { CRGB::White, 2, CRGB::Red, 4, CRGB::White, 2 });
 
 void setupLED()
 {

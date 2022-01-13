@@ -6,15 +6,15 @@
 #ifndef __THREECOLORLEDEFFECT_HPP__
 #define __THREECOLORLEDEFFECT_HPP__
 
-#include "internal/ILedLine.hpp"
-#include "internal/ILedEffect.hpp"
+#include "ILedLine.hpp"
+#include "ILedEffect.hpp"
 
 template <CRGB* const ledLine, const uint16_t numLeds>
 class ThreeColorLedEffect : public ILedLine<ledLine, numLeds>, public ILedEffect
 {
 public:
 
-	static const char* const name;
+	static LedEffectName const name;
 
 private:
 
@@ -45,7 +45,7 @@ public:
 	void reset() override;
 	void paint() override;
 
-	operator const char* () const { return name; }
+	operator LedEffectName () const { return name; }
 
 private:
 
@@ -55,7 +55,7 @@ private:
 };
 
 template <CRGB* const ledLine, const uint16_t numLeds>
-const char* const ThreeColorLedEffect<ledLine, numLeds>::name = "THREECOLOR";
+LedEffectName const ThreeColorLedEffect<ledLine, numLeds>::name = "THREECOLOR";
 
 template <CRGB* const ledLine, const uint16_t numLeds>
 ThreeColorLedEffect<ledLine, numLeds>::ThreeColorLedEffect(uint16_t Hz, THREECOLOR flag, uint8_t pulseTime, uint8_t pulseCount)

@@ -6,15 +6,15 @@
 #ifndef __COLORSLEDEFFECT_HPP__
 #define __COLORSLEDEFFECT_HPP__
 
-#include "internal/ILedLine.hpp"
-#include "internal/ILedEffect.hpp"
+#include "ILedLine.hpp"
+#include "ILedEffect.hpp"
 
 template <CRGB* const ledLine, const uint16_t numLeds>
 class ColorsLedEffect : public ILedLine<ledLine, numLeds>, public ILedEffect
 {
 public:
 
-	static const char* const name;
+	static LedEffectName const name;
 
 private:
 
@@ -28,7 +28,7 @@ public:
 	void reset() override;
 	void paint() override;
 
-	operator const char* () const { return name; }
+	operator LedEffectName () const { return name; }
 
 private:
 
@@ -38,7 +38,7 @@ private:
 };
 
 template <CRGB* const ledLine, const uint16_t numLeds>
-const char* const ColorsLedEffect<ledLine, numLeds>::name = "COLORS";
+LedEffectName const ColorsLedEffect<ledLine, numLeds>::name = "COLORS";
 
 template <CRGB* const ledLine, const uint16_t numLeds>
 ColorsLedEffect<ledLine, numLeds>::ColorsLedEffect(uint16_t Hz)

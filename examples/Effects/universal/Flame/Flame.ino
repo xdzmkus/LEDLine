@@ -15,8 +15,7 @@ uint8_t brightness = 128;
 
 CRGB leds[NUM_LEDS];
 
-#include "StaticLEDLineEffects.h"
-
+#include "UniversalLEDLineEffects.h"
 FlameLedEffect<leds, NUM_LEDS> effect(RATE_HZ, false);
 
 void setupLED()

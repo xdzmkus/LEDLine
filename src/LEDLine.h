@@ -6,17 +6,18 @@
 #ifndef _LEDLINE_H_
 #define _LEDLINE_H_
 
-#include "internal/ILedEffect.hpp"
+#include "ILedEffect.hpp"
+
 
 class LEDLine
 {
 private:
 	
-	const char* const OFF = "OFF";
+	LedEffectName const OFF = "OFF";
 
 protected:
 
-	ILedEffect* effect = nullptr;
+	ILedEffect* activeEffect = nullptr;
 
 public:
 
@@ -26,15 +27,15 @@ public:
 
 	virtual uint8_t howManyEffects() const = 0;
 
-	virtual const char* const* getAllEffectsNames() const = 0;
+	virtual LedEffectName const* getAllEffectsNames() const = 0;
 
-	virtual bool setEffectByName(const char* effectName) = 0;
+	virtual bool setEffectByName(LedEffectName effectName) = 0;
 
 	virtual bool setEffectByIdx(uint8_t idx);
 
 	virtual bool setNextEffect();
 
-	virtual const char* getEffectName() const;
+	virtual LedEffectName getEffectName() const;
 
 	virtual uint8_t getEffectIdx() const;
 
@@ -46,7 +47,7 @@ public:
 
 	virtual bool refresh();
 
-	virtual const char* getState() const;
+	virtual LedEffectName getState() const;
 };
 
 #endif
