@@ -70,7 +70,7 @@ bool LEDLine::refresh()
 	return true;
 }
 
-LedEffectName LEDLine::getState() const
+LedState LEDLine::getState() const
 {
 	LedEffectName currentEffectName = getEffectName();
 

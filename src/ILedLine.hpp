@@ -6,6 +6,12 @@
 #ifndef _ILEDLINE_HPP_
 #define _ILEDLINE_HPP_
 
+#if defined(ARDUINO) && ARDUINO >= 100
+#include "Arduino.h"
+#else
+#include "WProgram.h"
+#endif
+
 #include <FastLED.h>
 
 template <CRGB* const ledLine, const uint16_t numLeds>

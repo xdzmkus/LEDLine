@@ -8,12 +8,13 @@
 
 #include "ILedEffect.hpp"
 
+typedef const char* LedState;
 
 class LEDLine
 {
 private:
 	
-	LedEffectName const OFF = "OFF";
+	LedState const OFF = "OFF";
 
 protected:
 
@@ -47,7 +48,7 @@ public:
 
 	virtual bool refresh();
 
-	virtual LedEffectName getState() const;
+	virtual LedState getState() const;
 };
 
 #endif
