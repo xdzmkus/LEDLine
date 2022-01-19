@@ -18,11 +18,12 @@ class StaticLEDLine : public LEDLine
 {
 private:
 
-	static const uint8_t NUM_EFFECTS = 9;
+	static const uint8_t NUM_EFFECTS = 10;
 
 	static BouncingBallsLedEffect<leds, numLeds, NUM_BALLS> bouncingBallsEffect;
 	static BugsLedEffect<leds, numLeds, NUM_BUGS> bugsEffect;
 	static ColorsLedEffect<leds, numLeds> colorsEffect;
+	static CometLedEffect<leds, numLeds> cometEffect;
 	static FlameLedEffect<leds, numLeds> flameEffect;
 	static FlashLedEffect<leds, numLeds> flashEffect;
 	static GlowwormLedEffect<leds, numLeds> glowwormEffect;
@@ -35,6 +36,7 @@ private:
 		&bouncingBallsEffect,
 		&bugsEffect,
 		&colorsEffect,
+		&cometEffect,
 		&flameEffect,
 		&flashEffect,
 		&glowwormEffect,
@@ -48,6 +50,7 @@ private:
 		bouncingBallsEffect.name,
 		bugsEffect.name,
 		colorsEffect.name,
+		cometEffect.name,
 		flameEffect.name,
 		flashEffect.name,
 		glowwormEffect.name,
@@ -103,6 +106,9 @@ template <CRGB* const leds, const uint16_t numLeds>
 ColorsLedEffect<leds, numLeds> StaticLEDLine<leds, numLeds>::colorsEffect(10);
 
 template <CRGB* const leds, const uint16_t numLeds>
+CometLedEffect<leds, numLeds> StaticLEDLine<leds, numLeds>::cometEffect(15);
+
+template <CRGB* const leds, const uint16_t numLeds>
 FlameLedEffect<leds, numLeds> StaticLEDLine<leds, numLeds>::flameEffect(10);
 
 template <CRGB* const leds, const uint16_t numLeds>
@@ -119,7 +125,6 @@ SparklesLedEffect<leds, numLeds> StaticLEDLine<leds, numLeds>::sparklesEffect(20
 
 template <CRGB* const leds, const uint16_t numLeds>
 ThreeColorLedEffect<leds, numLeds> StaticLEDLine<leds, numLeds>::threeColorEffect(30, { CRGB::White, 3, CRGB::Red, 2, CRGB::White, 3 });
-
 
 
 #endif

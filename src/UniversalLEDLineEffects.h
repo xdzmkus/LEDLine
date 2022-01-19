@@ -1,7 +1,8 @@
 #pragma once
 
-#include "universal/FlameLedEffect.hpp"
 #include "universal/ColorsLedEffect.hpp"
+#include "universal/CometLedEffect.hpp"
+#include "universal/FlameLedEffect.hpp"
 #include "universal/FlashLedEffect.hpp"
 #include "universal/GlowwormLedEffect.hpp"
 #include "universal/RainbowLedEffect.hpp"

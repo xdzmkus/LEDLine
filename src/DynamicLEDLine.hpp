@@ -15,8 +15,21 @@ class DynamicLEDLine : public LEDLine
 {
 private:
 
-	static const uint8_t NUM_EFFECTS = 9;
-	static LedEffectName const availableEffects[NUM_EFFECTS];
+	static const uint8_t NUM_EFFECTS = 10;
+
+	LedEffectName const availableEffects[NUM_EFFECTS] =
+	{
+		BouncingBallsLedEffect<leds, numLeds>::name,
+		BugsLedEffect<leds, numLeds>::name,
+		ColorsLedEffect<leds, numLeds>::name,
+		CometLedEffect<leds, numLeds>::name,
+		FlameLedEffect<leds, numLeds>::name,
+		FlashLedEffect<leds, numLeds>::name,
+		GlowwormLedEffect<leds, numLeds>::name,
+		RainbowLedEffect<leds, numLeds>::name,
+		SparklesLedEffect<leds, numLeds>::name,
+		ThreeColorLedEffect<leds, numLeds>::name
+	};
 
 public:
 
@@ -52,6 +65,10 @@ public:
 		{
 			delete activeEffect; activeEffect = new ColorsLedEffect<leds, numLeds>(10);
 		}
+		else if (strcmp(ColorsLedEffect<leds, numLeds>::name, effectName) == 0)
+		{
+			delete activeEffect; activeEffect = new CometLedEffect<leds, numLeds>(15);
+		}
 		else if (strcmp(FlameLedEffect<leds, numLeds>::name, effectName) == 0)
 		{
 			delete activeEffect; activeEffect = new FlameLedEffect<leds, numLeds>(10);
@@ -85,21 +102,6 @@ public:
 
 		return true;
 	};
-};
-
-
-template <CRGB* const leds, const uint16_t numLeds>
-LedEffectName const DynamicLEDLine<leds, numLeds>::availableEffects[NUM_EFFECTS] =
-{
-	BouncingBallsLedEffect<leds, numLeds>::name,
-	BugsLedEffect<leds, numLeds>::name,
-	ColorsLedEffect<leds, numLeds>::name,
-	FlameLedEffect<leds, numLeds>::name,
-	FlashLedEffect<leds, numLeds>::name,
-	GlowwormLedEffect<leds, numLeds>::name,
-	RainbowLedEffect<leds, numLeds>::name,
-	SparklesLedEffect<leds, numLeds>::name,
-	ThreeColorLedEffect<leds, numLeds>::name
 };
 
 #endif
