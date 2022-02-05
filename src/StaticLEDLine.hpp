@@ -8,6 +8,7 @@
 
 #define NUM_BALLS 5
 #define NUM_BUGS 15
+#define NUM_WORMS 3
 
 #include "LEDLine.h"
 #include "StaticLEDLineEffects.h"
@@ -26,7 +27,7 @@ private:
 	static CometLedEffect<leds, numLeds> cometEffect;
 	static FlameLedEffect<leds, numLeds> flameEffect;
 	static FlashLedEffect<leds, numLeds> flashEffect;
-	static GlowwormLedEffect<leds, numLeds> glowwormEffect;
+	static GlowwormLedEffect<leds, numLeds, NUM_WORMS> glowwormEffect;
 	static RainbowLedEffect<leds, numLeds> rainbowEffect;
 	static SparklesLedEffect<leds, numLeds> sparklesEffect;
 	static ThreeColorLedEffect<leds, numLeds> threeColorEffect;
@@ -115,7 +116,7 @@ template <CRGB* const leds, const uint16_t numLeds>
 FlashLedEffect<leds, numLeds> StaticLEDLine<leds, numLeds>::flashEffect(1);
 
 template <CRGB* const leds, const uint16_t numLeds>
-GlowwormLedEffect<leds, numLeds> StaticLEDLine<leds, numLeds>::glowwormEffect(30);
+GlowwormLedEffect<leds, numLeds, NUM_WORMS> StaticLEDLine<leds, numLeds>::glowwormEffect(30);
 
 template <CRGB* const leds, const uint16_t numLeds>
 RainbowLedEffect<leds, numLeds> StaticLEDLine<leds, numLeds>::rainbowEffect(10);

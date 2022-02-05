@@ -1,12 +1,13 @@
 #if defined(ESP8266)
-#define LED_PIN D1  // D1 leds pin (connected to D5 on my NodeMCU1.0 !!!)
+#define LED_PIN D5  // D1 leds pin (connected to D5 on my NodeMCU1.0 !!!)
 #else
 #define LED_PIN 9   // leds pin
 #endif
 #define UNPINNED_ANALOG_PIN A0 // not connected analog pin
 
 #define NUM_LEDS 256
-#define RATE_HZ 50
+#define NUM_WORMS 3
+#define RATE_HZ 10
 #define CURRENT_LIMIT 8000
 
 uint8_t brightness = 128;
@@ -15,8 +16,9 @@ uint8_t brightness = 128;
 
 CRGB leds[NUM_LEDS];
 
-#include "UniversalLEDLineEffects.h"
-GlowwormLedEffect<leds, NUM_LEDS> effect(RATE_HZ);
+#include "StaticLEDLineEffects.h"
+
+GlowwormLedEffect<leds, NUM_LEDS, NUM_WORMS> effect(RATE_HZ);
 
 void setupLED()
 {

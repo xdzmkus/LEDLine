@@ -78,10 +78,10 @@ void BugsLedEffect<ledLine, numLeds, numBugs>::reset()
 template <CRGB* const ledLine, const uint16_t numLeds, const uint8_t numBugs>
 void BugsLedEffect<ledLine, numLeds, numBugs>::paint()
 {
+	ILedLine<ledLine, numLeds>::clearAllLeds();
+
 	for (uint8_t i = 0; i < numBugs; i++)
 	{
-		ledLine[bugs[i].position] = CRGB::Black;
-
 		bugs[i].speed += random(-5, 6);
 		if (abs(bugs[i].speed) > BUGS_MAX_SPEED)
 		{
