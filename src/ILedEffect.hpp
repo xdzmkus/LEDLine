@@ -12,7 +12,7 @@
 #include "WProgram.h"
 #endif
 
-#include "internal/EffectTimer.hpp"
+#include <ClockTimer.hpp>
 
 typedef String LedEffectID;
 typedef const char* LedEffectName;
